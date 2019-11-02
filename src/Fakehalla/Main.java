@@ -16,11 +16,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage)
     {
-        Stage s = new Stage();
-        s.setWidth(600);
-        s.setHeight(800);
 
-        Game game = new Game(s);
+        Game game = new Game("test",500,400,false);
         game.start();
     }
 }
