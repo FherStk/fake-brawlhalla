@@ -9,9 +9,13 @@ public class Player implements Updatable {
     private Rectangle body;
     private Point2D bodyPosition;
     private Vector2D velocity;
+    private boolean moveR;
+    private boolean moveL;
+    private boolean moveJ;
 
     private static final double playerWidth = 50;
     private static final double playerHeight = playerWidth*1.6;
+    private static final double speedX = 1;
 
 
     public Player(Color p,double gameWidth, double gameHeight, double defaultPosX, double defaultPosY)
@@ -24,6 +28,8 @@ public class Player implements Updatable {
         body.setStroke(Color.GREEN);
         body.setX(bodyPosition.getX());
         body.setY(bodyPosition.getX());
+
+        moveL = moveR = moveJ = false;
 
         velocity = new Vector2D(new Point2D(0,1)); // direction of the gravity.. straight down (0,1) vector
     }
@@ -58,5 +64,15 @@ public class Player implements Updatable {
         this.bodyPosition = point;
         this.body.setX(bodyPosition.getX());
         this.body.setY(bodyPosition.getY());
+    }
+
+    private void moveRight()
+    {
+        setPos(bodyPosition.add(new Point2D(speedX,0)));
+    }
+
+    private void moveLeft()
+    {
+        setPos(bodyPosition.add(new Point2D(speedX*-1,0)));
     }
 }
