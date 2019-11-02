@@ -16,7 +16,7 @@ public class Game  {
     private Group group;
     private Scene scene;
     private AnimationTimer loop;
-    private final int numberOfPlayers = 2;
+    private final int numberOfPlayers = 1;
 
     private double width;
     private double height;
@@ -98,13 +98,25 @@ public class Game  {
 
     private void setScene()
     {
+        scene = new Scene(group);
         for(int i = 0; i < numberOfPlayers; i++) // adding players
         {
             Player newPlayer = new Player(Color.BLACK,this.width,this.height,this.width / 2 + 100*i, this.height / 2);
             objects.add(newPlayer);
+
+            scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) ->
+            {
+                if(key.getCode() == newPlayer.getMoveRightKey()) { newPlayer.setMoveR(true);}
+                if(key.getCode() == newPlayer.getMoveLeftKey()) { newPlayer.setMoveL(true);}
+            });
+            scene.addEventHandler(KeyEvent.KEY_RELEASED, (key)->
+            {
+                if(key.getCode() == newPlayer.getMoveRightKey()) { newPlayer.setMoveR(false);}
+                if(key.getCode() == newPlayer.getMoveLeftKey()) { newPlayer.setMoveL(false);}
+            });
+
             group.getChildren().add(newPlayer.getBody());
         }
-        scene = new Scene(group);
         scene.setFill(Color.LIGHTGRAY);
     }
 }
