@@ -5,6 +5,7 @@ import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
@@ -16,7 +17,7 @@ public class Main extends Application {
 
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws FileNotFoundException {
         Launcher launcher = new Launcher(primaryStage);
         launcher.run();
     }

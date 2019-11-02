@@ -3,16 +3,20 @@ package Fakehalla.Launcher;
 import Fakehalla.Game;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Stack;
 
@@ -23,7 +27,7 @@ public class Launcher {
     private int gameWidth = 1920;
     private boolean fullscreen = true;
 
-    public Launcher(Stage primaryStage) {
+    public Launcher(Stage primaryStage) throws FileNotFoundException {
         stage = primaryStage;
         stage.setTitle("Fakehalla Launcher");
 
@@ -56,12 +60,19 @@ public class Launcher {
         });
 
         for (Button i : buttons) {
-            i.setStyle("-fx-font-size: 3em; ");
+            i.setStyle("-fx-font-size: 3em; -fx-border-color: black; -fx-border-width: 2;");
             i.setMinWidth(400);
-
+            i.onMouseEnteredProperty().set(event -> i.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY))));
+            i.onMouseExitedProperty().set(event -> i.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))));
         }
 
         Label authors = new Label("© Danko a Jozko 2019");
+        authors.setTextFill(Color.WHITE);
+
+        Image image = new Image(new FileInputStream("src/resources/Logo.png"));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(100);
+        imageView.setPreserveRatio(true);
 
         VBox vbox = new VBox(buttons);
         vbox.setSpacing(30);
@@ -69,11 +80,12 @@ public class Launcher {
 
         BorderPane borderpane = new BorderPane();
         borderpane.setCenter(vbox);
-
-        borderpane.setStyle("-fx-background-color: #333333;");
-
+        borderpane.setTop(imageView);
         borderpane.setBottom(authors);
+        borderpane.setAlignment(imageView, Pos.CENTER);
+        borderpane.setAlignment(authors, Pos.BOTTOM_RIGHT);
 
+        borderpane.setStyle("-fx-background-color: #444444;");
         defaultScene = new Scene(borderpane, 800, 600);
         defaultScene.setOnMouseExited(event -> System.out.println("pa"));
         stage.setScene(defaultScene);
@@ -98,6 +110,6 @@ public class Launcher {
     }
 
     private void runScoreboard() {
-        //TODO
+        //TODO - make score
     }
 }
