@@ -1,86 +1,62 @@
 package Fakehalla;
 
-import javafx.scene.shape.Circle;
+import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 
-public class Player implements Entity {
+public class Player implements Updatable {
+    private Rectangle body;
+    private Point2D bodyPosition;
+    private Vector2D velocity;
 
-    private Point2D position;
-    private Circle body;
-
-    private double radius;
-    private double speedX;
-    private double speedY;
-
-    private boolean pressedLeft;
-    private boolean pressedRight;
-    private boolean pressedJump;
-
-    private int index;
+    private static final double playerWidth = 50;
+    private static final double playerHeight = playerWidth*1.6;
 
 
-
-    public Player(int xCor,int yCor,int size)
+    public Player(Color p,double gameWidth, double gameHeight, double defaultPosX, double defaultPosY)
     {
-        position = new Point2D(xCor,yCor);
-        speedY = 1;
-        speedX = 3;
-        index = 0;
-        pressedLeft = pressedRight = pressedJump = false;
-        radius = size;
-        body = new Circle();
-        body.setCenterX(position.getX());
-        body.setCenterY(position.getY());
-        body.setRadius(radius);
+        bodyPosition = new Point2D(defaultPosX, defaultPosY);
+        body = new Rectangle();
+        body.setWidth(playerWidth);
+        body.setHeight(playerHeight);
+        body.setFill(p);
+        body.setStroke(Color.GREEN);
+        body.setX(bodyPosition.getX());
+        body.setY(bodyPosition.getX());
+
+        velocity = new Vector2D(new Point2D(0,1)); // direction of the gravity.. straight down (0,1) vector
     }
 
+    public Rectangle getBody() { return this.body;}
 
-    public Circle getBody() {return body;}
-    public int getX() { return position.getX();}
-    public int getY() { return position.getY();}
-
-    public boolean getPressedLeft() {return pressedLeft;}
-    public boolean getPressedRight() {return pressedRight;}
-    public boolean getPressedJump() {return pressedJump;}
-
-    public void setPressedLeft(boolean pressed ) { pressedLeft = pressed;}
-    public void setPressedRight(boolean pressed ) { pressedRight = pressed;}
-    public void setPressedJump(boolean pressed ) { pressedJump = pressed;}
-    public void incrementIndex() { index ++;}
     @Override
-    public void setPos(double x, double y)
-    {
-        body.setCenterX(x);
-        body.setCenterY(y);
+    public void update(double gameWidth, double gameHeight) {
+        if(!outOfBounds(gameWidth,gameHeight,velocity.getDirection().getX(),velocity.getDirection().getY())){
+            setPos(bodyPosition.add(velocity.getDirection())); // moving the player in the direction of vector velocity
+            velocity.setEnd(velocity.getDirection().add(new Point2D(0,gravity))); // adding gravity to velocity
+        }
+        else{
+            body.setStroke(Color.RED);
+        }
+        /* debug
+        System.out.println(gameWidth + " " + gameHeight);
+        System.out.println("actual x and y: " + body.getX() + " " + body.getY());
+        System.out.println("bodyposition: " + bodyPosition.getX() + " " + bodyPosition.getY());*/
+
     }
 
     @Override
-    public void fall(double width, double height)
+    public boolean outOfBounds(double widthLimit, double heightLimit,double stepX, double stepY) // checking if the player is off the screen
     {
-        if(body.getCenterY() + radius + speedY <= height)
-        {
-            setPos(body.getCenterX(), body.getCenterY() + speedY);
-            speedY+= gravity;
-        }
-        else
-        {
-            index = 0;
-            speedY = 1;
-        }
+        return !(bodyPosition.getX() - stepX >= 0 && bodyPosition.getY() - stepY >= 0 && (bodyPosition.getX() + body.getWidth() + stepX) <= widthLimit
+                && (bodyPosition.getY() + body.getHeight() + stepY) <= heightLimit); // checking one step ahead (stepx and stepy)
     }
 
-    public void moveRight()
+    private void setPos(Point2D point)
     {
-        setPos(body.getCenterX() + speedX, body.getCenterY());
+        this.bodyPosition = point;
+        this.body.setX(bodyPosition.getX());
+        this.body.setY(bodyPosition.getY());
     }
-
-    public void moveLeft()
-    {
-        setPos(body.getCenterX() - speedX, body.getCenterY());
-    }
-
-    public void Jump()
-    {
-        if (index < 2) { speedY = -5;}
-    }
-
 }

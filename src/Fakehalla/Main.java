@@ -1,9 +1,9 @@
 package Fakehalla;
 /* lets see if this works*/
-
-import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Point2D;
 import javafx.stage.Stage;
+
 
 
 public class Main extends Application {
@@ -16,23 +16,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage)
     {
-        Game game = new Game("AAA",800,600  );
-        new AnimationTimer()
-        {
-            public void handle(long currentNanoTime)
-            {
-                for(Entity e : game.getAllObjects())
-                {
-                    e.fall(game.getScene().getWidth(),game.getScene().getHeight());
-                    if(e instanceof Player)
-                    {
-                        if(((Player) e).getPressedJump()) {((Player) e).Jump();}
-                        if(((Player) e).getPressedLeft()) {((Player) e).moveLeft();}
-                        if(((Player) e).getPressedRight()) {((Player) e).moveRight();}
-                    }
-                }
-            }
-        }.start();
-        game.getStage().show();
+        Game game = new Game("Test",600,600,true);
+        game.start();
     }
 }
