@@ -1,7 +1,6 @@
 package Fakehalla;
 
 import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
 
 import static java.lang.Math.sqrt;
 

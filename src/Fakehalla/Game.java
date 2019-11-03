@@ -3,7 +3,6 @@ package Fakehalla;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -83,7 +82,7 @@ public class Game  {
                 }
                 for (Updatable u : objects)
                 {
-                    u.update(scene.getWidth(),scene.getHeight());
+                    u.update(dt,scene.getWidth(),scene.getHeight());
                 }
 
             }
@@ -113,6 +112,10 @@ public class Game  {
             {
                 if(key.getCode() == newPlayer.getMoveRightKey()) { newPlayer.setMoveR(false);}
                 if(key.getCode() == newPlayer.getMoveLeftKey()) { newPlayer.setMoveL(false);}
+            });
+            scene.addEventHandler(KeyEvent.KEY_PRESSED,(key)->
+            {
+                if(key.getCode() == newPlayer.getMoveJumpKey()) { newPlayer.moveJump(scene.getHeight()); }
             });
 
             group.getChildren().add(newPlayer.getBody());
