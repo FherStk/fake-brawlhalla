@@ -96,6 +96,7 @@ public class Launcher {
         });
 
         for (Button i : buttons) {
+            i.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
             Rectangle but = new Rectangle();
             but.setWidth(500);
             but.setHeight(80);
