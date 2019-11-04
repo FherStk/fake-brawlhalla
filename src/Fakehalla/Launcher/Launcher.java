@@ -27,6 +27,9 @@ import java.util.Stack;
 public class Launcher {
     private Stage stage;
     private Scene defaultScene;
+    private Scene settings;
+    private Scene scoreboard;
+    private Scene credits;
     private int gameHeight = 1080;
     private int gameWidth = 1920;
     private boolean gameFullscreen = true;
@@ -34,7 +37,36 @@ public class Launcher {
     public Launcher(Stage primaryStage) throws FileNotFoundException {
         stage = primaryStage;
         stage.setTitle("Fakehalla Launcher");
+        defaultScene = generateLauncherScene();
+        settings = generateSettingsScene();
+        //defaultScene.setOnMouseExited(event -> System.out.println("pa"));
+        stage.setScene(defaultScene);
+    }
 
+
+    public void run() {
+        stage.show();
+    }
+
+
+    private void runGame() {
+        Game game = new Game("Fakehalla", gameWidth, gameHeight, gameFullscreen);
+        game.start();
+    }
+
+    private void runSettings() {
+        stage.setScene(settings);
+    }
+
+    private void runCredits() {
+        //stage.setScene(credits);
+    }
+
+    private void runScoreboard() {
+        //stage.setScene(scoreboard);
+    }
+
+    private Scene generateLauncherScene() throws FileNotFoundException {
         Button[] buttons = new Button[5];
 
 
@@ -96,23 +128,10 @@ public class Launcher {
         borderpane.setAlignment(authors, Pos.BOTTOM_RIGHT);
 
         borderpane.setStyle("-fx-background-color: #444444;");
-        defaultScene = new Scene(borderpane, 800, 600);
-        //defaultScene.setOnMouseExited(event -> System.out.println("pa"));
-        stage.setScene(defaultScene);
+        return (new Scene(borderpane, 800, 600));
     }
 
-
-    public void run() {
-        stage.show();
-    }
-
-
-    private void runGame() {
-        Game game = new Game("Fakehalla", gameWidth, gameHeight, gameFullscreen);
-        game.start();
-    }
-
-    private void runSettings() {
+    private Scene generateSettingsScene(){
         Text[] texts = new Text[3];
         texts[0] = new Text("Width: ");
         texts[1] = new Text("Height: ");
@@ -132,6 +151,11 @@ public class Launcher {
                 this.gameWidth = Integer.parseInt(textFields[0].getText());
                 this.gameHeight = Integer.parseInt(textFields[1].getText());
                 this.gameFullscreen = checkboxFullscreen.isSelected();
+            }
+            else{
+                textFields[0].setText(Integer.toString(this.gameWidth));
+                textFields[1].setText(Integer.toString(this.gameHeight));
+                checkboxFullscreen.setSelected(gameFullscreen);
             }
             stage.setScene(defaultScene);
         });
@@ -160,14 +184,10 @@ public class Launcher {
         gridPane.add(texts[2], 0, 2);
         gridPane.add(checkboxFullscreen, 1, 2);
 
-        stage.setScene(new Scene(gridPane, 800,600));
+        return(new Scene(gridPane, 800,600));
     }
 
-    private void runCredits() {
-        //TODO
-    }
+    //private Scene generateCreditsScene(){} TODO
 
-    private void runScoreboard() {
-        //TODO - make score
-    }
+    //private Scene generateScoreboardScene(){} TODO
 }
