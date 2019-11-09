@@ -173,7 +173,7 @@ public class Player implements Updatable {
         for(Rectangle r : gameObj)
         {
             if(! (bodyPosition.getY() + body.getHeight() <= r.getY() || bodyPosition.getY() >= r.getY() + r.getHeight())
-                    && bodyPosition.getX()   <= r.getX() + r.getWidth() && bodyPosition.getX() >= r.getX() )
+                    && bodyPosition.getX()   <= r.getX() + r.getWidth() && bodyPosition.getX() >= r.getX() && velocity.getEnd().getY() >= 0 )
             {
                 return false;
             }
@@ -186,7 +186,7 @@ public class Player implements Updatable {
         for(Rectangle r : gameObj)
         {
             if(! (bodyPosition.getY() + body.getHeight() <= r.getY() || bodyPosition.getY() >= r.getY() + r.getHeight())
-                    && bodyPosition.getX() + body.getWidth() >= r.getX() && bodyPosition.getX() <= r.getX() + r.getWidth())
+                    && bodyPosition.getX() + body.getWidth() >= r.getX() && bodyPosition.getX() <= r.getX() + r.getWidth() && velocity.getEnd().getY() >= 0)
             {
                 return false;
             }
