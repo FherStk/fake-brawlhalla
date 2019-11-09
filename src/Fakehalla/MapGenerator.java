@@ -43,13 +43,6 @@ public class MapGenerator {
             newRec.setFill(Color.BLACK);
 
             blocks.add(newRec);
-
-            /*
-            System.out.println("Width: " + blockWidth);
-            System.out.println("Height: " + blockHeight);
-            System.out.println("xCor: " + xcor);
-            System.out.println("yCor: " + ycor);
-            */
         }
         return blocks;
     }

@@ -139,7 +139,7 @@ public class Player implements Updatable {
         {
             // todo
             if(bodyPosition.getY() + body.getHeight() + stepY >= e.getY() && bodyPosition.getX() + body.getWidth()  > e.getX() && bodyPosition.getX()  < e.getX() + e.getWidth()
-                && bodyPosition.getY() <= e.getY() + e.getHeight())
+                && bodyPosition.getY() <= e.getY() + e.getHeight() && velocity.getEnd().getY() >= 0)
             {
                 return true;
             }
@@ -193,7 +193,5 @@ public class Player implements Updatable {
         }
         return true;
     }
-
-
 
 }
