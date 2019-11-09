@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class Game  {
     private double width;
     private double height;
     private ArrayList<Updatable> objects;
+    private ArrayList<Rectangle> blocks;
 
     private double startTime;
     private double currentTime;
@@ -36,7 +38,8 @@ public class Game  {
         currentTime = 0;
 
         objects = new ArrayList<Updatable>();
-        setScene();
+        createMap();
+        createScene();
         stage.setScene(scene);
         stage.setTitle(title);
 
@@ -48,9 +51,6 @@ public class Game  {
         else{
             stage.setFullScreen(true);
         }
-
-
-        scene.setFill(Color.LIGHTGRAY);
     }
 
     public Game(Stage stage) // ready constructor (i hope)
@@ -60,7 +60,8 @@ public class Game  {
         startTime = System.nanoTime();
         currentTime = 0;
         objects = new ArrayList<Updatable>();
-        setScene();
+        createMap();
+        createScene();
         stage.setScene(scene);
         scene.setFill(Color.LIGHTGRAY);
     }
@@ -95,31 +96,39 @@ public class Game  {
     public void startLoop() {loop.start();}
     public void stopLoop() { loop.stop();}
 
-    private void setScene()
+    private void createScene()
     {
         scene = new Scene(group);
+        scene.setFill(Color.LIGHTGRAY);
         for(int i = 0; i < numberOfPlayers; i++) // adding players
         {
-            Player newPlayer = new Player(Color.BLACK,this.width,this.height,this.width / 2 + 100*i, this.height / 2);
+            Player newPlayer = new Player(Color.BLACK,this.width,this.height,this.width / 2 + 100*i, this.height / 2 -100,this.blocks);
             objects.add(newPlayer);
 
             scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) ->
             {
                 if(key.getCode() == newPlayer.getMoveRightKey()) { newPlayer.setMoveR(true);}
                 if(key.getCode() == newPlayer.getMoveLeftKey()) { newPlayer.setMoveL(true);}
+                if(key.getCode() == newPlayer.getMoveJumpKey()) { newPlayer.moveJump(scene.getHeight()); }
             });
             scene.addEventHandler(KeyEvent.KEY_RELEASED, (key)->
             {
                 if(key.getCode() == newPlayer.getMoveRightKey()) { newPlayer.setMoveR(false);}
                 if(key.getCode() == newPlayer.getMoveLeftKey()) { newPlayer.setMoveL(false);}
             });
-            scene.addEventHandler(KeyEvent.KEY_PRESSED,(key)->
-            {
-                if(key.getCode() == newPlayer.getMoveJumpKey()) { newPlayer.moveJump(scene.getHeight()); }
-            });
 
             group.getChildren().add(newPlayer.getBody());
         }
-        scene.setFill(Color.LIGHTGRAY);
+    }
+
+    private void createMap()
+    {
+        MapGenerator mGen = new MapGenerator(this.width,this.height);
+        blocks = mGen.generateBlocks(1);
+        for(Rectangle r : blocks)
+        {
+            System.out.println("x: " + r.getX() + " y: " + r.getY());
+            group.getChildren().add(r);
+        }
     }
 }
