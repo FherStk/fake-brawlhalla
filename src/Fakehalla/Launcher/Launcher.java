@@ -30,6 +30,7 @@ public class Launcher {
     private Scene settings;
     private Scene scoreboard;
     private Scene credits;
+    //private Settings set;
     private int gameHeight = 1080;
     private int gameWidth = 1920;
     private boolean gameFullscreen = true;
@@ -133,12 +134,19 @@ public class Launcher {
     }
 
     private Scene generateSettingsScene(){
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setCenter(generateMainSettings());
+        return(new Scene(borderPane, 800,600));
+    }
+
+    private GridPane generateMainSettings(){
         Text[] texts = new Text[3];
         texts[0] = new Text("Width: ");
         texts[1] = new Text("Height: ");
         texts[2] = new Text("Fullscreen: ");
 
-        TextField[] textFields = new TextField[3];
+        TextField[] textFields = new TextField[2];
         textFields[0] = new TextField(Integer.toString(this.gameWidth));
         textFields[1] = new TextField(Integer.toString(this.gameHeight));
 
@@ -161,7 +169,10 @@ public class Launcher {
             stage.setScene(defaultScene);
         });
 
+        buttons[0].setStyle("-fx-font-size: 2em;");
+
         buttons[1] = new Button("Close");
+        buttons[1].setStyle("-fx-font-size: 2em;");
         buttons[1].setOnAction(e-> stage.setScene(defaultScene));
 
         GridPane gridPane = new GridPane();
@@ -174,7 +185,6 @@ public class Launcher {
             texts[i].setStyle("-fx-font-size: 2em;");
             textFields[i].setStyle("-fx-font-size: 2em;");
             textFields[i].setMaxWidth(100);
-            buttons[i].setStyle("-fx-font-size: 2em;");
             gridPane.add(texts[i],0,i);
             gridPane.add(textFields[i], 1, i);
             gridPane.add(buttons[i], i,3);
@@ -184,9 +194,24 @@ public class Launcher {
         checkboxFullscreen.setStyle("-fx-font-size: 2em;");
         gridPane.add(texts[2], 0, 2);
         gridPane.add(checkboxFullscreen, 1, 2);
-
-        return(new Scene(gridPane, 800,600));
+        return gridPane;
     }
+
+    /*private GridPane generateControlsSettings(int player){ //TODO read from file
+        Text[] texts = new Text[4];
+        texts[0] = new Text("Player " + player + " up:");
+        texts[1] = new Text("Player " + player + " down:");
+        texts[2] = new Text("Player " + player + " left:");
+        texts[3] = new Text("Player " + player + " right:");
+
+        TextField[] textFields = new TextField[4];
+        textFields[0] = new TextField(Integer.toString(this.gameWidth));
+        textFields[1] = new TextField(Integer.toString(this.gameHeight));
+        textFields[2] = new TextField(Integer.toString(this.gameWidth));
+        textFields[3] = new TextField(Integer.toString(this.gameHeight));
+
+
+    }*/
 
     //private Scene generateCreditsScene(){} TODO
 
