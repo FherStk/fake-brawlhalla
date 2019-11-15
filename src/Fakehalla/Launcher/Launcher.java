@@ -14,6 +14,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -135,31 +137,44 @@ public class Launcher {
         SettingsLoader settingsLoader = new SettingsLoader();
 
         Settings settings = settingsLoader.loadSettings("settings.txt");
-
+        /*Settings settings = new Settings();
+        settings.setResolution(1920,1080,true);
+        settings.setPlayer1Controls(KeyCode.SPACE, KeyCode.A, KeyCode.E, KeyCode.D);
+        settings.setPlayer2Controls(KeyCode.SPACE, KeyCode.A, KeyCode.E, KeyCode.D);*/
 
         Text[] player1Texts = new Text[4];
-        player1Texts[0] = new Text("Player 1 UP:");
+        player1Texts[0] = new Text("Player 1 JUMP:");
         player1Texts[1] = new Text("Player 1 LEFT:");
-        player1Texts[2] = new Text("Player 1 DOWN:");
-        player1Texts[3] = new Text("Player 1 RIGHT:");
+        player1Texts[3] = new Text("Player 1 SHOOT:");
+        player1Texts[2] = new Text("Player 1 RIGHT:");
 
-        TextField[] player1TextFields = new TextField[4];
-        player1TextFields[0] = new TextField(String.valueOf(settings.getPlayer1Up()));
-        player1TextFields[1] = new TextField(String.valueOf(settings.getPlayer1Left()));
-        player1TextFields[2] = new TextField(String.valueOf(settings.getPlayer1Down()));
-        player1TextFields[3] = new TextField(String.valueOf(settings.getPlayer1Right()));
+        Button[] player1Buttons = new Button[4];
+        player1Buttons[0] = new Button(settings.getPlayer1Jump().toString());
+        player1Buttons[1] = new Button(settings.getPlayer1Left().toString());
+        player1Buttons[3] = new Button(settings.getPlayer1Shoot().toString());
+        player1Buttons[2] = new Button(settings.getPlayer1Right().toString());
+
+        player1Buttons[0].setOnAction(e-> settingsScene.setOnKeyPressed(ek -> {settings.setPlayer1Jump(ek.getCode()); player1Buttons[0].setText(settings.getPlayer1Jump().toString());}));
+        player1Buttons[1].setOnAction(e-> settingsScene.setOnKeyPressed(ek -> {settings.setPlayer1Left(ek.getCode()); player1Buttons[1].setText(settings.getPlayer1Left().toString());}));
+        player1Buttons[3].setOnAction(e-> settingsScene.setOnKeyPressed(ek -> {settings.setPlayer1Shoot(ek.getCode()); player1Buttons[3].setText(settings.getPlayer1Shoot().toString());}));
+        player1Buttons[2].setOnAction(e-> settingsScene.setOnKeyPressed(ek -> {settings.setPlayer1Right(ek.getCode()); player1Buttons[2].setText(settings.getPlayer1Right().toString());}));
 
         Text[] player2Texts = new Text[4];
-        player2Texts[0] = new Text("Player 2 UP:");
+        player2Texts[0] = new Text("Player 2 JUMP:");
         player2Texts[1] = new Text("Player 2 LEFT:");
-        player2Texts[2] = new Text("Player 2 DOWN:");
-        player2Texts[3] = new Text("Player 2 RIGHT:");
+        player2Texts[3] = new Text("Player 2 SHOOT:");
+        player2Texts[2] = new Text("Player 2 RIGHT:");
 
-        TextField[] player2TextFields = new TextField[4];
-        player2TextFields[0] = new TextField(String.valueOf(settings.getPlayer2Up()));
-        player2TextFields[1] = new TextField(String.valueOf(settings.getPlayer2Left()));
-        player2TextFields[2] = new TextField(String.valueOf(settings.getPlayer2Down()));
-        player2TextFields[3] = new TextField(String.valueOf(settings.getPlayer2Right()));
+        Button[] player2Buttons = new Button[4];
+        player2Buttons[0] = new Button(settings.getPlayer2Jump().toString());
+        player2Buttons[1] = new Button(settings.getPlayer2Left().toString());
+        player2Buttons[3] = new Button(settings.getPlayer2Shoot().toString());
+        player2Buttons[2] = new Button(settings.getPlayer2Right().toString());
+
+        player2Buttons[0].setOnAction(e-> settingsScene.setOnKeyPressed(ek -> {settings.setPlayer2Jump(ek.getCode()); player2Buttons[0].setText(settings.getPlayer2Jump().toString());}));
+        player2Buttons[1].setOnAction(e-> settingsScene.setOnKeyPressed(ek -> {settings.setPlayer2Left(ek.getCode()); player2Buttons[1].setText(settings.getPlayer2Left().toString());}));
+        player2Buttons[3].setOnAction(e-> settingsScene.setOnKeyPressed(ek -> {settings.setPlayer2Shoot(ek.getCode()); player2Buttons[3].setText(settings.getPlayer2Shoot().toString());}));
+        player2Buttons[2].setOnAction(e-> settingsScene.setOnKeyPressed(ek -> {settings.setPlayer2Right(ek.getCode()); player2Buttons[2].setText(settings.getPlayer2Right().toString());}));
 
         Text[] texts = new Text[3];
         texts[0] = new Text("Width: ");
@@ -176,11 +191,8 @@ public class Launcher {
         Button[] buttons = new Button[2];
         buttons[0] = new Button("Save");
         buttons[0].setOnAction(e -> {
-            if (textFields[0].getText().matches("[0-9]*") && textFields[1].getText().matches("[0-9]*") &&
-                    validateControlSettings(player1TextFields) && validateControlSettings(player2TextFields)) {
+            if (textFields[0].getText().matches("[0-9]*") && textFields[1].getText().matches("[0-9]*")) {
                 settings.setResolution(Integer.parseInt(textFields[0].getText()),Integer.parseInt(textFields[1].getText()),checkboxFullscreen.isSelected());
-                settings.setPlayer1Controls(player1TextFields[0].getText().charAt(0),player1TextFields[1].getText().charAt(0),player1TextFields[2].getText().charAt(0),player1TextFields[3].getText().charAt(0));
-                settings.setPlayer2Controls(player2TextFields[0].getText().charAt(0),player2TextFields[1].getText().charAt(0),player2TextFields[2].getText().charAt(0),player2TextFields[3].getText().charAt(0));
                 SettingsSaver settingsSaver = new SettingsSaver();
                 try {
                     settingsSaver.saveSettings("settings.txt", settings);
@@ -192,22 +204,14 @@ public class Launcher {
                 textFields[0].setText(Integer.toString(settings.getWidth()));
                 textFields[1].setText(Integer.toString(settings.getHeight()));
                 checkboxFullscreen.setSelected(settings.isFullscreen());
-                player1TextFields[0].setText(String.valueOf(settings.getPlayer1Up()));
-                player1TextFields[1].setText(String.valueOf(settings.getPlayer1Left()));
-                player1TextFields[2].setText(String.valueOf(settings.getPlayer1Down()));
-                player1TextFields[3].setText(String.valueOf(settings.getPlayer1Right()));
-                player2TextFields[0].setText(String.valueOf(settings.getPlayer2Up()));
-                player2TextFields[1].setText(String.valueOf(settings.getPlayer2Left()));
-                player2TextFields[2].setText(String.valueOf(settings.getPlayer2Down()));
-                player2TextFields[3].setText(String.valueOf(settings.getPlayer2Right()));
             }
             stage.setScene(defaultScene);
         });
 
-        buttons[0].setStyle("-fx-font-size: 2em;");
+        buttons[0].setStyle("-fx-font-size: 1.5em;");
 
         buttons[1] = new Button("Close");
-        buttons[1].setStyle("-fx-font-size: 2em;");
+        buttons[1].setStyle("-fx-font-size: 1.5em;");
         buttons[1].setOnAction(e-> stage.setScene(defaultScene));
 
         GridPane gridPane = new GridPane();
@@ -218,23 +222,25 @@ public class Launcher {
 
         for(int i = 0;i<4;i++){
             player1Texts[i].setStyle("-fx-font-size: 2em;");
-            player1TextFields[i].setStyle("-fx-font-size: 2em;");
-            player1TextFields[i].setMaxWidth(50);
+            player1Buttons[i].setStyle("-fx-font-size: 1.5em;");
+            player1Buttons[i].setMaxWidth(140);
+            player1Buttons[i].setMinWidth(140);
 
             player2Texts[i].setStyle("-fx-font-size: 2em;");
-            player2TextFields[i].setStyle("-fx-font-size: 2em;");
-            player2TextFields[i].setMaxWidth(50);
+            player2Buttons[i].setStyle("-fx-font-size: 1.5em;");
+            player2Buttons[i].setMaxWidth(140);
+            player2Buttons[i].setMinWidth(140);
 
             gridPane.add(player1Texts[i], 2, i);
-            gridPane.add(player1TextFields[i], 3, i);
+            gridPane.add(player1Buttons[i], 3, i);
 
-            gridPane.add(player2Texts[i], 4, i);
-            gridPane.add(player2TextFields[i], 5, i);
+            gridPane.add(player2Texts[i], 2, i+4);
+            gridPane.add(player2Buttons[i], 3, i+4);
         }
 
         for (int i = 0; i < 2; i++) {
             texts[i].setStyle("-fx-font-size: 2em;");
-            textFields[i].setStyle("-fx-font-size: 2em;");
+            textFields[i].setStyle("-fx-font-size: 1.5em;");
             textFields[i].setMaxWidth(100);
             gridPane.add(texts[i],0,i);
             gridPane.add(textFields[i], 1, i);
@@ -248,15 +254,6 @@ public class Launcher {
 
         return(new Scene(gridPane, 800,600));
 
-    }
-
-    private boolean validateControlSettings(TextField[] Controls)
-    {
-        for (TextField i: Controls) {
-            if (i.getLength()!=1)
-                return false;
-        }
-        return true;
     }
 
     //private Scene generateCreditsScene(){} TODO
