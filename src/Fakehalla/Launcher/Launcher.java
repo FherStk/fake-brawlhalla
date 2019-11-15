@@ -14,8 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -237,7 +235,9 @@ public class Launcher {
             gridPane.add(player2Texts[i], 2, i+4);
             gridPane.add(player2Buttons[i], 3, i+4);
         }
-
+        Label label = new Label("Press the button and press key");
+        label.setStyle("-fx-font-size: 0.8em;");
+        gridPane.add(label, 3,8);
         for (int i = 0; i < 2; i++) {
             texts[i].setStyle("-fx-font-size: 2em;");
             textFields[i].setStyle("-fx-font-size: 1.5em;");

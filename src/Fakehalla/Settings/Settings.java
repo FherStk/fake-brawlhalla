@@ -91,4 +91,18 @@ public class Settings implements Serializable {
     public KeyCode getPlayer2Right() {
         return player2Right;
     }
+
+    public void setPlayer1Controls(KeyCode jump, KeyCode left, KeyCode right, KeyCode shoot) {
+        this.player1Jump = jump;
+        this.player1Shoot = left;
+        this.player1Right = right;
+        this.player1Left = shoot;
+    }
+
+    public void setPlayer2Controls(KeyCode jump, KeyCode left, KeyCode right, KeyCode shoot) {
+        this.player2Jump = jump;
+        this.player2Shoot = left;
+        this.player2Right = right;
+        this.player2Left = shoot;
+    }
 }
