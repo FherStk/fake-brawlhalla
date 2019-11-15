@@ -16,10 +16,6 @@ public class Settings implements Serializable {
         this.fullscreen = fullscreen;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
     public void setPlayer1Jump(KeyCode player1Jump) {
         this.player1Jump = player1Jump;
     }
@@ -50,22 +46,6 @@ public class Settings implements Serializable {
 
     public void setPlayer2Right(KeyCode player2Right) {
         this.player2Right = player2Right;
-    }
-
-    public void setPlayer1Controls(KeyCode up, KeyCode left, KeyCode shoot, KeyCode right)
-    {
-        this.player1Jump = up;
-        this.player1Left = left;
-        this.player1Shoot = shoot;
-        this.player1Right = right;
-    }
-
-    public void setPlayer2Controls(KeyCode up, KeyCode left, KeyCode shoot, KeyCode right)
-    {
-        this.player2Jump = up;
-        this.player2Left = left;
-        this.player2Shoot = shoot;
-        this.player2Right = right;
     }
 
     public int getWidth() {
