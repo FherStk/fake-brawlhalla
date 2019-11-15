@@ -1,11 +1,12 @@
 package Fakehalla.Launcher;
 
 import Fakehalla.Game;
+import Fakehalla.Settings.Settings;
+import Fakehalla.Settings.SettingsLoader;
+import Fakehalla.Settings.SettingsSaver;
 import javafx.application.Platform;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -19,27 +20,24 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Stack;
+import java.io.*;
 
 public class Launcher {
     private Stage stage;
     private Scene defaultScene;
-    private Scene settings;
-    private Scene scoreboard;
-    private Scene credits;
+    private Scene settingsScene;
+    private Scene scoreboardScene;
+    private Scene creditsScene;
     //private Settings set;
     private int gameHeight = 1080;
     private int gameWidth = 1920;
     private boolean gameFullscreen = true;
 
-    public Launcher(Stage primaryStage) throws FileNotFoundException {
+    public Launcher(Stage primaryStage) throws IOException, ClassNotFoundException {
         stage = primaryStage;
         stage.setTitle("Fakehalla Launcher");
         defaultScene = generateLauncherScene();
-        settings = generateSettingsScene();
+        settingsScene = generateSettingsScene();
         //defaultScene.setOnMouseExited(event -> System.out.println("pa"));
         stage.setScene(defaultScene);
     }
@@ -56,7 +54,7 @@ public class Launcher {
     }
 
     private void runSettings() {
-        stage.setScene(settings);
+        stage.setScene(settingsScene);
     }
 
     private void runCredits() {
@@ -133,38 +131,75 @@ public class Launcher {
         return (new Scene(borderpane, 800, 600));
     }
 
-    private Scene generateSettingsScene(){
+    private Scene generateSettingsScene() throws IOException, ClassNotFoundException {
+        SettingsLoader settingsLoader = new SettingsLoader();
 
-        BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(generateMainSettings());
-        return(new Scene(borderPane, 800,600));
-    }
+        Settings settings = settingsLoader.loadSettings("settings.txt");
 
-    private GridPane generateMainSettings(){
+
+        Text[] player1Texts = new Text[4];
+        player1Texts[0] = new Text("Player 1 UP:");
+        player1Texts[1] = new Text("Player 1 LEFT:");
+        player1Texts[2] = new Text("Player 1 DOWN:");
+        player1Texts[3] = new Text("Player 1 RIGHT:");
+
+        TextField[] player1TextFields = new TextField[4];
+        player1TextFields[0] = new TextField(String.valueOf(settings.getPlayer1Up()));
+        player1TextFields[1] = new TextField(String.valueOf(settings.getPlayer1Left()));
+        player1TextFields[2] = new TextField(String.valueOf(settings.getPlayer1Down()));
+        player1TextFields[3] = new TextField(String.valueOf(settings.getPlayer1Right()));
+
+        Text[] player2Texts = new Text[4];
+        player2Texts[0] = new Text("Player 2 UP:");
+        player2Texts[1] = new Text("Player 2 LEFT:");
+        player2Texts[2] = new Text("Player 2 DOWN:");
+        player2Texts[3] = new Text("Player 2 RIGHT:");
+
+        TextField[] player2TextFields = new TextField[4];
+        player2TextFields[0] = new TextField(String.valueOf(settings.getPlayer2Up()));
+        player2TextFields[1] = new TextField(String.valueOf(settings.getPlayer2Left()));
+        player2TextFields[2] = new TextField(String.valueOf(settings.getPlayer2Down()));
+        player2TextFields[3] = new TextField(String.valueOf(settings.getPlayer2Right()));
+
         Text[] texts = new Text[3];
         texts[0] = new Text("Width: ");
         texts[1] = new Text("Height: ");
         texts[2] = new Text("Fullscreen: ");
 
         TextField[] textFields = new TextField[2];
-        textFields[0] = new TextField(Integer.toString(this.gameWidth));
-        textFields[1] = new TextField(Integer.toString(this.gameHeight));
+        textFields[0] = new TextField(Integer.toString(settings.getWidth()));
+        textFields[1] = new TextField(Integer.toString(settings.getHeight()));
 
         CheckBox checkboxFullscreen = new CheckBox();
-        checkboxFullscreen.setSelected(gameFullscreen);
+        checkboxFullscreen.setSelected(settings.isFullscreen());
 
         Button[] buttons = new Button[2];
         buttons[0] = new Button("Save");
         buttons[0].setOnAction(e -> {
-            if (textFields[0].getText().matches("[0-9]*") && textFields[1].getText().matches("[0-9]*")) {
-                this.gameWidth = Integer.parseInt(textFields[0].getText());
-                this.gameHeight = Integer.parseInt(textFields[1].getText());
-                this.gameFullscreen = checkboxFullscreen.isSelected();
+            if (textFields[0].getText().matches("[0-9]*") && textFields[1].getText().matches("[0-9]*") &&
+                    validateControlSettings(player1TextFields) && validateControlSettings(player2TextFields)) {
+                settings.setResolution(Integer.parseInt(textFields[0].getText()),Integer.parseInt(textFields[1].getText()),checkboxFullscreen.isSelected());
+                settings.setPlayer1Controls(player1TextFields[0].getText().charAt(0),player1TextFields[1].getText().charAt(0),player1TextFields[2].getText().charAt(0),player1TextFields[3].getText().charAt(0));
+                settings.setPlayer2Controls(player2TextFields[0].getText().charAt(0),player2TextFields[1].getText().charAt(0),player2TextFields[2].getText().charAt(0),player2TextFields[3].getText().charAt(0));
+                SettingsSaver settingsSaver = new SettingsSaver();
+                try {
+                    settingsSaver.saveSettings("settings.txt", settings);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
             else{
-                textFields[0].setText(Integer.toString(this.gameWidth));
-                textFields[1].setText(Integer.toString(this.gameHeight));
-                checkboxFullscreen.setSelected(gameFullscreen);
+                textFields[0].setText(Integer.toString(settings.getWidth()));
+                textFields[1].setText(Integer.toString(settings.getHeight()));
+                checkboxFullscreen.setSelected(settings.isFullscreen());
+                player1TextFields[0].setText(String.valueOf(settings.getPlayer1Up()));
+                player1TextFields[1].setText(String.valueOf(settings.getPlayer1Left()));
+                player1TextFields[2].setText(String.valueOf(settings.getPlayer1Down()));
+                player1TextFields[3].setText(String.valueOf(settings.getPlayer1Right()));
+                player2TextFields[0].setText(String.valueOf(settings.getPlayer2Up()));
+                player2TextFields[1].setText(String.valueOf(settings.getPlayer2Left()));
+                player2TextFields[2].setText(String.valueOf(settings.getPlayer2Down()));
+                player2TextFields[3].setText(String.valueOf(settings.getPlayer2Right()));
             }
             stage.setScene(defaultScene);
         });
@@ -177,9 +212,25 @@ public class Launcher {
 
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10, 10, 10, 10));
-        gridPane.setVgap(5);
-        gridPane.setHgap(5);
+        gridPane.setVgap(10);
+        gridPane.setHgap(10);
         gridPane.setAlignment(Pos.CENTER);
+
+        for(int i = 0;i<4;i++){
+            player1Texts[i].setStyle("-fx-font-size: 2em;");
+            player1TextFields[i].setStyle("-fx-font-size: 2em;");
+            player1TextFields[i].setMaxWidth(50);
+
+            player2Texts[i].setStyle("-fx-font-size: 2em;");
+            player2TextFields[i].setStyle("-fx-font-size: 2em;");
+            player2TextFields[i].setMaxWidth(50);
+
+            gridPane.add(player1Texts[i], 2, i);
+            gridPane.add(player1TextFields[i], 3, i);
+
+            gridPane.add(player2Texts[i], 4, i);
+            gridPane.add(player2TextFields[i], 5, i);
+        }
 
         for (int i = 0; i < 2; i++) {
             texts[i].setStyle("-fx-font-size: 2em;");
@@ -194,24 +245,19 @@ public class Launcher {
         checkboxFullscreen.setStyle("-fx-font-size: 2em;");
         gridPane.add(texts[2], 0, 2);
         gridPane.add(checkboxFullscreen, 1, 2);
-        return gridPane;
+
+        return(new Scene(gridPane, 800,600));
+
     }
 
-    /*private GridPane generateControlsSettings(int player){ //TODO read from file
-        Text[] texts = new Text[4];
-        texts[0] = new Text("Player " + player + " up:");
-        texts[1] = new Text("Player " + player + " down:");
-        texts[2] = new Text("Player " + player + " left:");
-        texts[3] = new Text("Player " + player + " right:");
-
-        TextField[] textFields = new TextField[4];
-        textFields[0] = new TextField(Integer.toString(this.gameWidth));
-        textFields[1] = new TextField(Integer.toString(this.gameHeight));
-        textFields[2] = new TextField(Integer.toString(this.gameWidth));
-        textFields[3] = new TextField(Integer.toString(this.gameHeight));
-
-
-    }*/
+    private boolean validateControlSettings(TextField[] Controls)
+    {
+        for (TextField i: Controls) {
+            if (i.getLength()!=1)
+                return false;
+        }
+        return true;
+    }
 
     //private Scene generateCreditsScene(){} TODO
 
