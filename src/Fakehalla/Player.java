@@ -17,6 +17,7 @@ public class Player implements Updatable {
     private boolean moveR;
     private boolean moveL;
     private boolean moveS;
+    private boolean shotsFired;
     private int numberOfJumps;
     private int currentJump;
 
@@ -28,7 +29,7 @@ public class Player implements Updatable {
     private  final double playerWidth;
     private  final double playerHeight;
     private  final double speedX = 5;
-    private  final double jumpStrength = 10;
+    private  final double jumpStrength = 12;
 
 
     public Player(Color p, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, ArrayList<Rectangle> gameObj,Face face)
@@ -51,7 +52,7 @@ public class Player implements Updatable {
         numberOfJumps = 2;
         currentJump = 0;
         this.face = face;
-        moveL = moveR = moveS = false;
+        moveL = moveR = moveS = shotsFired =  false;
 
         velocity = new Vector2D(new Point2D(0,1)); // direction of the gravity.. straight down (0,1) vector
     }
@@ -78,27 +79,45 @@ public class Player implements Updatable {
         currentJump = 0;
         this.face = face;
 
-        moveL = moveR = moveS = false;
+        moveL = moveR = moveS = shotsFired = false;
 
         velocity = new Vector2D(new Point2D(0,1)); // direction of the gravity.. straight down (0,1) vector
     }
 
     @Override
-    public void update(double dt, double gameWidth, double gameHeight)
+    public void update(double dt, double gameWidth, double gameHeight,ArrayList<Updatable> objToInteract)
     {
+
+        for(Updatable u : objToInteract)
+        {
+            if(u instanceof Shot)
+            {
+                if(isHit((Shot)u) && ((Shot) u).isHit())
+                {
+                    velocity.add(((Shot) u).getVelocity());
+                    ((Shot) u).setHit(false);
+                    shotsFired = true;
+                }
+            }
+        }
+
         if(inBounds(gameWidth,gameHeight,velocity.getEnd().getX(),velocity.getEnd().getY()) && !isOnBlock(velocity.getDirection().getX(),velocity.getDirection().getY()))
         {
             body.setStroke(Color.GREEN);
             setPos(bodyPosition.add(velocity.getDirection())); // moving the player in the direction of vector velocity
-            velocity.setEnd(velocity.getDirection().add(new Point2D(0,gravity*dt))); // adding gravity to velocity
+            velocity.add(gravity); // adding gravity to velocity
+            velocity.multiply(dt);
         }
         else
         {
             body.setStroke(Color.BLUE);
             currentJump = 0;
-            velocity.setEnd(new Point2D(0,1));
+            if(shotsFired)
+            {
+                setPos(bodyPosition.add(velocity.getDirection().getX(),0));
+                shotsFired = false;
+            }
         }
-
 
         if(moveL) { moveLeft(gameWidth);}
         else if(moveR) {moveRight(gameWidth);}
@@ -109,8 +128,7 @@ public class Player implements Updatable {
     @Override
     public boolean inBounds(double widthLimit, double heightLimit,double stepX, double stepY) // checking if the player is off the screen
     {
-        return (bodyPosition.getX() - stepX >= 0  && (bodyPosition.getX() + body.getWidth() + stepX) <= widthLimit
-                && (bodyPosition.getY() + body.getHeight() + stepY) <= heightLimit); // checking one step ahead (stepx and stepy)
+        return ((bodyPosition.getY() + body.getHeight() + stepY) <= heightLimit); // checking one step ahead (stepx and stepy)
     }
 
     public Rectangle getBody() { return this.body;}
@@ -169,7 +187,7 @@ public class Player implements Updatable {
 
     public Shot moveShot(double gameWidth)
     {
-        return new Shot(this.body.getX(), this.body.getY() + body.getHeight() / 2, this.getFace());
+        return new Shot(this.body.getX(), this.body.getY() + body.getHeight() / 2,body.getWidth(), this.getFace());
     }
 
     public void moveJump(double gameHeight)
@@ -209,6 +227,20 @@ public class Player implements Updatable {
             }
         }
         return true;
+    }
+
+    private boolean isHit(Shot shot)
+    {
+        if(body.contains(new Point2D(shot.getPos().getX() + shot.getBody().getWidth() / 2, shot.getPos().getY())))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private void keepOnTheMap(double gameWidth, double gameHeight)
+    {
+
     }
 
 }

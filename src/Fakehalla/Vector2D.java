@@ -36,6 +36,19 @@ public class Vector2D {
 
     public void setEnd(Point2D p) {this.end = p;}
 
+    public void add(Vector2D vec)
+    {
+        setStart(this.start.add(vec.getStart()));
+        setEnd(this.end.add(vec.getEnd()));
+    }
+
+    public void multiply(double m)
+    {
+        this.start.multiply(m);
+        this.end.multiply(m);
+    }
+
+
     /* dev func ... delete later*/
     public void print()
     {

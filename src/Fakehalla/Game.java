@@ -17,7 +17,7 @@ public class Game  {
     private Group group;
     private Scene scene;
     private AnimationTimer loop;
-    private final int numberOfPlayers = 1;
+    private final int numberOfPlayers = 2;
 
     private double width;
     private double height;
@@ -83,7 +83,7 @@ public class Game  {
                 ArrayList<Updatable> objectsToRemove = new ArrayList<>();
                 for (Updatable u : objects)
                 {
-                    u.update(dt,scene.getWidth(),scene.getHeight());
+                    u.update(dt,scene.getWidth(),scene.getHeight(),objects);
                     if(!u.inBounds(scene.getWidth(),scene.getHeight(),0,0))
                     {
                         objectsToRemove.add(u);
@@ -119,7 +119,6 @@ public class Game  {
                         Shot temp = newPlayer.moveShot(this.width);
                         this.objects.add(temp);
                         group.getChildren().add(temp.getBody());
-                        System.out.println(this.objects.size());
                     }
                 }
                 if(key.getCode() == newPlayer.getMoveJumpKey()) { newPlayer.moveJump(scene.getHeight()); }
