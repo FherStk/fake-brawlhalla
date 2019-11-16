@@ -12,15 +12,18 @@ public class Player implements Updatable {
     private Point2D bodyPosition;
     private Vector2D velocity;
     private ArrayList<Rectangle> gameObj;
+    private Face face;
 
     private boolean moveR;
     private boolean moveL;
+    private boolean moveS;
     private int numberOfJumps;
     private int currentJump;
 
     private KeyCode moveRightKey;
     private KeyCode moveLeftKey;
     private KeyCode moveJumpKey;
+    private KeyCode moveShotKey;
 
     private  final double playerWidth;
     private  final double playerHeight;
@@ -28,7 +31,7 @@ public class Player implements Updatable {
     private  final double jumpStrength = 10;
 
 
-    public Player(Color p, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, ArrayList<Rectangle> gameObj)
+    public Player(Color p, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, ArrayList<Rectangle> gameObj,Face face)
     {
         this.gameObj = gameObj;
         playerWidth = gameWidth / 20;
@@ -44,15 +47,16 @@ public class Player implements Updatable {
         moveRightKey = KeyCode.D;
         moveLeftKey = KeyCode.A;
         moveJumpKey = KeyCode.SPACE;
+        moveShotKey = KeyCode.S;
         numberOfJumps = 2;
         currentJump = 0;
-
-        moveL = moveR = false;
+        this.face = face;
+        moveL = moveR = moveS = false;
 
         velocity = new Vector2D(new Point2D(0,1)); // direction of the gravity.. straight down (0,1) vector
     }
 
-    public Player(Color p,double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, KeyCode r, KeyCode l, KeyCode j, ArrayList<Rectangle> gameObj)
+    public Player(Color p,double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, KeyCode r, KeyCode l, KeyCode j,KeyCode s, ArrayList<Rectangle> gameObj,Face face)
     {
         this.gameObj = gameObj;
         playerWidth = gameWidth / 20;
@@ -69,22 +73,24 @@ public class Player implements Updatable {
         moveRightKey = r;
         moveLeftKey = l;
         moveJumpKey = j;
+        moveShotKey = s;
         numberOfJumps = 2;
         currentJump = 0;
+        this.face = face;
 
-        moveL = moveR  = false;
+        moveL = moveR = moveS = false;
 
         velocity = new Vector2D(new Point2D(0,1)); // direction of the gravity.. straight down (0,1) vector
     }
 
     @Override
-    public void update(double dt,double gameWidth, double gameHeight)
+    public void update(double dt, double gameWidth, double gameHeight)
     {
         if(inBounds(gameWidth,gameHeight,velocity.getEnd().getX(),velocity.getEnd().getY()) && !isOnBlock(velocity.getDirection().getX(),velocity.getDirection().getY()))
         {
             body.setStroke(Color.GREEN);
             setPos(bodyPosition.add(velocity.getDirection())); // moving the player in the direction of vector velocity
-            velocity.setEnd(velocity.getDirection().add(new Point2D(0,gravity))); // adding gravity to velocity
+            velocity.setEnd(velocity.getDirection().add(new Point2D(0,gravity*dt))); // adding gravity to velocity
         }
         else
         {
@@ -96,13 +102,7 @@ public class Player implements Updatable {
 
         if(moveL) { moveLeft(gameWidth);}
         else if(moveR) {moveRight(gameWidth);}
-
-        /*
-                        debug
-        System.out.println(gameWidth + " " + gameHeight);
-        System.out.println("actual x and y: " + body.getX() + " " + body.getY());
-        System.out.println("bodyposition: " + bodyPosition.getX() + " " + bodyPosition.getY());
-        */
+        if(moveS) {moveShot(gameWidth);}
 
     }
 
@@ -116,15 +116,20 @@ public class Player implements Updatable {
     public Rectangle getBody() { return this.body;}
 
     public KeyCode getMoveRightKey() { return this.moveRightKey; }
-    public KeyCode getMoveJumpKey() { return moveJumpKey; }
-    public KeyCode getMoveLeftKey() { return moveLeftKey; }
+    public KeyCode getMoveJumpKey() { return this.moveJumpKey; }
+    public KeyCode getMoveLeftKey() { return this.moveLeftKey; }
+    public KeyCode getMoveShotKey() { return moveShotKey; }
 
-    public void setMoveRightKey(KeyCode key) {moveRightKey = key; }
-    public void setMoveLeftKey(KeyCode key) {moveLeftKey = key; }
-    public void setMoveJumpKey(KeyCode key) {moveJumpKey = key; }
+    public Face getFace() { return this.face; }
+
+    public void setMoveRightKey(KeyCode key) { this.moveRightKey = key; }
+    public void setMoveLeftKey(KeyCode key) { this.moveLeftKey = key; }
+    public void setMoveJumpKey(KeyCode key) { this.moveJumpKey = key; }
+    public void setMoveShotKey(KeyCode moveShotKey) { this.moveShotKey = moveShotKey; }
 
     public void setMoveR(boolean b) { this.moveR = b; }
     public void setMoveL(boolean b) { this.moveL = b; }
+    public void setMoveS(boolean b) { this.moveS = b; }
 
     private void setPos(Point2D point)
     {
@@ -137,9 +142,8 @@ public class Player implements Updatable {
     {
         for(Rectangle e : gameObj)
         {
-            // todo
             if(bodyPosition.getY() + body.getHeight() + stepY >= e.getY() && bodyPosition.getX() + body.getWidth()  > e.getX() && bodyPosition.getX()  < e.getX() + e.getWidth()
-                && bodyPosition.getY() <= e.getY() + e.getHeight() && velocity.getEnd().getY() >= 0)
+                && bodyPosition.getY() <= e.getY()  && velocity.getEnd().getY() >= 0)
             {
                 return true;
             }
@@ -148,11 +152,24 @@ public class Player implements Updatable {
     }
 
     private void moveRight(double gameWidth) {
-        if(bodyPosition.getX() + body.getWidth() + speedX <= gameWidth && allowedMoveRight()) { setPos(bodyPosition.add(new Point2D(speedX,0))); }
+        if(bodyPosition.getX() + body.getWidth() + speedX <= gameWidth && allowedMoveRight())
+        {
+            setPos(bodyPosition.add(new Point2D(speedX,0)));
+            face = Face.RIGHT;
+        }
     }
 
     private void moveLeft(double gameWidth) {
-        if(bodyPosition.getX() - speedX >= 0 && allowedMoveLeft()) {  setPos(bodyPosition.subtract(new Point2D(speedX,0)));  }
+        if(bodyPosition.getX() - speedX >= 0 && allowedMoveLeft())
+        {
+            setPos(bodyPosition.subtract(new Point2D(speedX,0)));
+            face = Face.LEFT;
+        }
+    }
+
+    public Shot moveShot(double gameWidth)
+    {
+        return new Shot(this.body.getX(), this.body.getY() + body.getHeight() / 2, this.getFace());
     }
 
     public void moveJump(double gameHeight)

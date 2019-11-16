@@ -7,6 +7,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import org.w3c.dom.ls.LSOutput;
 
 import java.util.ArrayList;
 
@@ -23,7 +24,7 @@ public class Game  {
     private ArrayList<Updatable> objects;
     private ArrayList<Rectangle> blocks;
 
-    private double startTime;
+    private double prevTime;
     private double currentTime;
 
 
@@ -34,7 +35,6 @@ public class Game  {
         height = h;
         stage = new Stage();
         group = new Group();
-        startTime = System.nanoTime();
         currentTime = 0;
 
         objects = new ArrayList<Updatable>();
@@ -42,7 +42,7 @@ public class Game  {
         createScene();
         stage.setScene(scene);
         stage.setTitle(title);
-
+        currentTime = System.currentTimeMillis();
         if(!fullscreen)
         {
             stage.setWidth(w);
@@ -57,13 +57,13 @@ public class Game  {
     {
         this.stage = stage;
         group = new Group();
-        startTime = System.nanoTime();
         currentTime = 0;
         objects = new ArrayList<Updatable>();
         createMap();
         createScene();
         stage.setScene(scene);
         scene.setFill(Color.LIGHTGRAY);
+        currentTime = System.currentTimeMillis();
     }
 
     public Stage getStage() { return stage; }
@@ -75,22 +75,25 @@ public class Game  {
         loop = new AnimationTimer() { // the game loop is implemented by AnimationTimer (built in javafx)
             @Override
             public void handle(long l) { // i have no idea why there is an argument
-                currentTime = startTime;
-                startTime = System.nanoTime();
-                double dt = currentTime - startTime; // calculating dt (time that passed since the last loop)
-                if(dt > 0.15){ // checking if the time isnt too big
-                    dt = 0.15;
-                }
+
+                prevTime = currentTime;
+                currentTime = System.currentTimeMillis();
+                double dt = (currentTime - prevTime ) * 0.1;
+
+                ArrayList<Updatable> objectsToRemove = new ArrayList<>();
                 for (Updatable u : objects)
                 {
                     u.update(dt,scene.getWidth(),scene.getHeight());
+                    if(!u.inBounds(scene.getWidth(),scene.getHeight(),0,0))
+                    {
+                        objectsToRemove.add(u);
+                    }
                 }
-
+                objects.removeAll(objectsToRemove); //removing all shots out of bounds
             }
         };
         startLoop(); // starting the loop
         stage.show();
-        //System.out.println(stage.getHeight());
     }
 
     public void startLoop() {loop.start();}
@@ -102,13 +105,23 @@ public class Game  {
         scene.setFill(Color.LIGHTGRAY);
         for(int i = 0; i < numberOfPlayers; i++) // adding players
         {
-            Player newPlayer = new Player(Color.BLACK,this.width,this.height,this.width / 2 + 100*i, this.height / 2 -100,this.blocks);
+            Player newPlayer = new Player(Color.BLACK,this.width,this.height,this.width / 2 + 100*i, this.height / 2 -100,this.blocks,Face.LEFT);
             objects.add(newPlayer);
 
             scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) ->
             {
                 if(key.getCode() == newPlayer.getMoveRightKey()) { newPlayer.setMoveR(true);}
                 if(key.getCode() == newPlayer.getMoveLeftKey()) { newPlayer.setMoveL(true);}
+                if(key.getCode() == newPlayer.getMoveShotKey())
+                {
+                    if(newPlayer.moveShot(this.width) instanceof Shot)
+                    {
+                        Shot temp = newPlayer.moveShot(this.width);
+                        this.objects.add(temp);
+                        group.getChildren().add(temp.getBody());
+                        System.out.println(this.objects.size());
+                    }
+                }
                 if(key.getCode() == newPlayer.getMoveJumpKey()) { newPlayer.moveJump(scene.getHeight()); }
             });
             scene.addEventHandler(KeyEvent.KEY_RELEASED, (key)->
