@@ -18,6 +18,5 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException, ClassNotFoundException {
         Launcher launcher = new Launcher(primaryStage);
         launcher.run();
-
     }
 }

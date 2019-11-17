@@ -1,7 +1,6 @@
 package Fakehalla;
 
 import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
 
 import static java.lang.Math.sqrt;
 
@@ -36,6 +35,19 @@ public class Vector2D {
     public void setStart(Point2D p) {this.start = p;}
 
     public void setEnd(Point2D p) {this.end = p;}
+
+    public void add(Vector2D vec)
+    {
+        setStart(this.start.add(vec.getStart()));
+        setEnd(this.end.add(vec.getEnd()));
+    }
+
+    public void multiply(double m)
+    {
+        this.start.multiply(m);
+        this.end.multiply(m);
+    }
+
 
     /* dev func ... delete later*/
     public void print()
