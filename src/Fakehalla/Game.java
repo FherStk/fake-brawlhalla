@@ -83,7 +83,7 @@ public class Game  {
                 ArrayList<Updatable> objectsToRemove = new ArrayList<>();
                 for (Updatable u : objects)
                 {
-                    u.update(dt,scene.getWidth(),scene.getHeight(),objects);
+                    u.update(dt,scene.getWidth(),scene.getHeight(),objects,blocks);
                     if(!u.inBounds(scene.getWidth(),scene.getHeight(),0,0))
                     {
                         objectsToRemove.add(u);
@@ -105,7 +105,7 @@ public class Game  {
         scene.setFill(Color.LIGHTGRAY);
         for(int i = 0; i < numberOfPlayers; i++) // adding players
         {
-            Player newPlayer = new Player(Color.BLACK,this.width,this.height,this.width / 2 + 100*i, this.height / 2 -100,this.blocks,Face.LEFT);
+            Player newPlayer = new Player(Color.BLACK,this.width,this.height,this.width / 2 + 100*i, this.height / 2 -100,Face.LEFT);
             objects.add(newPlayer);
 
             scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) ->

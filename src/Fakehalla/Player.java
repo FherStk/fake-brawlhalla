@@ -11,7 +11,6 @@ public class Player implements Updatable {
     private Rectangle body;
     private Point2D bodyPosition;
     private Vector2D velocity;
-    private ArrayList<Rectangle> gameObj;
     private Face face;
 
     private boolean moveR;
@@ -32,9 +31,8 @@ public class Player implements Updatable {
     private  final double jumpStrength = 12;
 
 
-    public Player(Color p, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, ArrayList<Rectangle> gameObj,Face face)
+    public Player(Color p, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY,Face face)
     {
-        this.gameObj = gameObj;
         playerWidth = gameWidth / 20;
         playerHeight = playerWidth*1.6;
         bodyPosition = new Point2D(defaultPosX, defaultPosY);
@@ -57,9 +55,8 @@ public class Player implements Updatable {
         velocity = new Vector2D(new Point2D(0,1)); // direction of the gravity.. straight down (0,1) vector
     }
 
-    public Player(Color p,double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, KeyCode r, KeyCode l, KeyCode j,KeyCode s, ArrayList<Rectangle> gameObj,Face face)
+    public Player(Color p,double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, KeyCode r, KeyCode l, KeyCode j,KeyCode s,Face face)
     {
-        this.gameObj = gameObj;
         playerWidth = gameWidth / 20;
         playerHeight = playerWidth*1.6;
         bodyPosition = new Point2D(defaultPosX, defaultPosY);
@@ -85,7 +82,7 @@ public class Player implements Updatable {
     }
 
     @Override
-    public void update(double dt, double gameWidth, double gameHeight,ArrayList<Updatable> objToInteract)
+    public void update(double dt, double gameWidth, double gameHeight,ArrayList<Updatable> objToInteract,ArrayList<Rectangle> gameObj)
     {
 
         for(Updatable u : objToInteract)
@@ -94,21 +91,21 @@ public class Player implements Updatable {
             {
                 if(isHit((Shot)u) && ((Shot) u).isHit())
                 {
-                    velocity.add(((Shot) u).getVelocity());
+                    this.velocity.add(((Shot) u).getVelocity());
                     ((Shot) u).setHit(false);
-                    shotsFired = true;
+                    this.shotsFired = true;
                 }
             }
         }
 
-        if(inBounds(gameWidth,gameHeight,velocity.getEnd().getX(),velocity.getEnd().getY()) && !isOnBlock(velocity.getDirection().getX(),velocity.getDirection().getY()))
+        if(inBounds(gameWidth,gameHeight,velocity.getEnd().getX(),velocity.getEnd().getY()) && !isOnBlock(velocity.getDirection().getX(),velocity.getDirection().getY(),gameObj))
         {
             body.setStroke(Color.GREEN);
             setPos(bodyPosition.add(velocity.getDirection())); // moving the player in the direction of vector velocity
             velocity.add(gravity); // adding gravity to velocity
             velocity.multiply(dt);
         }
-        else
+        else //nepada
         {
             body.setStroke(Color.BLUE);
             currentJump = 0;
@@ -118,9 +115,9 @@ public class Player implements Updatable {
                 shotsFired = false;
             }
         }
-
-        if(moveL) { moveLeft(gameWidth);}
-        else if(moveR) {moveRight(gameWidth);}
+        //todo keepInBounds()
+        if(moveL) { moveLeft(gameWidth,gameObj);}
+        else if(moveR) {moveRight(gameWidth,gameObj);}
         if(moveS) {moveShot(gameWidth);}
 
     }
@@ -156,7 +153,7 @@ public class Player implements Updatable {
         this.body.setY(bodyPosition.getY());
     }
 
-    private boolean isOnBlock(double stepX,double stepY)
+    private boolean isOnBlock(double stepX,double stepY,ArrayList<Rectangle> gameObj)
     {
         for(Rectangle e : gameObj)
         {
@@ -169,16 +166,16 @@ public class Player implements Updatable {
         return false;
     }
 
-    private void moveRight(double gameWidth) {
-        if(bodyPosition.getX() + body.getWidth() + speedX <= gameWidth && allowedMoveRight())
+    private void moveRight(double gameWidth,ArrayList<Rectangle> gameObj) {
+        if(bodyPosition.getX() + body.getWidth() + speedX <= gameWidth && allowedMoveRight(gameObj))
         {
             setPos(bodyPosition.add(new Point2D(speedX,0)));
             face = Face.RIGHT;
         }
     }
 
-    private void moveLeft(double gameWidth) {
-        if(bodyPosition.getX() - speedX >= 0 && allowedMoveLeft())
+    private void moveLeft(double gameWidth,ArrayList<Rectangle> gameObj) {
+        if(bodyPosition.getX() - speedX >= 0 && allowedMoveLeft(gameObj))
         {
             setPos(bodyPosition.subtract(new Point2D(speedX,0)));
             face = Face.LEFT;
@@ -203,7 +200,7 @@ public class Player implements Updatable {
         }
     }
 
-    private boolean allowedMoveLeft() // prevents player from getting stuck inside the block ;left side
+    private boolean allowedMoveLeft(ArrayList<Rectangle> gameObj) // prevents player from getting stuck inside the block ;left side
     {
         for(Rectangle r : gameObj)
         {
@@ -216,7 +213,7 @@ public class Player implements Updatable {
         return true;
     }
 
-    private boolean allowedMoveRight() // prevents player from getting stuck inside the block ;right side
+    private boolean allowedMoveRight(ArrayList<Rectangle> gameObj) // prevents player from getting stuck inside the block ;right side
     {
         for(Rectangle r : gameObj)
         {
@@ -238,7 +235,7 @@ public class Player implements Updatable {
         return false;
     }
 
-    private void keepOnTheMap(double gameWidth, double gameHeight)
+    private void keepInBounds(double gameWidth, double gameHeight,ArrayList<Rectangle> gameObj)
     {
 
     }

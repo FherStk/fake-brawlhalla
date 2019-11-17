@@ -43,7 +43,7 @@ public class Shot implements Updatable{
     }
 
     @Override
-    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract) {
+    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract,ArrayList<Rectangle> gameObj) {
         if(inBounds(gameWidth,gameHeight,velocity.getDirection().getX()*dt,0))
         {
             setPos(pos.add(new Point2D(velocity.getDirection().getX()*dt,0)));
