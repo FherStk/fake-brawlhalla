@@ -14,12 +14,14 @@ public class Shot implements Updatable{
     private Vector2D velocity;
     private Face playerFace;
     private double shotSpeed;
-    private final double shotWidth = 20;
-    private final double shotHeight = 5;
+    private final double shotWidth;
+    private final double shotHeight;
     private boolean hit;
 
     public Shot(double xCor, double yCor,double playerWidth,Face playerFace)
     {
+        shotWidth = playerWidth/2;
+        shotHeight = playerWidth / 4;
         this.playerFace = playerFace;
         body = new Rectangle();
         body.setWidth(shotWidth);
@@ -33,7 +35,7 @@ public class Shot implements Updatable{
         }
         else
         {
-            body.setX(xCor + body.getWidth() + 1);
+            body.setX(xCor + playerWidth + 1);
             shotSpeed = 10 ;
         }
         body.setY(yCor);

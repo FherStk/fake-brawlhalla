@@ -48,11 +48,12 @@ public class Launcher {
     }
 
 
-    private void runGame() {
-        Game game = new Game("Fakehalla", gameWidth, gameHeight, gameFullscreen);
+    private void runGame() throws IOException, ClassNotFoundException {
+        SettingsLoader settingsLoader = new SettingsLoader();
+        Settings settings = settingsLoader.loadSettings("settings.txt");
+        Game game = new Game("Fakehalla", settings.getWidth(), settings.getHeight(), settings.isFullscreen());
         game.start();
     }
-
     private void runSettings() {
         stage.setScene(settingsScene);
     }
@@ -71,7 +72,13 @@ public class Launcher {
 
         buttons[0] = new Button("Multiplayer");
         buttons[0].setOnAction(event -> {
-            runGame();
+            try {
+                runGame();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         });
 
         buttons[1] = new Button("Options");

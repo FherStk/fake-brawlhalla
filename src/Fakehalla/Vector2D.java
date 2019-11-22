@@ -22,6 +22,12 @@ public class Vector2D {
         end = normalPoint;
     }
 
+    @Override
+    public String toString()
+    {
+        return "X: " + this.start + " Y: " + this.end;
+    }
+
     //returning the size of the vector
     public double getSize() { return sqrt((end.getX() - start.getX()) * (end.getX() - start.getX()) + (end.getY() - start.getY())*end.getY() - start.getY());}
 

@@ -33,7 +33,7 @@ public class MapGenerator {
             System.out.println((i+1) + ". block created!");
             double blockHeight = blocksHeight;
             double xcor = gameWidth / 2 - blocksWidth/2;
-            double ycor = gameHeight / 2;
+            double ycor = gameHeight / 2 - blocksHeight;
 
             Rectangle newRec = new Rectangle();
             newRec.setX(xcor);

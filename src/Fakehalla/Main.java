@@ -16,7 +16,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException, ClassNotFoundException {
-        Launcher launcher = new Launcher(primaryStage);
-        launcher.run();
+       // Launcher launcher = new Launcher(primaryStage);
+        //launcher.run();
+
+        Game game = new Game("",800,600,false);
+        game.start();
     }
 }
