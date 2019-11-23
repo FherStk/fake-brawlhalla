@@ -1,17 +1,19 @@
-package Fakehalla;
+package Fakehalla.Game;
 
+import Fakehalla.Settings.Settings;
+import Fakehalla.Settings.SettingsLoader;
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import org.w3c.dom.ls.LSOutput;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Game  {
@@ -23,6 +25,7 @@ public class Game  {
     private Label scoreBoard;
     private int numberToWin = 10;
     private String fontName = "Verdana";
+    private Settings settings;
 
     private double width;
     private double height;
@@ -36,10 +39,12 @@ public class Game  {
 
     private boolean gameOver = false;
 
-    public Game(String title,double w, double h,boolean fullscreen) // dev constructor
+    public Game(String title,double w, double h,boolean fullscreen) throws IOException, ClassNotFoundException // dev constructor
     {
-        width = w;
-        height = h;
+        SettingsLoader settingsLoader = new SettingsLoader();
+        settings = settingsLoader.loadSettings("settings.txt");
+        width = settings.getWidth();
+        height = settings.getHeight();
         stage = new Stage();
         group = new Group();
         currentTime = 0;
@@ -51,13 +56,23 @@ public class Game  {
         stage.setTitle(title);
         currentTime = System.currentTimeMillis();
 
+        stage.setResizable(false);
+
         if(!fullscreen)
         {
-            stage.setWidth(w);
-            stage.setHeight(h);
+            stage.setWidth(width);
+            stage.setHeight(height);
         }
-        else{
+        else
+            {
             stage.setFullScreen(true);
+            stage.setFullScreenExitHint("Press ESC to exit game");
+            scene.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+                if(e.getCode()== KeyCode.ESCAPE)
+                {
+                    stage.close();
+                }
+            });
         }
 
 
@@ -137,8 +152,10 @@ public class Game  {
         scoreBoard.setTranslateX(width/2 - scoreBoard.getMinWidth()/2);
 
 
-        player1 = new Player(Color.BLACK,this.width,this.height,this.width / 2 - this.width/8,this.height / 4,Face.RIGHT,"Adolf");
-        player2 = new Player(Color.BLUE,this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Face.LEFT,"Hitler");
+        player1 = new Player(Color.BLACK,this.width,this.height,this.width / 2 - this.width/8,this.height / 4,Face.RIGHT,"Adolf",
+                settings.getPlayer1Jump(), settings.getPlayer1Shoot(), settings.getPlayer1Left(), settings.getPlayer1Right());
+        player2 = new Player(Color.BLUE,this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Face.LEFT,"Hitler",
+                settings.getPlayer2Jump(), settings.getPlayer2Shoot(), settings.getPlayer2Left(), settings.getPlayer2Right()); //TODO Sorry for this
 
         this.objects.add(player1);
         this.objects.add(player2);

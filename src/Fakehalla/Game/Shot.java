@@ -1,4 +1,4 @@
-package Fakehalla;
+package Fakehalla.Game;
 
 
 import javafx.geometry.Point2D;

@@ -1,4 +1,4 @@
-package Fakehalla;
+package Fakehalla.Game;
 
 import  javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
@@ -38,7 +38,7 @@ public class Player implements Updatable {
     private  final double jumpStrength;
 
 
-    public Player(Paint p, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Face face,String playerName)
+    public Player(Paint p, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Face face,String playerName, KeyCode jump, KeyCode shoot, KeyCode left, KeyCode right)
     {
         maxVelocity = new Vector2D(new Point2D(gameWidth / 150,gameHeight / 80));
         jumpStrength = gameHeight/ 60;
@@ -52,10 +52,10 @@ public class Player implements Updatable {
         body.setStroke(Color.GREEN);
         body.setX(bodyPosition.getX());
         body.setY(bodyPosition.getX());
-        moveRightKey = KeyCode.D;
-        moveLeftKey = KeyCode.A;
-        moveJumpKey = KeyCode.SPACE;
-        moveShotKey = KeyCode.S;
+        moveRightKey = right;
+        moveLeftKey = left;
+        moveJumpKey = jump;
+        moveShotKey = shoot;
         numberOfJumps = 2;
         currentJump = 0;
         this.face = face;

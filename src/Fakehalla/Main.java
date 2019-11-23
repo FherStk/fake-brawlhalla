@@ -1,6 +1,6 @@
 package Fakehalla;
 /* lets see if this works*/
-import Fakehalla.Launcher.Launcher;
+import Fakehalla.Menu.Launcher;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -16,10 +16,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException, ClassNotFoundException {
-       // Launcher launcher = new Launcher(primaryStage);
-        //launcher.run();
+        Launcher launcher = new Launcher(primaryStage);
+        launcher.run();
 
-        Game game = new Game("",800,600,false);
-        game.start();
     }
 }

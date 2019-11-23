@@ -1,6 +1,6 @@
-package Fakehalla.Launcher;
+package Fakehalla.Menu;
 
-import Fakehalla.Game;
+import Fakehalla.Game.Game;
 import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsLoader;
 import Fakehalla.Settings.SettingsSaver;
@@ -22,7 +22,7 @@ import javafx.stage.Stage;
 
 import java.io.*;
 
-public class Launcher {
+public class Launcher { //TODO Change launcher tu menu, use only one stage
     private Stage stage;
     private Scene defaultScene;
     private Scene settingsScene;

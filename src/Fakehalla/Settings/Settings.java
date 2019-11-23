@@ -1,18 +1,27 @@
 package Fakehalla.Settings;
 
+import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Screen;
 
 import java.io.Serializable;
 
-public class Settings implements Serializable {
+public class Settings implements Serializable { //TODO use this for dynamic resolution change
     private int width, height;
     private boolean fullscreen;
     private KeyCode player1Jump, player1Shoot, player1Left, player1Right;
     private KeyCode player2Jump, player2Shoot, player2Left, player2Right;
 
     public void setResolution(int width, int height, boolean fullscreen){
-        this.width = width;
-        this.height = height;
+        if(fullscreen){
+            Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+            this.width = (int) screenBounds.getMaxX();
+            this.height = (int) screenBounds.getMaxY();
+        }
+        else {
+            this.width = width;
+            this.height = height;
+        }
         this.fullscreen = fullscreen;
     }
 
