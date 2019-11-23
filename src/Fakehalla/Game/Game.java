@@ -152,9 +152,9 @@ public class Game  {
         scoreBoard.setTranslateX(width/2 - scoreBoard.getMinWidth()/2);
 
 
-        player1 = new Player(Color.BLACK,this.width,this.height,this.width / 2 - this.width/8,this.height / 4,Face.RIGHT,"Adolf",
+        player1 = new Player(Color.BLACK,this.width,this.height,this.width / 2 - this.width/8,this.height / 4,Face.RIGHT,"Jezis",
                 settings.getPlayer1Jump(), settings.getPlayer1Shoot(), settings.getPlayer1Left(), settings.getPlayer1Right());
-        player2 = new Player(Color.BLUE,this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Face.LEFT,"Hitler",
+        player2 = new Player(Color.BLUE,this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Face.LEFT,"Kristus",
                 settings.getPlayer2Jump(), settings.getPlayer2Shoot(), settings.getPlayer2Left(), settings.getPlayer2Right()); //TODO Sorry for this
 
         this.objects.add(player1);
