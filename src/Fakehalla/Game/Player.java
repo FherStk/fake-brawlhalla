@@ -15,6 +15,7 @@ public class Player implements Updatable {
     private Vector2D velocity;
     private Vector2D maxVelocity;
     private Face face;
+    private Direction direction;
 
     private boolean moveR;
     private boolean moveL;
@@ -288,6 +289,23 @@ public class Player implements Updatable {
         if(velocity.getDirection().getY() < -1*maxSpeedY)
         {
             velocity.setEnd(new Point2D(velocity.getDirection().getX(),-1*maxSpeedY));
+        }
+
+
+        if(velocity.getDirection().getX() > 0) {
+            direction = Direction.RIGHT;
+        }
+        else if(velocity.getDirection().getX() < 0) {
+            direction = Direction.LEFT;
+        }
+        else if(velocity.getDirection().getY() > 0) {
+            direction = Direction.DOWN;
+        }
+        else if(velocity.getDirection().getY() < 0) {
+            direction = Direction.UP;;
+        }
+        else {
+            direction = Direction.NONE;
         }
     }
 
