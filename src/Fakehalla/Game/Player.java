@@ -8,13 +8,9 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
-public class Player implements Updatable {
-    private Rectangle body;
-    private Point2D bodyPosition;
+public class Player extends Entity implements Updatable {
     private Point2D spawnPosition;
-    private Vector2D velocity;
     private Vector2D maxVelocity;
-    private Face face;
     private Direction direction;
 
     private boolean moveR;
@@ -33,43 +29,31 @@ public class Player implements Updatable {
     private KeyCode moveShotKey;
 
     private double yCorOffset;
-
-    private  final double playerWidth;
-    private  final double playerHeight;
     private  final double jumpStrength;
 
 
-    public Player(Paint p, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Face face,String playerName, KeyCode jump, KeyCode shoot, KeyCode left, KeyCode right)
+    public Player(Texture texture, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Face face,String playerName, KeyCode jump, KeyCode shoot, KeyCode left, KeyCode right)
     {
-        maxVelocity = new Vector2D(new Point2D(gameWidth / 150,gameHeight / 80));
+        super(texture,new Point2D(defaultPosX,defaultPosY),face,gameWidth/40,(gameHeight/20));
+        maxVelocity = new Vector2D(new Point2D(gameWidth / 150,gameHeight / 40));
         jumpStrength = gameHeight/ 60;
-        playerWidth = gameWidth / 40;
-        playerHeight = playerWidth*1.6;
-        bodyPosition = new Point2D(defaultPosX, defaultPosY);
-        body = new Rectangle();
-        body.setWidth(playerWidth);
-        body.setHeight(playerHeight);
-        body.setFill(p);
-        body.setStroke(Color.GREEN);
-        body.setX(bodyPosition.getX());
-        body.setY(bodyPosition.getX());
         moveRightKey = right;
         moveLeftKey = left;
         moveJumpKey = jump;
         moveShotKey = shoot;
         numberOfJumps = 2;
         currentJump = 0;
-        this.face = face;
         moveL = moveR = moveS = shotsFired = justFell = false;
-        spawnPosition = bodyPosition;
+        spawnPosition = this.getPosition();
         this.playerName = playerName;
 
-        velocity = new Vector2D(new Point2D(0,1)); // direction of the gravity.. straight down (0,1) vector
+        this.setVelocity(new Vector2D(new Point2D(0,1))); // direction of the gravity.. straight down (0,1) vector
     }
 
+    /*
     public Player(Paint p,double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, KeyCode r, KeyCode l, KeyCode j,KeyCode s,Face face,String playerName)
     {
-        maxVelocity = new Vector2D(new Point2D(gameWidth / 150,gameHeight / 80));
+        maxVelocity = new Vector2D(new Point2D(gameWidth / 150,gameHeight / 40));
         jumpStrength = gameHeight/ 60;
         playerWidth = gameWidth / 20;
         playerHeight = playerWidth*1.6;
@@ -94,42 +78,41 @@ public class Player implements Updatable {
         moveL = moveR = moveS = shotsFired = justFell = false;
 
         velocity = new Vector2D(new Point2D(0,1)); // direction of the gravity.. straight down (0,1) vector
-    }
+    }*/
 
     @Override
     public void update(double dt, double gameWidth, double gameHeight,ArrayList<Updatable> objToInteract,ArrayList<Rectangle> gameObj)
     {
-
         for(Updatable u : objToInteract)
         {
             if(u instanceof Shot)
             {
                 if(isHit((Shot)u) && ((Shot) u).isHit())
                 {
-                    this.velocity.add(((Shot) u).getVelocity());
+                    this.getVelocity().add(((Shot) u).getVelocity());
                     ((Shot) u).setHit(false);
                     this.shotsFired = true;
                 }
             }
         }
-        velocity.setEnd(new Point2D(velocity.getDirection().getX() * dt / 2,velocity.getDirection().getY()));
-        if(!isOnBlock(velocity.getDirection().getX(),velocity.getDirection().getY(),gameObj))
+        this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX() * dt / 2,this.getVelocity().getDirection().getY()));
+        if(!isOnBlock(this.getVelocity().getDirection().getX(),this.getVelocity().getDirection().getY(),gameObj))
         {
-            setPos(bodyPosition.add(velocity.getDirection())); // moving the player in the direction of vector velocity
-            velocity.add(gravity); // adding gravity to velocity
-            velocity.multiply(dt);
             justFell = true;
+            setPosition(this.getPosition().add(this.getVelocity().getDirection()));
+            this.getVelocity().add(gravity);
+            this.getVelocity().multiply(dt);
         }
         else //nepada
         {
             if(justFell) // once player hits the block for the first time
             {
-                setPos(bodyPosition.add(new Point2D(0,yCorOffset - 1))); // adjusting player's position to be aligned with the block
-                velocity.setEnd(new Point2D(velocity.getDirection().getX(),0));// resetting Yvelocity
+                setPosition(this.getPosition().add(new Point2D(0,yCorOffset - 1)));
+                this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX(),0));
             }
             if(shotsFired)
             {
-                setPos(bodyPosition.add(velocity.getDirection().getX(),0));
+                setPosition(this.getPosition().add(this.getVelocity().getDirection().getX(),0));
                 shotsFired = false;
             }
             justFell = false;
@@ -137,10 +120,10 @@ public class Player implements Updatable {
         }
 
 
-        if(!inBounds(gameWidth,gameHeight,0,0))
+        if(!inBounds(gameWidth,gameHeight,0))
         {
             numberOfFells++;
-            setPos(new Point2D(spawnPosition.getX(),0));
+            setPosition(new Point2D(spawnPosition.getX(),0));
         }
 
         if(moveL) { moveLeft(dt,gameWidth,gameObj);}
@@ -151,19 +134,17 @@ public class Player implements Updatable {
     }
 
     @Override
-    public boolean inBounds(double widthLimit, double heightLimit,double stepX, double stepY) // checking if the player is off the screen
+    public boolean inBounds(double widthLimit,double heightLimit, double stepY) // checking if the player is off the screen
     {
-        return ((bodyPosition.getY() + body.getHeight() + stepY) <= heightLimit); // checking one step ahead (stepx and stepy)
+        return ((this.getPosition().getY() + this.getBody().getHeight() + stepY) <= heightLimit); // checking one step ahead (stepx and stepy)
     }
 
-    public Rectangle getBody() { return this.body;}
 
     public KeyCode getMoveRightKey() { return this.moveRightKey; }
     public KeyCode getMoveJumpKey() { return this.moveJumpKey; }
     public KeyCode getMoveLeftKey() { return this.moveLeftKey; }
     public KeyCode getMoveShotKey() { return moveShotKey; }
 
-    public Face getFace() { return this.face; }
 
     public int getScore() { return this.numberOfFells;}
 
@@ -180,21 +161,15 @@ public class Player implements Updatable {
     public void setMoveL(boolean b) { this.moveL = b; }
     public void setMoveS(boolean b) { this.moveS = b; }
 
-    private void setPos(Point2D point)
-    {
-        this.bodyPosition = point;
-        this.body.setX(bodyPosition.getX());
-        this.body.setY(bodyPosition.getY());
-    }
 
     private boolean isOnBlock(double stepX,double stepY,ArrayList<Rectangle> gameObj)
     {
         for(Rectangle e : gameObj)
         {
-            if(bodyPosition.getY() + body.getHeight() + stepY >= e.getY() && bodyPosition.getX() + body.getWidth()  > e.getX() && bodyPosition.getX()  < e.getX() + e.getWidth()
-                && bodyPosition.getY() + body.getHeight() <= e.getY()  && velocity.getEnd().getY() >= 0)
+            if(this.getPosition().getY() + this.getBody().getHeight() + stepY >= e.getY() && this.getPosition().getX() + this.getBody().getWidth()  > e.getX() && this.getPosition().getX()  < e.getX() + e.getWidth()
+                && this.getPosition().getY() + this.getBody().getHeight() <= e.getY()  && this.getVelocity().getEnd().getY() >= 0)
             {
-                yCorOffset = e.getY() - (bodyPosition.getY() + body.getHeight());
+                yCorOffset = e.getY() - (this.getPosition().getY() + this.getBody().getHeight());
                 return true;
             }
         }
@@ -202,31 +177,32 @@ public class Player implements Updatable {
     }
 
     private void moveRight(double speedX,double gameWidth,ArrayList<Rectangle> gameObj) {
-        if(bodyPosition.getX() + body.getWidth() + velocity.getDirection().getX() <= gameWidth )
+        if(this.getPosition().getX() + this.getBody().getWidth() + this.getVelocity().getDirection().getX() <= gameWidth )
         {
-            velocity.add(new Vector2D(new Point2D(speedX,0)));
-            face = Face.RIGHT;
+            this.getVelocity().add(new Vector2D(new Point2D(speedX,0)));
+            this.setFace(Face.RIGHT);
         }
     }
 
     private void moveLeft(double speedX, double gameWidth,ArrayList<Rectangle> gameObj) {
-        if(bodyPosition.getX() - velocity.getDirection().getX() >= 0 )
+        if(this.getPosition().getX() - this.getVelocity().getDirection().getX() >= 0 )
         {
-            velocity.add(new Vector2D(new Point2D(-1*speedX,0)));
-            face = Face.LEFT;
+            this.getVelocity().add(new Vector2D(new Point2D(-1*speedX,0)));
+            this.setFace(Face.LEFT);
         }
     }
 
     public Shot moveShot(double gameWidth)
     {
-        return new Shot(this.body.getX(), this.body.getY() + body.getHeight() / 2,body.getWidth(), this.getFace());
+        System.out.println("player position: " + this.getPosition());
+        return new Shot(this.getPosition(),this.getFace(),this.getWidth() / 2,this.getHeight() / 6,this.getWidth(),this.getHeight());
     }
 
     public void moveJump(double gameHeight)
     {
-        if(bodyPosition.getY() >= 0 && currentJump < numberOfJumps)
+        if(this.getPosition().getY() >= 0 && currentJump < numberOfJumps)
         {
-            velocity.setEnd(new Point2D(velocity.getDirection().getX(),-1*jumpStrength));
+            this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX(),-1*jumpStrength));
             currentJump ++;
             if(currentJump == numberOfJumps)
             {
@@ -239,8 +215,8 @@ public class Player implements Updatable {
     {
         for(Rectangle r : gameObj)
         {
-            if(!(bodyPosition.getY() + body.getHeight() <= r.getY() || bodyPosition.getY() >= r.getY() + r.getHeight())
-                    && bodyPosition.getX()   <= r.getX() + r.getWidth() && bodyPosition.getX() >= r.getX() && velocity.getEnd().getY() >= 0 )
+            if(!(this.getPosition().getY() + this.getBody().getHeight() <= r.getY() || this.getPosition().getY() >= r.getY() + r.getHeight())
+                    && this.getPosition().getX()   <= r.getX() + r.getWidth() && this.getPosition().getX() >= r.getX() && this.getVelocity().getEnd().getY() >= 0 )
             {
                 return false;
             }
@@ -252,8 +228,8 @@ public class Player implements Updatable {
     {
         for(Rectangle r : gameObj)
         {
-            if(! (bodyPosition.getY() + body.getHeight() <= r.getY() || bodyPosition.getY() >= r.getY() + r.getHeight())
-                    && bodyPosition.getX() + body.getWidth() >= r.getX() && bodyPosition.getX() <= r.getX() + r.getWidth() && velocity.getEnd().getY() >= 0)
+            if(! (this.getPosition().getY() + this.getBody().getHeight() <= r.getY() || this.getPosition().getY() >= r.getY() + r.getHeight())
+                    && this.getPosition().getX() + this.getBody().getWidth() >= r.getX() && this.getPosition().getX() <= r.getX() + r.getWidth() && this.getVelocity().getEnd().getY() >= 0)
             {
                 return false;
             }
@@ -263,7 +239,7 @@ public class Player implements Updatable {
 
     private boolean isHit(Shot shot)
     {
-        if(body.contains(new Point2D(shot.getPos().getX() + shot.getBody().getWidth() / 2, shot.getPos().getY())))
+        if(this.getBody().contains(new Point2D(shot.getPosition().getX() + shot.getBody().getWidth() / 2, shot.getPosition().getY())))
         {
             return true;
         }
@@ -274,34 +250,34 @@ public class Player implements Updatable {
     {
         double maxSpeedX = maxVelocity.getDirection().getX();
         double maxSpeedY = maxVelocity.getDirection().getY();
-        if(velocity.getDirection().getX() > maxSpeedX)
+        if(this.getVelocity().getDirection().getX() > maxSpeedX)
         {
-            velocity.setEnd(new Point2D(maxSpeedX,velocity.getDirection().getY()));
+            this.getVelocity().setEnd(new Point2D(maxSpeedX,this.getVelocity().getDirection().getY()));
         }
-        if(velocity.getDirection().getY() > maxSpeedY)
+        if(this.getVelocity().getDirection().getY() > maxSpeedY)
         {
-            velocity.setEnd(new Point2D(velocity.getDirection().getX(),maxSpeedY));
+            this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX(),maxSpeedY));
         }
-        if(velocity.getDirection().getX() < -1*maxSpeedX)
+        if(this.getVelocity().getDirection().getX() < -1*maxSpeedX)
         {
-            velocity.setEnd(new Point2D(-1*maxSpeedX,velocity.getDirection().getY()));
+            this.getVelocity().setEnd(new Point2D(-1*maxSpeedX,this.getVelocity().getDirection().getY()));
         }
-        if(velocity.getDirection().getY() < -1*maxSpeedY)
+        if(this.getVelocity().getDirection().getY() < -1*maxSpeedY)
         {
-            velocity.setEnd(new Point2D(velocity.getDirection().getX(),-1*maxSpeedY));
+            this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX(),-1*maxSpeedY));
         }
 
 
-        if(velocity.getDirection().getX() > 0) {
+        if(this.getVelocity().getDirection().getX() > 0) {
             direction = Direction.RIGHT;
         }
-        else if(velocity.getDirection().getX() < 0) {
+        else if(this.getVelocity().getDirection().getX() < 0) {
             direction = Direction.LEFT;
         }
-        else if(velocity.getDirection().getY() > 0) {
+        else if(this.getVelocity().getDirection().getY() > 0) {
             direction = Direction.DOWN;
         }
-        else if(velocity.getDirection().getY() < 0) {
+        else if(this.getVelocity().getDirection().getY() < 0) {
             direction = Direction.UP;;
         }
         else {

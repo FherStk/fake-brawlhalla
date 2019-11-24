@@ -13,6 +13,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -109,7 +110,7 @@ public class Game  {
                 for (Updatable u : objects)
                 {
                     u.update(dt,scene.getWidth(),scene.getHeight(),objects,blocks);
-                    if(!u.inBounds(scene.getWidth(),scene.getHeight(),0,0) && u instanceof Shot)
+                    if(!u.inBounds(scene.getWidth(),scene.getHeight(),0) && u instanceof Shot)
                     {
                         objectsToRemove.add(u);
                     }
@@ -152,9 +153,9 @@ public class Game  {
         scoreBoard.setTranslateX(width/2 - scoreBoard.getMinWidth()/2);
 
 
-        player1 = new Player(Color.BLACK,this.width,this.height,this.width / 2 - this.width/8,this.height / 4,Face.RIGHT,"Jezis",
+        player1 = new Player(new Texture("textures/donald.jpg"),this.width,this.height,this.width / 2 - this.width/8,this.height / 4,Face.RIGHT,"Jezis",
                 settings.getPlayer1Jump(), settings.getPlayer1Shoot(), settings.getPlayer1Left(), settings.getPlayer1Right());
-        player2 = new Player(Color.BLUE,this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Face.LEFT,"Kristus",
+        player2 = new Player(new Texture("textures/donald.jpg"),this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Face.LEFT,"Kristus",
                 settings.getPlayer2Jump(), settings.getPlayer2Shoot(), settings.getPlayer2Left(), settings.getPlayer2Right()); //TODO Sorry for this
 
         this.objects.add(player1);

@@ -1,81 +1,66 @@
 package Fakehalla.Game;
 
-
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
 import java.util.ArrayList;
-import java.util.Random;
 
-public class Shot implements Updatable{
-    private Rectangle body;
-    private Point2D pos;
-    private Vector2D velocity;
-    private Face playerFace;
+public class Shot extends Entity implements Updatable{
+    private Texture texture;
     private double shotSpeed;
-    private final double shotWidth;
-    private final double shotHeight;
     private boolean hit;
+    private final double shotToPlayer = 0.25;
+    private final String filename = "textures/donald.jpg";
 
-    public Shot(double xCor, double yCor,double playerWidth,Face playerFace)
+    public Shot(Point2D startPosition,Face playerFace, double shotWidth,double shotHeight,double playerWidth, double playerHeight)
     {
-        shotWidth = playerWidth/2;
-        shotHeight = playerWidth / 4;
-        this.playerFace = playerFace;
-        body = new Rectangle();
-        body.setWidth(shotWidth);
-        body.setHeight(shotHeight);
-        body.setFill(getRandomColor());
-
-        if(playerFace == Face.LEFT)
-        {
-            body.setX(xCor - body.getWidth());
-            shotSpeed = -10;
-        }
-        else
-        {
-            body.setX(xCor + playerWidth + 1);
-            shotSpeed = 10 ;
-        }
-        body.setY(yCor);
-        pos = new Point2D(body.getX(),body.getY());
-        velocity = new Vector2D(new Point2D(shotSpeed,0));
-        hit = true;
+        super(startPosition,playerFace,shotWidth,shotHeight);
+        this.texture = new Texture(filename);
+        this.shotSpeed = 10;
+        this.hit = true;
+        setVelocity(new Vector2D(new Point2D(shotSpeed,0)));
+        chooseFace();
+        chooseStartPosition(playerWidth,playerHeight);
+        setDefaultTexture(this.texture);
     }
 
     @Override
-    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract,ArrayList<Rectangle> gameObj) {
-        if(inBounds(gameWidth,gameHeight,velocity.getDirection().getX()*dt,0))
-        {
-            setPos(pos.add(new Point2D(velocity.getDirection().getX()*dt,0)));
-        }
+    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract,ArrayList<Rectangle> gameObj)
+    {
+        this.getVelocity().multiply(dt);
+        this.setPosition(this.getPosition().add(this.getVelocity().getDirection()));
     }
 
     @Override
-    public boolean inBounds(double widthLimit, double heightLimit, double stepX, double stepY) {
-        return body.getX() <= widthLimit && body.getX() + body.getWidth() >= 0;
+    public boolean inBounds(double widthLimit,double heightLimit, double stepY)
+    {
+        return this.getBody().getX() <= widthLimit && this.getBody().getX() + this.getBody().getWidth() >= 0;
     }
 
-    public Rectangle getBody() { return this.body; }
     public boolean isHit() { return this.hit; }
-    public Face getPlayerFace() { return this.playerFace; }
-    public Vector2D getVelocity() { return this.velocity; }
-
-    public Point2D getPos() { return this.pos; }
 
     public void setHit(boolean hit) { this.hit = hit; }
 
-    private Color getRandomColor()
+    private void chooseFace()
     {
-        Random r = new Random();
-        return new Color(r.nextFloat(),r.nextFloat(),r.nextFloat(),1);
+        if(this.getFace() == Face.LEFT)
+        {
+            this.shotSpeed *= -1;
+            setVelocity(new Vector2D(new Point2D(this.getVelocity().getDirection().getX()*-1,this.getVelocity().getDirection().getY())));
+        }
     }
 
-    private void setPos(Point2D pos)
+    private void chooseStartPosition(double playerWidth, double playerHeight)
     {
-        this.pos = pos;
-        this.body.setX(pos.getX());
-        this.body.setY(pos.getY());
+        System.out.println(this.getFace());
+        if(this.getFace() == Face.LEFT)
+        {
+            this.setPosition(new Point2D(this.getPosition().getX() - this.getBody().getWidth()/2 - 1, this.getPosition().getY() + playerHeight*shotToPlayer));
+        }
+        else
+        {
+            this.setPosition(new Point2D(this.getPosition().getX() + playerWidth + 1, this.getPosition().getY()+ playerHeight*shotToPlayer ));
+        }
+
+        System.out.println("shot position: " + this.getPosition());
     }
 }
