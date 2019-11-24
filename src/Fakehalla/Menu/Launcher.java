@@ -14,12 +14,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.*;
 
 public class Launcher { //TODO Change launcher tu menu, use only one stage
@@ -142,11 +144,8 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
     private Scene generateSettingsScene() throws IOException, ClassNotFoundException {
         SettingsLoader settingsLoader = new SettingsLoader();
 
+
         Settings settings = settingsLoader.loadSettings("settings.txt");
-        /*Settings settings = new Settings();
-        settings.setResolution(1920,1080,true);
-        settings.setPlayer1Controls(KeyCode.SPACE, KeyCode.A, KeyCode.E, KeyCode.D);
-        settings.setPlayer2Controls(KeyCode.SPACE, KeyCode.A, KeyCode.E, KeyCode.D);*/
 
         Text[] player1Texts = new Text[4];
         player1Texts[0] = new Text("Player 1 JUMP:");
@@ -186,6 +185,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         texts[0] = new Text("Width: ");
         texts[1] = new Text("Height: ");
         texts[2] = new Text("Fullscreen: ");
+        Text textSound = new Text("Sound:");
 
         TextField[] textFields = new TextField[2];
         textFields[0] = new TextField(Integer.toString(settings.getWidth()));
@@ -193,12 +193,15 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
 
         CheckBox checkboxFullscreen = new CheckBox();
         checkboxFullscreen.setSelected(settings.isFullscreen());
+        CheckBox checkboxsound = new CheckBox();
+        checkboxsound.setSelected(settings.isSound());
 
         Button[] buttons = new Button[2];
         buttons[0] = new Button("Save");
         buttons[0].setOnAction(e -> {
             if (textFields[0].getText().matches("[0-9]*") && textFields[1].getText().matches("[0-9]*")) {
                 settings.setResolution(Integer.parseInt(textFields[0].getText()),Integer.parseInt(textFields[1].getText()),checkboxFullscreen.isSelected());
+                settings.setSound(checkboxsound.isSelected());
                 SettingsSaver settingsSaver = new SettingsSaver();
                 try {
                     settingsSaver.saveSettings("settings.txt", settings);
@@ -252,14 +255,17 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
             textFields[i].setMaxWidth(100);
             gridPane.add(texts[i],0,i);
             gridPane.add(textFields[i], 1, i);
-            gridPane.add(buttons[i], i,3);
+            gridPane.add(buttons[i], i,4);
         }
+        textSound.setStyle("-fx-font-size: 2em;");
+        gridPane.add(textSound,0,3);
 
         texts[2].setStyle("-fx-font-size: 2em;");
         checkboxFullscreen.setStyle("-fx-font-size: 2em;");
         gridPane.add(texts[2], 0, 2);
         gridPane.add(checkboxFullscreen, 1, 2);
-
+        checkboxsound.setStyle("-fx-font-size: 2em;");
+        gridPane.add(checkboxsound, 1, 3);
         return(new Scene(gridPane, 800,600));
 
     }

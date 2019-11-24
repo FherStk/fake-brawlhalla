@@ -14,7 +14,7 @@ public class Shot extends Entity implements Updatable{
     public Shot(Point2D startPosition,Direction playerDirection, double shotWidth,double shotHeight,double playerWidth, double playerHeight)
     {
         super(startPosition,playerDirection,shotWidth,shotHeight);
-        this.shotSpeed = 10;
+        this.shotSpeed = 50;
         this.hit = true;
         setVelocity(new Vector2D(new Point2D(shotSpeed,0)));
         chooseFace();

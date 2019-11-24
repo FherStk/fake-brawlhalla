@@ -8,9 +8,17 @@ import java.io.Serializable;
 
 public class Settings implements Serializable { //TODO use this for dynamic resolution change
     private int width, height;
-    private boolean fullscreen;
+    private boolean fullscreen, sound;
     private KeyCode player1Jump, player1Shoot, player1Left, player1Right;
     private KeyCode player2Jump, player2Shoot, player2Left, player2Right;
+
+    public void setSound(boolean sound) {
+        this.sound = sound;
+    }
+
+    public boolean isSound() {
+        return sound;
+    }
 
     public void setResolution(int width, int height, boolean fullscreen){
         if(fullscreen){

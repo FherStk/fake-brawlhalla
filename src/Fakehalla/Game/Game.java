@@ -10,11 +10,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -60,6 +64,8 @@ public class Game  {
 
         stage.setResizable(false);
 
+        AudioClip au = startMusic(settings.isSound()); //Playing music accordint to settings
+
         if(!fullscreen)
         {
             stage.setWidth(width);
@@ -78,6 +84,7 @@ public class Game  {
         }
 
         stage.setOnHiding( event -> {
+            au.stop();
             Launcher launcher = null;
             try {
                 launcher = new Launcher(new Stage());
@@ -223,6 +230,14 @@ public class Game  {
         group.getChildren().add(player1.getBody());
         group.getChildren().add(scoreBoard);
 
+    }
+
+    public AudioClip startMusic(boolean startMusic)
+    {
+        AudioClip au = new AudioClip(Game.class.getResource("sound.mp3").toString());
+        if (startMusic)
+            au.play();
+        return au;
     }
 
     private void createMap()

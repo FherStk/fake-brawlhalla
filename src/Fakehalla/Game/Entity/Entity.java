@@ -7,6 +7,10 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 
 public class Entity implements Updatable{ //abstract class
+    public Texture getDefaultTexture() {
+        return defaultTexture;
+    }
+
     private Texture defaultTexture;
     private Point2D position;
     private Vector2D velocity;

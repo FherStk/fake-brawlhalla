@@ -8,7 +8,7 @@ import javafx.scene.paint.ImagePattern;
 public class Texture {
     private ImageView texture;
     private String filename;
-    boolean mirrored = false;
+    boolean mirrored = false; //saving if image in memory is mirrored or not.
 
     public Texture(String filename)
     {

@@ -4,6 +4,7 @@ import Fakehalla.Game.Vector2D;
 import  javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
@@ -122,8 +123,11 @@ public class Player extends Entity implements Updatable {
         else if(moveR) {moveRight(dt,gameWidth,gameObj);}
         if(moveS) {moveShot(gameWidth);}
 
+        Texture oldDirection = this.getDefaultTexture();
         checkVelocity(this.maxVelocity);
-        this.setDefaultTexture(playerAnimation.getTexture(this.getDirection(), (int) this.getPosition().getX()));
+        Texture newTexture = playerAnimation.getTexture(this.getDirection(), (int) this.getPosition().getX());
+        if(oldDirection != newTexture)
+            this.setDefaultTexture(newTexture); //setting texture according to direcion and position
     }
 
     @Override
