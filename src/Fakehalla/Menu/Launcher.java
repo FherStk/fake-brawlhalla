@@ -53,6 +53,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         Settings settings = settingsLoader.loadSettings("settings.txt");
         Game game = new Game("Fakehalla", settings.getWidth(), settings.getHeight(), settings.isFullscreen());
         game.start();
+        stage.close();
     }
     private void runSettings() {
         stage.setScene(settingsScene);

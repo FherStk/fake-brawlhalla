@@ -1,6 +1,7 @@
 package Fakehalla.Game;
 
 import Fakehalla.Game.Entity.*;
+import Fakehalla.Menu.Launcher;
 import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsLoader;
 import javafx.animation.AnimationTimer;
@@ -74,6 +75,17 @@ public class Game  {
                 }
             });
         }
+
+        stage.setOnHiding( event -> {
+            Launcher launcher = null;
+            try {
+                launcher = new Launcher(new Stage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            launcher.run();} );
 
 
     }
