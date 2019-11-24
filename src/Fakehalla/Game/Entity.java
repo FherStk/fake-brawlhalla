@@ -1,43 +1,44 @@
 package Fakehalla.Game;
 
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
-public class Entity implements Updatable{
+public class Entity implements Updatable{ //abstract class
     private Texture defaultTexture;
     private Point2D position;
     private Vector2D velocity;
     private Rectangle body;
-    private Face face;
+    private Direction direction;
     private final double width;
     private final double height;
 
-    public Entity(Texture defaultTexture,Point2D position, Face face,double width, double height)
+    public Entity(Texture defaultTexture,Point2D position, Direction direction,double width, double height)
     {
         this.position = position;
-        this.face = face;
+        this.direction = direction;
         this.defaultTexture = defaultTexture;
         this.width = width;
         this.height = height;
         this.body = new Rectangle();
         this.body.setWidth(this.width); this.body.setHeight(this.height);
         this.body.setFill(defaultTexture.getTexture());
+        setPosition(this.position);
     }
 
-    public Entity(Point2D position, Face face,double width, double height)
+    public Entity(Point2D position, Direction direction,double width, double height)
     {
         this.position = position;
-        this.face = face;
+        this.direction = direction;
         this.width = width;
         this.height = height;
         this.body = new Rectangle();
         this.body.setWidth(this.width); this.body.setHeight(this.height);
+        setPosition(this.position);
     }
 
-    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract, ArrayList<Rectangle> gameObj)
+    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
     {
         setPosition(position.add(velocity.getDirection()));
     }
@@ -58,8 +59,8 @@ public class Entity implements Updatable{
         return position;
     }
 
-    public Face getFace() {
-        return face;
+    public Direction getDirection() {
+        return direction;
     }
 
     public double getHeight() {
@@ -76,9 +77,9 @@ public class Entity implements Updatable{
 
     public Vector2D getVelocity() { return velocity; }
 
-    public void setDefaultTexture(Texture t) { this.defaultTexture = t; }
+    public void setDefaultTexture(Texture t) { this.defaultTexture = t; this.getBody().setFill(this.defaultTexture.getTexture());}
 
     public void setVelocity(Vector2D velocity) { this.velocity = velocity; }
 
-    public void setFace(Face face) { this.face = face; }
+    public void setDirection(Direction direction) { this.direction = direction; }
 }

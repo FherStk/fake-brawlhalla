@@ -5,26 +5,24 @@ import javafx.scene.shape.Rectangle;
 import java.util.ArrayList;
 
 public class Shot extends Entity implements Updatable{
-    private Texture texture;
     private double shotSpeed;
     private boolean hit;
     private final double shotToPlayer = 0.25;
-    private final String filename = "textures/donald.jpg";
+    private final static String bulletFileName = "src/resources/bullet.png";
 
-    public Shot(Point2D startPosition,Face playerFace, double shotWidth,double shotHeight,double playerWidth, double playerHeight)
+    public Shot(Point2D startPosition,Direction playerDirection, double shotWidth,double shotHeight,double playerWidth, double playerHeight)
     {
-        super(startPosition,playerFace,shotWidth,shotHeight);
-        this.texture = new Texture(filename);
+        super(startPosition,playerDirection,shotWidth,shotHeight);
         this.shotSpeed = 10;
         this.hit = true;
         setVelocity(new Vector2D(new Point2D(shotSpeed,0)));
         chooseFace();
         chooseStartPosition(playerWidth,playerHeight);
-        setDefaultTexture(this.texture);
+        setDefaultTexture(new Texture(bulletFileName));
     }
 
     @Override
-    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract,ArrayList<Rectangle> gameObj)
+    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract,ArrayList<Block> gameObj)
     {
         this.getVelocity().multiply(dt);
         this.setPosition(this.getPosition().add(this.getVelocity().getDirection()));
@@ -42,7 +40,7 @@ public class Shot extends Entity implements Updatable{
 
     private void chooseFace()
     {
-        if(this.getFace() == Face.LEFT)
+        if(this.getDirection() == Direction.LEFT)
         {
             this.shotSpeed *= -1;
             setVelocity(new Vector2D(new Point2D(this.getVelocity().getDirection().getX()*-1,this.getVelocity().getDirection().getY())));
@@ -51,8 +49,8 @@ public class Shot extends Entity implements Updatable{
 
     private void chooseStartPosition(double playerWidth, double playerHeight)
     {
-        System.out.println(this.getFace());
-        if(this.getFace() == Face.LEFT)
+        System.out.println(this.getDirection());
+        if(this.getDirection() == Direction.LEFT)
         {
             this.setPosition(new Point2D(this.getPosition().getX() - this.getBody().getWidth()/2 - 1, this.getPosition().getY() + playerHeight*shotToPlayer));
         }

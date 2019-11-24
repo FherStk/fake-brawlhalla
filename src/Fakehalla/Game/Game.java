@@ -31,7 +31,7 @@ public class Game  {
     private double width;
     private double height;
     private ArrayList<Updatable> objects;
-    private ArrayList<Rectangle> blocks;
+    private ArrayList<Block> blocks;
     private Player player1;
     private Player player2;
 
@@ -110,9 +110,12 @@ public class Game  {
                 for (Updatable u : objects)
                 {
                     u.update(dt,scene.getWidth(),scene.getHeight(),objects,blocks);
-                    if(!u.inBounds(scene.getWidth(),scene.getHeight(),0) && u instanceof Shot)
+                    if(u instanceof Shot)
                     {
-                        objectsToRemove.add(u);
+                        if(!u.inBounds(scene.getWidth(),scene.getHeight(),0))
+                        {
+                            objectsToRemove.add(u);
+                        }
                     }
 
                 }
@@ -152,10 +155,9 @@ public class Game  {
         scoreBoard.setMinSize(width / 10,height/20);
         scoreBoard.setTranslateX(width/2 - scoreBoard.getMinWidth()/2);
 
-
-        player1 = new Player(new Texture("textures/donald.jpg"),this.width,this.height,this.width / 2 - this.width/8,this.height / 4,Face.RIGHT,"Jezis",
+        player1 = new Player(new Texture("src/resources/donald.png"),this.width,this.height,this.width / 2 - this.width/8,this.height / 4,Direction.RIGHT,"Jezis",
                 settings.getPlayer1Jump(), settings.getPlayer1Shoot(), settings.getPlayer1Left(), settings.getPlayer1Right());
-        player2 = new Player(new Texture("textures/donald.jpg"),this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Face.LEFT,"Kristus",
+        player2 = new Player(new Texture("src/resources/donald.png"),this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Direction.LEFT,"Kristus",
                 settings.getPlayer2Jump(), settings.getPlayer2Shoot(), settings.getPlayer2Left(), settings.getPlayer2Right()); //TODO Sorry for this
 
         this.objects.add(player1);
@@ -213,10 +215,9 @@ public class Game  {
     {
         MapGenerator mGen = new MapGenerator(this.width,this.height);
         blocks = mGen.generateBlocks(1);
-        System.out.println(this.width + " " + this.height);
-        for(Rectangle r : blocks)
+        for(Block r : blocks)
         {
-            group.getChildren().add(r);
+            group.getChildren().add(r.getBody());
         }
     }
 

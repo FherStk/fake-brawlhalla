@@ -1,5 +1,6 @@
 package Fakehalla.Game;
 
+import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -10,6 +11,7 @@ public class MapGenerator {
 
     private final double blocksWidth;
     private final double blocksHeight;
+    private final String filename = "src/resources/block.png";
 
     private double gameWidth;
     private double gameHeight;
@@ -24,9 +26,9 @@ public class MapGenerator {
         this.gameWidth = gameWidth;
     }
 
-    public ArrayList<Rectangle> generateBlocks(int numberOfBlocks)
+    public ArrayList<Block> generateBlocks(int numberOfBlocks)
     {
-        ArrayList<Rectangle> blocks = new ArrayList<>();
+        ArrayList<Block> blocks = new ArrayList<>();
         Random r = new Random();
         for(int i = 0; i < numberOfBlocks; i++)
         {
@@ -35,14 +37,9 @@ public class MapGenerator {
             double xcor = gameWidth / 2 - blocksWidth/2;
             double ycor = gameHeight / 2 - blocksHeight;
 
-            Rectangle newRec = new Rectangle();
-            newRec.setX(xcor);
-            newRec.setY(ycor);
-            newRec.setWidth(blocksWidth);
-            newRec.setHeight(blocksHeight);
-            newRec.setFill(Color.BLACK);
-
-            blocks.add(newRec);
+            Block newBlock = new Block(new Texture(filename),new Point2D(xcor,ycor),blocksWidth,blocksHeight);
+            System.out.println(" block position: " + newBlock.getPosition());
+            blocks.add(newBlock);
         }
         return blocks;
     }
