@@ -268,5 +268,5 @@ public class Player extends Entity implements Updatable {
             setDirection(Direction.NONE);
         }
     }
-
+    //
 }
