@@ -50,7 +50,6 @@ public class Shot extends Entity implements Updatable{
 
     private void chooseStartPosition(double playerWidth, double playerHeight)
     {
-        System.out.println(this.getDirection());
         if(this.getDirection() == Direction.LEFT)
         {
             this.setPosition(new Point2D(this.getPosition().getX() - this.getBody().getWidth()/2 - 1, this.getPosition().getY() + playerHeight*shotToPlayer));
@@ -59,7 +58,5 @@ public class Shot extends Entity implements Updatable{
         {
             this.setPosition(new Point2D(this.getPosition().getX() + playerWidth + 1, this.getPosition().getY()+ playerHeight*shotToPlayer ));
         }
-
-        System.out.println("shot position: " + this.getPosition());
     }
 }

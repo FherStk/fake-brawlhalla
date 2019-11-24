@@ -160,7 +160,7 @@ public class Player extends Entity implements Updatable {
         for(Block e : gameObj)
         {
             if(this.getPosition().getY() + this.getBody().getHeight() + stepY >= e.getBody().getY() && this.getPosition().getX() + this.getBody().getWidth()  > e.getBody().getX() && this.getPosition().getX()  < e.getBody().getX() + e.getWidth()
-                && this.getPosition().getY() + this.getBody().getHeight() <= e.getBody().getY()  && this.getVelocity().getEnd().getY() >= 0)
+                && this.getPosition().getY() + this.getBody().getHeight() <= e.getBody().getY() + 1 && this.getVelocity().getEnd().getY() >= 0)
             {
                 yCorOffset = e.getBody().getY() - (this.getPosition().getY() + this.getBody().getHeight());
                 return true;
