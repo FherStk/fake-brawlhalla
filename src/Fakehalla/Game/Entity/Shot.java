@@ -1,7 +1,8 @@
-package Fakehalla.Game;
+package Fakehalla.Game.Entity;
 
+import Fakehalla.Game.Vector2D;
 import javafx.geometry.Point2D;
-import javafx.scene.shape.Rectangle;
+
 import java.util.ArrayList;
 
 public class Shot extends Entity implements Updatable{

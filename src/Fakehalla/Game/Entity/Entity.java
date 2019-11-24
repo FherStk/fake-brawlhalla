@@ -1,5 +1,6 @@
-package Fakehalla.Game;
+package Fakehalla.Game.Entity;
 
+import Fakehalla.Game.Vector2D;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Rectangle;
 
@@ -77,9 +78,21 @@ public class Entity implements Updatable{ //abstract class
 
     public Vector2D getVelocity() { return velocity; }
 
-    public void setDefaultTexture(Texture t) { this.defaultTexture = t; this.getBody().setFill(this.defaultTexture.getTexture());}
+    public void setDefaultTexture(Texture t) {
+        this.defaultTexture = t;
+        this.getBody().setFill(this.defaultTexture.getTexture());
+        if(t.isMirrored())
+            this.getBody().setScaleX(-1);
+        else
+            this.getBody().setScaleX(1);
+    }
 
     public void setVelocity(Vector2D velocity) { this.velocity = velocity; }
 
-    public void setDirection(Direction direction) { this.direction = direction; }
+    public void setDirection(Direction direction) {
+        if(direction != this.direction) {
+            this.direction = direction;
+
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package Fakehalla.Game;
 
+import Fakehalla.Game.Entity.*;
 import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsLoader;
 import javafx.animation.AnimationTimer;
@@ -9,11 +10,9 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -155,10 +154,10 @@ public class Game  {
         scoreBoard.setMinSize(width / 10,height/20);
         scoreBoard.setTranslateX(width/2 - scoreBoard.getMinWidth()/2);
 
-        player1 = new Player(new Texture("src/resources/donald.png"),this.width,this.height,this.width / 2 - this.width/8,this.height / 4,Direction.RIGHT,"Jezis",
-                settings.getPlayer1Jump(), settings.getPlayer1Shoot(), settings.getPlayer1Left(), settings.getPlayer1Right());
+        player1 = new Player(new Texture("src/resources/donald.png"),this.width,this.height,this.width / 2 - this.width/8,this.height / 4, Direction.RIGHT,"Jezis",
+                settings.getPlayer1Jump(), settings.getPlayer1Shoot(), settings.getPlayer1Left(), settings.getPlayer1Right(), "Player1");
         player2 = new Player(new Texture("src/resources/donald.png"),this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Direction.LEFT,"Kristus",
-                settings.getPlayer2Jump(), settings.getPlayer2Shoot(), settings.getPlayer2Left(), settings.getPlayer2Right()); //TODO Sorry for this
+                settings.getPlayer2Jump(), settings.getPlayer2Shoot(), settings.getPlayer2Left(), settings.getPlayer2Right(), "Player2"); //TODO Sorry for this
 
         this.objects.add(player1);
         this.objects.add(player2);

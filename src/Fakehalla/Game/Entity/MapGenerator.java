@@ -1,8 +1,6 @@
-package Fakehalla.Game;
+package Fakehalla.Game.Entity;
 
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,7 +9,7 @@ public class MapGenerator {
 
     private final double blocksWidth;
     private final double blocksHeight;
-    private final String filename = "src/resources/block.png";
+    private final String filename = "src/resources/stoneMid.png";
 
     private double gameWidth;
     private double gameHeight;
