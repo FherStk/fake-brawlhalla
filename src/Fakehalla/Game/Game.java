@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -117,7 +118,7 @@ public class Game  {
                 currentTime = System.currentTimeMillis();
                 double dt = (currentTime - prevTime ) * 0.1;
 
-                ArrayList<Updatable> objectsToRemove = new ArrayList<>();
+                ArrayList<Rectangle> objectsToRemove = new ArrayList<>();
                 for (Updatable u : objects)
                 {
                     u.update(dt,scene.getWidth(),scene.getHeight(),objects,blocks);
@@ -125,13 +126,15 @@ public class Game  {
                     {
                         if(!u.inBounds(scene.getWidth(),scene.getHeight(),0))
                         {
-                            objectsToRemove.add(u);
+                            objectsToRemove.add(((Shot) u).getBody());
                         }
                     }
 
                 }
                 objects.removeAll(objectsToRemove); //removing all shots out of bounds
+                group.getChildren().removeAll(objectsToRemove);
                 updateScoreBoard(player2.getScore(),player1.getScore());
+
 
                 if(player1.getScore() >= numberToWin)
                 {

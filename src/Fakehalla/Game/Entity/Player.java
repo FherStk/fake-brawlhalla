@@ -187,7 +187,6 @@ public class Player extends Entity implements Updatable {
 
     public Shot moveShot(double gameWidth)
     {
-        System.out.println("player position: " + this.getPosition());
         return new Shot(this.getPosition(),this.shotDirection,this.getWidth(),this.getHeight() / 2,this.getWidth(),this.getHeight());
     }
 
