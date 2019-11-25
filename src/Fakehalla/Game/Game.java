@@ -40,8 +40,8 @@ public class Game  {
     private Player player1;
     private Player player2;
 
-    private double prevTime;
-    private double currentTime;
+    private long prevTime;
+    private long currentTime;
 
     private boolean gameOver = false;
 
@@ -128,7 +128,7 @@ public class Game  {
                 ArrayList<Rectangle> objectsToRemove = new ArrayList<>();
                 for (Updatable u : objects)
                 {
-                    u.update(dt,scene.getWidth(),scene.getHeight(),objects,blocks);
+                    u.update(currentTime,dt,scene.getWidth(),scene.getHeight(),objects,blocks);
                     if(u instanceof Shot)
                     {
                         if(!u.inBounds(scene.getWidth(),scene.getHeight(),0))
@@ -190,7 +190,7 @@ public class Game  {
             if(key.getCode() == player1.getMoveLeftKey()) { player1.setMoveL(true);}
             if(key.getCode() == player1.getMoveShotKey())
             {
-                if(player1.moveShot(this.width) instanceof Shot)
+                if(player1.moveShot(this.width) instanceof Shot && player1.moveShot(this.width) != null)
                 {
                     Shot temp = player1.moveShot(this.width);
                     this.objects.add(temp);

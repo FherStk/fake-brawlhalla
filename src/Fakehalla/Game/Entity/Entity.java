@@ -43,7 +43,7 @@ public class Entity implements Updatable{ //abstract class
         setPosition(this.position);
     }
 
-    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
+    public void update(long currentTime,double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
     {
         setPosition(position.add(velocity.getDirection()));
     }

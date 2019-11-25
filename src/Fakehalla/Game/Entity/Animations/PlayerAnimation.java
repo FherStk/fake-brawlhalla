@@ -1,4 +1,7 @@
-package Fakehalla.Game.Entity;
+package Fakehalla.Game.Entity.Animations;
+
+import Fakehalla.Game.Entity.Direction;
+import Fakehalla.Game.Entity.Texture;
 
 public class PlayerAnimation {
     private Texture[] walk = new Texture[11];

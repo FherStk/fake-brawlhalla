@@ -1,5 +1,6 @@
 package Fakehalla.Game.Entity;
 
+import Fakehalla.Game.Entity.Animations.ShotAnimation;
 import Fakehalla.Game.Vector2D;
 import javafx.geometry.Point2D;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 public class Shot extends Entity implements Updatable{
     private double shotSpeed;
     private boolean hit;
+    private ShotAnimation shotAnimation;
     private final double shotToPlayer = 0.25;
     private final static String bulletFileName = "src/resources/bullet.png";
 
@@ -16,15 +18,18 @@ public class Shot extends Entity implements Updatable{
         super(startPosition,playerDirection,shotWidth,shotHeight);
         this.shotSpeed = 50;
         this.hit = true;
+        this.shotAnimation = new ShotAnimation(bulletFileName);
         setVelocity(new Vector2D(new Point2D(shotSpeed,0)));
         chooseFace();
         chooseStartPosition(playerWidth,playerHeight);
         setDefaultTexture(new Texture(bulletFileName));
+        this.setDefaultTexture(shotAnimation.getTexture(this.getDirection()));
     }
 
     @Override
-    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract,ArrayList<Block> gameObj)
+    public void update(long currentTime,double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract,ArrayList<Block> gameObj)
     {
+        this.getVelocity().add(gravity);
         this.getVelocity().multiply(dt);
         this.setPosition(this.getPosition().add(this.getVelocity().getDirection()));
     }
@@ -45,6 +50,11 @@ public class Shot extends Entity implements Updatable{
         {
             this.shotSpeed *= -1;
             setVelocity(new Vector2D(new Point2D(this.getVelocity().getDirection().getX()*-1,this.getVelocity().getDirection().getY())));
+            this.setDirection(Direction.LEFT);
+        }
+        else
+        {
+            this.setDirection(Direction.RIGHT);
         }
     }
 

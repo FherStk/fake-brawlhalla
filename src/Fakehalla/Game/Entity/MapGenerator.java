@@ -17,7 +17,7 @@ public class MapGenerator {
     public MapGenerator(double gameWidth, double gameHeight)
     {
         blocksWidth = gameWidth / 3;
-        blocksHeight = gameHeight / 20;
+        blocksHeight = blocksWidth * 0.1;
 
 
         this.gameHeight = gameHeight;

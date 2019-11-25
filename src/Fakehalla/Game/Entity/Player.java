@@ -1,10 +1,10 @@
 package Fakehalla.Game.Entity;
 
+import Fakehalla.Game.Entity.Animations.PlayerAnimation;
 import Fakehalla.Game.Vector2D;
 import  javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
@@ -42,7 +42,7 @@ public class Player extends Entity implements Updatable {
 
     public Player(Texture texture, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Direction direction,String playerName, KeyCode jump, KeyCode shoot, KeyCode left, KeyCode right, String animationResources)
     {
-        super(texture,new Point2D(defaultPosX,defaultPosY),direction,gameWidth/30,(gameHeight/15));
+        super(texture,new Point2D(defaultPosX,defaultPosY),direction,gameWidth/30,(gameWidth/30)*1.3);
         this.shotDirection = direction;
 
         if(direction == Direction.DOWN || direction == Direction.UP || direction == Direction.NONE)
@@ -50,7 +50,7 @@ public class Player extends Entity implements Updatable {
             this.shotDirection = Direction.RIGHT;
         }
         maxVelocity = new Vector2D(new Point2D(gameWidth / 150,gameHeight / 40));
-        jumpStrength = gameHeight/ 60;
+        jumpStrength = gameHeight/ 100;
         moveRightKey = right;
         moveLeftKey = left;
         moveJumpKey = jump;
@@ -68,7 +68,7 @@ public class Player extends Entity implements Updatable {
     }
 
     @Override
-    public void update(double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
+    public void update(long currentTime,double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
     {
         for(Updatable u : objToInteract) //interacting with shots
         {
@@ -191,7 +191,7 @@ public class Player extends Entity implements Updatable {
 
     public Shot moveShot(double gameWidth)
     {
-        return new Shot(this.getPosition(),this.shotDirection,this.getWidth(),this.getHeight() / 2,this.getWidth(),this.getHeight());
+        return new Shot(this.getPosition(),this.shotDirection,this.getWidth(),this.getHeight() / 2,(this.getHeight() / 2)*1.61,this.getHeight());
     }
 
     public void moveJump(double gameHeight)
