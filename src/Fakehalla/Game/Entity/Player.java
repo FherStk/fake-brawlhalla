@@ -76,7 +76,7 @@ public class Player extends Entity implements Updatable {
             {
                 if(isHit((Shot)u) && ((Shot) u).isHit())
                 {
-                    this.getVelocity().add(((Shot) u).getVelocity());
+                    this.getVelocity().add(new Vector2D(new Point2D(((Shot) u).getVelocity().getEnd().getX(),0)));
                     ((Shot) u).setHit(false);
                     this.shotsFired = true;
                 }
