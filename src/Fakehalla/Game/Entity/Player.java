@@ -17,7 +17,6 @@ public class Player extends Entity implements Updatable {
     private boolean moveL;
     private boolean moveS;
     private boolean justFell;
-    private boolean shotsFired;
     private int numberOfJumps;
     private int currentJump;
     private int numberOfFells = 0;
@@ -32,12 +31,6 @@ public class Player extends Entity implements Updatable {
 
     private double yCorOffset;
     private  final double jumpStrength;
-
-    //todo moving animations
-    private ArrayList<Texture> moveRightAnimation;
-    private ArrayList<Texture> moveLeftAnimation;
-    private ArrayList<Texture> moveJumpAnimation;
-    private ArrayList<Texture> moveShootAnimation;
 
 
     public Player(Texture texture, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Direction direction,String playerName, KeyCode jump, KeyCode shoot, KeyCode left, KeyCode right, String animationResources)
@@ -57,7 +50,7 @@ public class Player extends Entity implements Updatable {
         moveShotKey = shoot;
         numberOfJumps = 2;
         currentJump = numberOfJumps;
-        moveL = moveR = moveS = shotsFired = justFell = false;
+        moveL = moveR = moveS =  justFell = false;
         spawnPosition = this.getPosition();
         this.playerName = playerName;
         this.animationResources = "src/resources/PlayerAnimation/"+animationResources+"/";
@@ -70,30 +63,17 @@ public class Player extends Entity implements Updatable {
     @Override
     public void update(long currentTime,double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
     {
-        for(Updatable u : objToInteract) //interacting with shots
-        {
-            if(u instanceof Shot)
-            {
-                if(isHit((Shot)u) && ((Shot) u).isHit())
-                {
-                    this.getVelocity().add(new Vector2D(new Point2D(((Shot) u).getVelocity().getEnd().getX(),0)));
-                    ((Shot) u).setHit(false);
-                    this.shotsFired = true;
-                }
-            }
-        }
+        checkForCollision(objToInteract);
 
 
-        //dumping on the X axis
-
-        double dumping = dt /2;
-        if(dumping >= 1) {dumping = 0.9;}
-        this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX() * dumping,this.getVelocity().getDirection().getY()));
+        double dumping = dt /2; //dumping on the X axis
+        if(dumping >= 1) {dumping = 0.9;} //checking ig dumping isn't too high
+        this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX() * dumping,this.getVelocity().getDirection().getY())); //adding gravity to velocity
+        setPosition(this.getPosition().add(this.getVelocity().getDirection())); //setting player to his new location
 
         if(!isOnBlock(this.getVelocity().getDirection().getX(),this.getVelocity().getDirection().getY(),gameObj)) //falling
         {
             justFell = true;
-
             this.getVelocity().add(gravity); // adding gravity vector to player's velocity vector
             this.getVelocity().multiply(dt); // adjusting gravity in respect to dt
         }
@@ -101,22 +81,18 @@ public class Player extends Entity implements Updatable {
         {
             if(justFell) // once player hits the block for the first time
             {
-                this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX(),0));
+                this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX(),0)); // setting Y velocity to 0
             }
-            if(shotsFired) // is player is hit
-            {
-                setPosition(this.getPosition().add(this.getVelocity().getDirection().getX(),0));
-                shotsFired = false;
-            }
-            justFell = false;
-            currentJump = 0;
+
+            this.justFell = false;
+            this.currentJump = 0; //resetting jump
         }
-        setPosition(this.getPosition().add(this.getVelocity().getDirection())); //setting player to his new location
 
         if(!inBounds(gameWidth,gameHeight,0)) // if player falls off
         {
-            numberOfFells++;
-            setPosition(new Point2D(spawnPosition.getX(),0));
+            numberOfFells++; //counting how many times player fell off the map
+            this.getVelocity().setEnd(new Point2D(0,0)); //resetting the velocity
+            setPosition(new Point2D(spawnPosition.getX(),0));  //re-spawning
         }
 
         if(moveL) { moveLeft(dt,gameWidth,gameObj);}
@@ -292,5 +268,19 @@ public class Player extends Entity implements Updatable {
         }
         //System.out.println(this.getVelocity().getDirection().getX());
     }
-    //
+
+    private void checkForCollision(ArrayList<Updatable> objToInteract)
+    {
+        for(Updatable u : objToInteract) //interacting with shots
+        {
+            if(u instanceof Shot)
+            {
+                if(isHit((Shot)u) && ((Shot) u).isHit())
+                {
+                    this.getVelocity().add(new Vector2D(new Point2D(((Shot) u).getVelocity().getEnd().getX(),0)));
+                    ((Shot) u).setHit(false);
+                }
+            }
+        }
+    }
 }
