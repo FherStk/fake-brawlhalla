@@ -11,14 +11,11 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.AudioClip;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -242,8 +239,8 @@ public class Game  {
 
     private void createMap()
     {
-        MapGenerator mGen = new MapGenerator(this.width,this.height);
-        blocks = mGen.generateBlocks(1);
+        MapGenerator mGen = new MapGenerator();
+        blocks = mGen.generateBlocks(this.width,this.height);
         for(Block r : blocks)
         {
             group.getChildren().add(r.getBody());
