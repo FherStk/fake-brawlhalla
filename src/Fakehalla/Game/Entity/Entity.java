@@ -1,6 +1,6 @@
 package Fakehalla.Game.Entity;
 
-import Fakehalla.Game.Vector2D;
+import Fakehalla.Game.Utils.Vector2D;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Rectangle;
 
@@ -43,7 +43,7 @@ public class Entity implements Updatable{ //abstract class
         setPosition(this.position);
     }
 
-    public void update(long currentTime,double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
+    public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
     {
         setPosition(position.add(velocity.getDirection()));
     }

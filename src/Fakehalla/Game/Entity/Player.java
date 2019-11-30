@@ -1,7 +1,7 @@
 package Fakehalla.Game.Entity;
 
 import Fakehalla.Game.Entity.Animations.PlayerAnimation;
-import Fakehalla.Game.Vector2D;
+import Fakehalla.Game.Utils.Vector2D;
 import  javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.shape.Rectangle;
@@ -61,17 +61,16 @@ public class Player extends Entity implements Updatable {
     }
 
     @Override
-    public void update(long currentTime,double dt, double gameWidth, double gameHeight, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
+    public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
     {
         checkForCollision(objToInteract);
-
 
         double dumping = dt /2; //dumping on the X axis
         if(dumping >= 1) {dumping = 0.9;} //checking ig dumping isn't too high
         this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX() * dumping,this.getVelocity().getDirection().getY())); //adding gravity to velocity
         setPosition(this.getPosition().add(this.getVelocity().getDirection())); //setting player to his new location
 
-        if(!isOnBlock(this.getVelocity().getDirection().getX(),this.getVelocity().getDirection().getY(),gameObj)) //falling
+        if(!isOnBlock(this.getVelocity().getDirection().getX(),this.getVelocity().getDirection().getY(),gravity.getDirection().getY(),gameObj)) //falling
         {
             justFell = true;
             this.getVelocity().add(gravity); // adding gravity vector to player's velocity vector
@@ -135,12 +134,12 @@ public class Player extends Entity implements Updatable {
     public void setMoveS(boolean b) { this.moveS = b; }
 
 
-    private boolean isOnBlock(double stepX,double stepY,ArrayList<Block> gameObj)
+    private boolean isOnBlock(double stepX,double stepY,double gravityY,ArrayList<Block> gameObj)
     {
         for(Block e : gameObj)
         {
-            if(this.getPosition().getY() + this.getBody().getHeight() + stepY >= e.getBody().getY() && this.getPosition().getX() + this.getBody().getWidth()  > e.getBody().getX() && this.getPosition().getX()  < e.getBody().getX() + e.getWidth()
-                && this.getPosition().getY() + this.getBody().getHeight() <= e.getBody().getY() + 1 && this.getVelocity().getEnd().getY() >= 0)
+            if(this.getPosition().getY() + this.getBody().getHeight() + stepY >= e.getBody().getY() && this.getPosition().getX() + this.getBody().getWidth()  > e.getBody().getX() && this.getPosition().getX() + this.getWidth()*0.5  < e.getBody().getX() + e.getWidth()
+                && this.getPosition().getY() + this.getBody().getHeight() <= e.getBody().getY() + gravityY && this.getVelocity().getEnd().getY() >= 0)
             {
                 yCorOffset = e.getBody().getY() - (this.getPosition().getY() + this.getBody().getHeight());
                 return true;

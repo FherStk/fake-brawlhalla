@@ -1,10 +1,12 @@
 package Fakehalla.Game;
 
 import Fakehalla.Game.Entity.*;
+import Fakehalla.Game.Utils.Vector2D;
 import Fakehalla.Menu.Launcher;
 import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsLoader;
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -12,7 +14,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -36,6 +37,7 @@ public class Game  {
     private ArrayList<Block> blocks;
     private Player player1;
     private Player player2;
+    private Vector2D gravity;
 
     private long prevTime;
     private long currentTime;
@@ -72,13 +74,16 @@ public class Game  {
             {
             stage.setFullScreen(true);
             stage.setFullScreenExitHint("Press ESC to exit game");
-            scene.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-                if(e.getCode()== KeyCode.ESCAPE)
-                {
-                    stage.close();
-                }
-            });
         }
+
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
+            if(e.getCode()== KeyCode.ESCAPE)
+            {
+                System.out.println("Stop");
+                this.stopLoop();
+                stage.close();
+            }
+        });
 
         stage.setOnHiding( event -> {
             au.stop();
@@ -118,22 +123,22 @@ public class Game  {
         loop = new AnimationTimer() { // the game loop is implemented by AnimationTimer (built in javafx)
             @Override
             public void handle(long l) {
+                gravity = new Vector2D(new Point2D(0,scene.getHeight()*0.0008));
                 prevTime = currentTime;
                 currentTime = System.currentTimeMillis();
                 double dt = (currentTime - prevTime ) * 0.1;
 
-                ArrayList<Rectangle> objectsToRemove = new ArrayList<>();
+                ArrayList<Entity> objectsToRemove = new ArrayList<>();
                 for (Updatable u : objects)
                 {
-                    u.update(currentTime,dt,scene.getWidth(),scene.getHeight(),objects,blocks);
+                    u.update(currentTime,dt,scene.getWidth(),scene.getHeight(),gravity,objects,blocks);
                     if(u instanceof Shot)
                     {
                         if(!u.inBounds(scene.getWidth(),scene.getHeight(),0))
                         {
-                            objectsToRemove.add(((Shot) u).getBody());
+                            objectsToRemove.add(((Shot) u));
                         }
                     }
-
                 }
                 objects.removeAll(objectsToRemove); //removing all shots out of bounds
                 group.getChildren().removeAll(objectsToRemove);
