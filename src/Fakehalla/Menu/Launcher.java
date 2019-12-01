@@ -8,8 +8,8 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -182,14 +182,27 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         player2Buttons[2].setOnAction(e-> settingsScene.setOnKeyPressed(ek -> {settings.setPlayer2Right(ek.getCode()); player2Buttons[2].setText(settings.getPlayer2Right().toString());}));
 
         Text[] texts = new Text[3];
-        texts[0] = new Text("Width: ");
-        texts[1] = new Text("Height: ");
-        texts[2] = new Text("Fullscreen: ");
-        Text textSound = new Text("Sound:");
+        texts[0] = new Text("Resolution: ");
+        texts[1] = new Text("Fullscreen: ");
+        texts[2] = new Text("Sound: ");
+        //Text textSound = new Text("Sound:");
 
-        TextField[] textFields = new TextField[2];
+        /*TextField[] textFields = new TextField[2];
         textFields[0] = new TextField(Integer.toString(settings.getWidth()));
-        textFields[1] = new TextField(Integer.toString(settings.getHeight()));
+        textFields[1] = new TextField(Integer.toString(settings.getHeight()));*/
+
+        final ComboBox resolutionsComboBox = new ComboBox();
+        resolutionsComboBox.getItems().addAll(
+                "854x480",
+                "1024x576",
+                "1280x720",
+                "1366x768",
+                "1600x900",
+                "1920x1080",
+                "2560x1440",
+                "3840x2160"
+        );
+        resolutionsComboBox.setValue(settings.getWidth()+"x"+settings.getHeight());
 
         CheckBox checkboxFullscreen = new CheckBox();
         checkboxFullscreen.setSelected(settings.isFullscreen());
@@ -199,25 +212,25 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         Button[] buttons = new Button[2];
         buttons[0] = new Button("Save");
         buttons[0].setOnAction(e -> {
-            if (textFields[0].getText().matches("[0-9]*") && textFields[1].getText().matches("[0-9]*")) {
-                settings.setResolution(Integer.parseInt(textFields[0].getText()),Integer.parseInt(textFields[1].getText()),checkboxFullscreen.isSelected());
-                settings.setSound(checkboxsound.isSelected());
-                SettingsSaver settingsSaver = new SettingsSaver();
-                try {
-                    settingsSaver.saveSettings("settings.txt", settings);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            else{
-                textFields[0].setText(Integer.toString(settings.getWidth()));
-                textFields[1].setText(Integer.toString(settings.getHeight()));
-                checkboxFullscreen.setSelected(settings.isFullscreen());
+
+            String resolution = resolutionsComboBox.getValue().toString();
+            int posX = resolution.indexOf("x");
+            int width = Integer.parseInt(resolution.substring(0, posX));
+            int height = Integer.parseInt(resolution.substring(posX+1));
+
+            settings.setResolution(width, height ,checkboxFullscreen.isSelected());
+            settings.setSound(checkboxsound.isSelected());
+            SettingsSaver settingsSaver = new SettingsSaver();
+            try {
+                settingsSaver.saveSettings("settings.txt", settings);
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
             stage.setScene(defaultScene);
         });
 
         buttons[0].setStyle("-fx-font-size: 1.5em;");
+        resolutionsComboBox.setStyle("-fx-font-size: 1.5em;");
 
         buttons[1] = new Button("Close");
         buttons[1].setStyle("-fx-font-size: 1.5em;");
@@ -251,21 +264,18 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         gridPane.add(label, 3,8);
         for (int i = 0; i < 2; i++) {
             texts[i].setStyle("-fx-font-size: 2em;");
-            textFields[i].setStyle("-fx-font-size: 1.5em;");
-            textFields[i].setMaxWidth(100);
             gridPane.add(texts[i],0,i);
-            gridPane.add(textFields[i], 1, i);
-            gridPane.add(buttons[i], i,4);
+            gridPane.add(buttons[i], i,3);
         }
-        textSound.setStyle("-fx-font-size: 2em;");
-        gridPane.add(textSound,0,3);
-
+        gridPane.add(resolutionsComboBox, 1,0);
+        //textSound.setStyle("-fx-font-size: 2em;");
+        //gridPane.add(textSound,0,3);
         texts[2].setStyle("-fx-font-size: 2em;");
         checkboxFullscreen.setStyle("-fx-font-size: 2em;");
         gridPane.add(texts[2], 0, 2);
-        gridPane.add(checkboxFullscreen, 1, 2);
+        gridPane.add(checkboxFullscreen, 1, 1);
         checkboxsound.setStyle("-fx-font-size: 2em;");
-        gridPane.add(checkboxsound, 1, 3);
+        gridPane.add(checkboxsound, 1, 2);
         return(new Scene(gridPane, 800,600));
 
     }
