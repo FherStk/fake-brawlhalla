@@ -9,10 +9,8 @@ import javafx.scene.image.ImageView;
 import java.io.IOException;
 
 public class BackgroundImageView extends ImageView {
-    private Rectangle2D croppedPortion;
     private Settings settings;
     int width, height;
-    double move;
     public BackgroundImageView(Image image) throws IOException, ClassNotFoundException {
         super(image);
         this.settings = new SettingsLoader().loadSettings("settings.txt");
@@ -25,7 +23,6 @@ public class BackgroundImageView extends ImageView {
     }
 
     public void update(double speed, int offset){
-        croppedPortion = new Rectangle2D(speed%(width-offset), 0, width, height);
-        this.setViewport(croppedPortion);
+        this.setViewport(new Rectangle2D(speed%(width-offset), 0, width, height));
     }
 }

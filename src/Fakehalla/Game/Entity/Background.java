@@ -41,9 +41,9 @@ public class Background implements Updatable {
 
     @Override
     public void update(long currentTime, double dt, double gameWidth, double gameHeight, Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj) {
-        mountains.update(gameWidth/2000*(currentTime/16),0);
-        trees.update(gameWidth/2000*(currentTime/12),0);
-        foreground.update(gameWidth/2000*(currentTime/8),(int) gameWidth/32); //bulgarian constant, because of bugged model
+        mountains.update((gameWidth*0.0005)*(currentTime*0.0625),0);
+        trees.update((gameWidth*0.0005)*(currentTime*0.08),0);
+        foreground.update((gameWidth*0.0005)*(currentTime*0.125),(int) gameWidth/32); //bulgarian constant, because of bugged model
     }
 
     @Override
