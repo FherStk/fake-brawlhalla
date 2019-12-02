@@ -90,11 +90,10 @@ public class Game  {
             Launcher launcher = null;
             try {
                 launcher = new Launcher(new Stage());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
+            assert launcher != null;
             launcher.run();} );
 
 
@@ -127,7 +126,6 @@ public class Game  {
                 prevTime = currentTime;
                 currentTime = System.currentTimeMillis();
                 double dt = (currentTime - prevTime ) * 0.1;
-
                 ArrayList<Entity> objectsToRemove = new ArrayList<>();
                 for (Updatable u : objects)
                 {
@@ -161,8 +159,8 @@ public class Game  {
         stage.show();
     }
 
-    public void startLoop() {loop.start();}
-    public void stopLoop() {
+    private void startLoop() {loop.start();}
+    private void stopLoop() {
         System.out.println("game over");
         gameOver = true;
         loop.stop();
@@ -192,7 +190,7 @@ public class Game  {
             if(key.getCode() == player1.getMoveLeftKey()) { player1.setMoveL(true);}
             if(key.getCode() == player1.getMoveShotKey())
             {
-                if(player1.moveShot(this.width) instanceof Shot && player1.moveShot(this.width) != null)
+                if(player1.moveShot(this.width) != null && player1.moveShot(this.width) != null)
                 {
                     Shot temp = player1.moveShot(this.width);
                     this.objects.add(temp);
@@ -213,14 +211,14 @@ public class Game  {
             if(key.getCode() == player2.getMoveLeftKey()) { player2.setMoveL(true);}
             if(key.getCode() == player2.getMoveShotKey())
             {
-                if(player2.moveShot(this.width) instanceof Shot)
+                if(player2.moveShot(this.width) != null)
                 {
                     Shot temp = player2.moveShot(this.width);
                     this.objects.add(temp);
                     group.getChildren().add(temp.getBody());
                 }
             }
-            if(key.getCode() == player2.getMoveJumpKey()) { player2.moveJump(scene.getHeight()); }
+            if(key.getCode() == player2.getMoveJumpKey()) {  player2.moveJump(scene.getHeight()); }
         });
         scene.addEventHandler(KeyEvent.KEY_RELEASED, (key)->
         {
@@ -234,7 +232,7 @@ public class Game  {
 
     }
 
-    public AudioClip startMusic(boolean startMusic)
+    private AudioClip startMusic(boolean startMusic)
     {
         AudioClip au = new AudioClip(Game.class.getResource("sound.mp3").toString());
         if (startMusic)

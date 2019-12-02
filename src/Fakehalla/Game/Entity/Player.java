@@ -31,6 +31,9 @@ public class Player extends Entity implements Updatable {
 
     private double yCorOffset;
     private  final double jumpStrength;
+    private final int shotDelay = 1000;
+
+    private long shotTime;
 
 
     public Player(Texture texture, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Direction direction,String playerName, KeyCode jump, KeyCode shoot, KeyCode left, KeyCode right, String animationResources)
@@ -63,11 +66,11 @@ public class Player extends Entity implements Updatable {
     @Override
     public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
     {
-        checkForCollision(objToInteract);
 
         double dumping = dt /2; //dumping on the X axis
         if(dumping >= 1) {dumping = 0.9;} //checking ig dumping isn't too high
         this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX() * dumping,this.getVelocity().getDirection().getY())); //adding gravity to velocity
+        checkForCollision(objToInteract);
         setPosition(this.getPosition().add(this.getVelocity().getDirection())); //setting player to his new location
 
         if(!isOnBlock(this.getVelocity().getDirection().getX(),this.getVelocity().getDirection().getY(),gravity.getDirection().getY(),gameObj)) //falling
@@ -96,7 +99,6 @@ public class Player extends Entity implements Updatable {
 
         if(moveL) { moveLeft(dt,gameWidth,gameObj);}
         else if(moveR) {moveRight(dt,gameWidth,gameObj);}
-        if(moveS) {moveShot(gameWidth);}
 
         Texture oldDirection = this.getDefaultTexture();
         checkVelocity(this.maxVelocity);
@@ -138,7 +140,7 @@ public class Player extends Entity implements Updatable {
     {
         for(Block e : gameObj)
         {
-            if(this.getPosition().getY() + this.getBody().getHeight() + stepY >= e.getBody().getY() && this.getPosition().getX() + this.getBody().getWidth()  > e.getBody().getX() && this.getPosition().getX() + this.getWidth()*0.5  < e.getBody().getX() + e.getWidth()
+            if(this.getPosition().getY() + this.getBody().getHeight() + stepY >= e.getBody().getY() && this.getPosition().getX() + this.getBody().getWidth()*0.5  > e.getBody().getX() && this.getPosition().getX() + this.getWidth()*0.5  < e.getBody().getX() + e.getWidth()
                 && this.getPosition().getY() + this.getBody().getHeight() <= e.getBody().getY() + gravityY && this.getVelocity().getEnd().getY() >= 0)
             {
                 yCorOffset = e.getBody().getY() - (this.getPosition().getY() + this.getBody().getHeight());
@@ -175,10 +177,6 @@ public class Player extends Entity implements Updatable {
         {
             this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX(),-1*jumpStrength));
             currentJump ++;
-            if(currentJump == numberOfJumps)
-            {
-                currentJump = numberOfJumps;
-            }
         }
     }
 
@@ -276,7 +274,7 @@ public class Player extends Entity implements Updatable {
             {
                 if(isHit((Shot)u) && ((Shot) u).isHit())
                 {
-                    this.getVelocity().add(new Vector2D(new Point2D(((Shot) u).getVelocity().getEnd().getX(),0)));
+                    this.getVelocity().add(new Vector2D(new Point2D(((Shot) u).getVelocity().getDirection().getX(),0)));
                     ((Shot) u).setHit(false);
                 }
             }

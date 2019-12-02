@@ -29,10 +29,9 @@ public class Shot extends Entity implements Updatable{
     @Override
     public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract,ArrayList<Block> gameObj)
     {
-        this.getVelocity().add(gravity);
+        //this.getVelocity().add(gravity);
         this.getVelocity().multiply(dt);
         this.setPosition(this.getPosition().add(this.getVelocity().getDirection()));
-        System.out.println(this.getPosition());
     }
 
     @Override
