@@ -4,18 +4,12 @@ import Fakehalla.Game.Entity.Animations.BackgroundAnimation;
 import Fakehalla.Game.Utils.Vector2D;
 import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Rectangle;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Background implements Updatable {
     private BackgroundAnimation background;
@@ -26,8 +20,6 @@ public class Background implements Updatable {
     private StackPane out;
     private Settings settings;
     private int width, height;
-    private int minx = 0;
-        /**/
 
 
     public Background() throws IOException, ClassNotFoundException {
@@ -39,7 +31,7 @@ public class Background implements Updatable {
         mountain_far = new BackgroundAnimation(new Image("resources/layers/parallax-mountain-montain-far.png",width,height,false,false));
         mountains = new BackgroundAnimation(new Image("resources/layers/parallax-mountain-mountains.png",width*2,height,false,false));
         trees = new BackgroundAnimation(new Image("resources/layers/parallax-mountain-trees.png",width*2,height,false,false));
-        //out = new StackPane(foreground);
+
         out = new StackPane(background, mountain_far, mountains, trees, foreground);
     }
 
@@ -49,12 +41,9 @@ public class Background implements Updatable {
 
     @Override
     public void update(long currentTime, double dt, double gameWidth, double gameHeight, Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj) {
-        mountains.update(currentTime/3);
-        trees.update(currentTime/2);
-        foreground.update(currentTime/3);
-
-
-        //out = new StackPane(background,foreground);
+        mountains.update(currentTime/16,0);
+        trees.update(currentTime/12,0);
+        foreground.update(currentTime/8,(int) gameWidth/32); //bulgarian constant, because of bugged model
     }
 
     @Override

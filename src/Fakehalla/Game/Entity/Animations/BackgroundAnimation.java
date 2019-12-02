@@ -12,6 +12,7 @@ public class BackgroundAnimation extends ImageView {
     private Rectangle2D croppedPortion;
     private Settings settings;
     int width, height;
+    double move;
     public BackgroundAnimation(Image image) throws IOException, ClassNotFoundException {
         super(image);
         this.settings = new SettingsLoader().loadSettings("settings.txt");
@@ -23,8 +24,8 @@ public class BackgroundAnimation extends ImageView {
         this.setViewport(new Rectangle2D(0, 0, width, height));
     }
 
-    public void update(long currentTime){
-        croppedPortion = new Rectangle2D(currentTime%width, 0, width, height);
+    public void update(long speed, int offset){
+        croppedPortion = new Rectangle2D(speed%(width-offset), 0, width, height);
         this.setViewport(croppedPortion);
     }
 }

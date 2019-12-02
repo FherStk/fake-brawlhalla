@@ -48,8 +48,7 @@ public class Game  {
 
     public Game(String title,double w, double h,boolean fullscreen) throws IOException, ClassNotFoundException // dev constructor
     {
-        SettingsLoader settingsLoader = new SettingsLoader();
-        settings = settingsLoader.loadSettings("settings.txt");
+        settings = new SettingsLoader().loadSettings("settings.txt");
         width = settings.getWidth();
         height = settings.getHeight();
         stage = new Stage();
