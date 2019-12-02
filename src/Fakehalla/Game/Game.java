@@ -102,7 +102,7 @@ public class Game  {
 
     }
 
-    public Game(Stage stage) // ready constructor (i hope)
+    public Game(Stage stage) throws IOException, ClassNotFoundException // ready constructor (i hope)
     {
         this.stage = stage;
         group = new Group();
@@ -246,9 +246,8 @@ public class Game  {
         return au;
     }
 
-    private void createMap()
-    {
-        background = new Background(settings.getWidth(), settings.getHeight());
+    private void createMap() throws IOException, ClassNotFoundException {
+        background = new Background();
         group.getChildren().add(background.getBackground());
         group.getChildren().get(0).toBack();
 

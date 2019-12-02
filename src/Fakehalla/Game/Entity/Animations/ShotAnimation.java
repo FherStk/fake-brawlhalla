@@ -4,22 +4,22 @@ import Fakehalla.Game.Entity.Direction;
 import Fakehalla.Game.Entity.Texture;
 
 public class ShotAnimation {
-    private Texture right;
+    private Texture texture;
 
     public ShotAnimation(String filename){
-        this.right = new Texture(filename);
+        this.texture = new Texture(filename);
     }
 
     public Texture getTexture(Direction direction){
         if(direction == Direction.LEFT) {
-            if (!right.isMirrored())
-                right.mirror();
-            return right;
+            if (!texture.isMirrored())
+                texture.mirror();
+            return texture;
         }
         else  {
-            if (right.isMirrored())
-                right.mirror();
-            return right;
+            if (texture.isMirrored())
+                texture.mirror();
+            return texture;
     }
     }
 }
