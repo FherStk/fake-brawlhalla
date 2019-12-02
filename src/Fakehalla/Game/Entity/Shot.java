@@ -11,18 +11,18 @@ public class Shot extends Entity implements Updatable{
     private boolean hit;
     private ShotAnimation shotAnimation;
     private final double shotToPlayer = 0.25;
-    private final static String bulletFileName = "src/resources/bullet.png";
+    //private final static String bulletFileName = "src/resources/bullet.png";
 
-    public Shot(Point2D startPosition,Direction playerDirection, double shotWidth,double shotHeight,double playerWidth, double playerHeight)
+    public Shot(Point2D startPosition,Direction playerDirection, double shotWidth,double shotHeight,double playerWidth, double playerHeight, String bulletFileName)
     {
         super(startPosition,playerDirection,shotWidth,shotHeight);
         this.shotSpeed = playerWidth-1;
         this.hit = true;
-        this.shotAnimation = new ShotAnimation(bulletFileName);
+        this.shotAnimation = new ShotAnimation(bulletFileName+"bullet.png");
         setVelocity(new Vector2D(new Point2D(shotSpeed,0)));
         chooseFace();
         chooseStartPosition(playerWidth,playerHeight);
-        setDefaultTexture(new Texture(bulletFileName));
+        setDefaultTexture(new Texture(bulletFileName+"bullet.png"));
         this.setDefaultTexture(shotAnimation.getTexture(this.getDirection()));
     }
 

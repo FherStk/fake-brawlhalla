@@ -55,7 +55,7 @@ public class PlayerAnimation {
                 if(!walk[(index/7)%11].isMirrored())
                     walk[(index/7)%11].mirror();
                 return oldTexture = walk[(index/7)%11];
-            } //TODO change index according to speed
+            }
 
         }
     }
