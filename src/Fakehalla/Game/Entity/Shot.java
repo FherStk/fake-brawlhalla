@@ -3,6 +3,7 @@ package Fakehalla.Game.Entity;
 import Fakehalla.Game.Entity.Animations.ShotAnimation;
 import Fakehalla.Game.Utils.Vector2D;
 import javafx.geometry.Point2D;
+import javafx.scene.media.AudioClip;
 
 import java.util.ArrayList;
 
@@ -70,4 +71,5 @@ public class Shot extends Entity implements Updatable{
             this.setPosition(new Point2D(this.getPosition().getX() + playerWidth + 1, this.getPosition().getY()+ playerHeight*shotToPlayer ));
         }
     }
+
 }

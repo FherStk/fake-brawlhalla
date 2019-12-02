@@ -170,8 +170,7 @@ public class Game  {
         loop.stop();
     }
 
-    private void createScene()
-    {
+    private void createScene() throws IOException, ClassNotFoundException {
 
         scene = new Scene(group);
         scene.setFill(Color.LIGHTGRAY);
@@ -239,7 +238,8 @@ public class Game  {
 
     public AudioClip startMusic(boolean startMusic)
     {
-        AudioClip au = new AudioClip(Game.class.getResource("sound.mp3").toString());
+        //System.out.println(Game.class.getResource("sound.mp3").toString());
+        AudioClip au = new AudioClip("file:src/resources/sounds/sound.mp3");
         if (startMusic)
             au.play();
         return au;
