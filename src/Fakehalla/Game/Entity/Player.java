@@ -2,17 +2,21 @@ package Fakehalla.Game.Entity;
 
 import Fakehalla.Game.Entity.Animations.PlayerAnimation;
 import Fakehalla.Game.Utils.Vector2D;
+import Fakehalla.Settings.Settings;
+import Fakehalla.Settings.SettingsLoader;
 import  javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
+import javafx.scene.media.AudioClip;
 import javafx.scene.shape.Rectangle;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Player extends Entity implements Updatable {
     private Point2D spawnPosition;
     private Vector2D maxVelocity;
     private Direction shotDirection; // passing this to shot constructor
-
+    private Settings settings;
     private boolean moveR;
     private boolean moveL;
     private boolean moveS;
@@ -31,13 +35,9 @@ public class Player extends Entity implements Updatable {
 
     private double yCorOffset;
     private  final double jumpStrength;
-    private final int shotDelay = 1000;
-
-    private long shotTime;
 
 
-    public Player(Texture texture, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Direction direction,String playerName, KeyCode jump, KeyCode shoot, KeyCode left, KeyCode right, String animationResources)
-    {
+    public Player(Texture texture, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Direction direction,String playerName, KeyCode jump, KeyCode shoot, KeyCode left, KeyCode right, String animationResources) throws IOException, ClassNotFoundException {
         super(texture,new Point2D(defaultPosX,defaultPosY),direction,gameWidth/30,(gameWidth/30)*1.3);
         this.shotDirection = direction;
 
@@ -61,16 +61,18 @@ public class Player extends Entity implements Updatable {
         this.setVelocity(new Vector2D(new Point2D(0,1))); // direction of the gravity.. straight down (0,1) vector
 
         this.playerAnimation = new PlayerAnimation(this.animationResources);
+
+        settings = new SettingsLoader().loadSettings("settings.txt");
     }
 
     @Override
     public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
     {
+        checkForCollision(objToInteract);
 
         double dumping = dt /2; //dumping on the X axis
         if(dumping >= 1) {dumping = 0.9;} //checking ig dumping isn't too high
         this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX() * dumping,this.getVelocity().getDirection().getY())); //adding gravity to velocity
-        checkForCollision(objToInteract);
         setPosition(this.getPosition().add(this.getVelocity().getDirection())); //setting player to his new location
 
         if(!isOnBlock(this.getVelocity().getDirection().getX(),this.getVelocity().getDirection().getY(),gravity.getDirection().getY(),gameObj)) //falling
@@ -99,6 +101,7 @@ public class Player extends Entity implements Updatable {
 
         if(moveL) { moveLeft(dt,gameWidth,gameObj);}
         else if(moveR) {moveRight(dt,gameWidth,gameObj);}
+        if(moveS) {moveShot(gameWidth);}
 
         Texture oldDirection = this.getDefaultTexture();
         checkVelocity(this.maxVelocity);
@@ -140,7 +143,7 @@ public class Player extends Entity implements Updatable {
     {
         for(Block e : gameObj)
         {
-            if(this.getPosition().getY() + this.getBody().getHeight() + stepY >= e.getBody().getY() && this.getPosition().getX() + this.getBody().getWidth()*0.5  > e.getBody().getX() && this.getPosition().getX() + this.getWidth()*0.5  < e.getBody().getX() + e.getWidth()
+            if(this.getPosition().getY() + this.getBody().getHeight() + stepY >= e.getBody().getY() && this.getPosition().getX() + this.getBody().getWidth()  > e.getBody().getX() && this.getPosition().getX() + this.getWidth()*0.5  < e.getBody().getX() + e.getWidth()
                 && this.getPosition().getY() + this.getBody().getHeight() <= e.getBody().getY() + gravityY && this.getVelocity().getEnd().getY() >= 0)
             {
                 yCorOffset = e.getBody().getY() - (this.getPosition().getY() + this.getBody().getHeight());
@@ -168,7 +171,11 @@ public class Player extends Entity implements Updatable {
 
     public Shot moveShot(double gameWidth)
     {
-        return new Shot(this.getPosition(),this.shotDirection,this.getWidth(),this.getHeight() / 2,(this.getHeight() / 2)*1.61,this.getHeight());
+        if(settings.isSound())
+        {
+            playSound("laser.wav", 0.1);
+        }
+        return new Shot(this.getPosition(),this.shotDirection,this.getWidth(),this.getHeight() / 2,(this.getHeight() / 2)*1.61,this.getHeight(), this.animationResources);
     }
 
     public void moveJump(double gameHeight)
@@ -177,6 +184,14 @@ public class Player extends Entity implements Updatable {
         {
             this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX(),-1*jumpStrength));
             currentJump ++;
+            if(currentJump == numberOfJumps)
+            {
+                currentJump = numberOfJumps;
+            }
+            if(settings.isSound())
+            {
+                playSound("jump.wav", 1);
+            }
         }
     }
 
@@ -274,10 +289,16 @@ public class Player extends Entity implements Updatable {
             {
                 if(isHit((Shot)u) && ((Shot) u).isHit())
                 {
-                    this.getVelocity().add(new Vector2D(new Point2D(((Shot) u).getVelocity().getDirection().getX(),0)));
+                    this.getVelocity().add(new Vector2D(new Point2D(((Shot) u).getVelocity().getEnd().getX(),0)));
                     ((Shot) u).setHit(false);
                 }
             }
         }
+    }
+
+    private void playSound(String path, double volume){
+        AudioClip au = new AudioClip("file:src/resources/sounds/"+path);
+        au.setVolume(volume);
+        au.play();
     }
 }

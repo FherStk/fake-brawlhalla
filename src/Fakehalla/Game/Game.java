@@ -14,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -30,6 +31,7 @@ public class Game  {
     private int numberToWin = 10;
     private String fontName = "Verdana";
     private Settings settings;
+    private Background background;
 
     private double width;
     private double height;
@@ -46,8 +48,7 @@ public class Game  {
 
     public Game(String title,double w, double h,boolean fullscreen) throws IOException, ClassNotFoundException // dev constructor
     {
-        SettingsLoader settingsLoader = new SettingsLoader();
-        settings = settingsLoader.loadSettings("settings.txt");
+        settings = new SettingsLoader().loadSettings("settings.txt");
         width = settings.getWidth();
         height = settings.getHeight();
         stage = new Stage();
@@ -99,7 +100,7 @@ public class Game  {
 
     }
 
-    public Game(Stage stage) // ready constructor (i hope)
+    public Game(Stage stage) throws IOException, ClassNotFoundException // ready constructor (i hope)
     {
         this.stage = stage;
         group = new Group();
@@ -122,6 +123,7 @@ public class Game  {
         loop = new AnimationTimer() { // the game loop is implemented by AnimationTimer (built in javafx)
             @Override
             public void handle(long l) {
+
                 gravity = new Vector2D(new Point2D(0,scene.getHeight()*0.0008));
                 prevTime = currentTime;
                 currentTime = System.currentTimeMillis();
@@ -166,11 +168,10 @@ public class Game  {
         loop.stop();
     }
 
-    private void createScene()
-    {
+    private void createScene() throws IOException, ClassNotFoundException {
+
         scene = new Scene(group);
         scene.setFill(Color.LIGHTGRAY);
-
         scoreBoard = new Label("0 : 0");
         scoreBoard.setFont(new Font(fontName,width / 20));
         scoreBoard.setMinSize(width / 10,height/20);
@@ -181,9 +182,9 @@ public class Game  {
         player2 = new Player(new Texture("src/resources/donald.png"),this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Direction.LEFT,"Kristus",
                 settings.getPlayer2Jump(), settings.getPlayer2Shoot(), settings.getPlayer2Left(), settings.getPlayer2Right(), "Player2"); //TODO Sorry for this
 
+        this.objects.add(background);
         this.objects.add(player1);
         this.objects.add(player2);
-
         scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) ->
         {
             if(key.getCode() == player1.getMoveRightKey()) { player1.setMoveR(true);}
@@ -226,6 +227,7 @@ public class Game  {
             if(key.getCode() == player2.getMoveLeftKey()) { player2.setMoveL(false);}
         });
 
+
         group.getChildren().add(player2.getBody());
         group.getChildren().add(player1.getBody());
         group.getChildren().add(scoreBoard);
@@ -234,14 +236,18 @@ public class Game  {
 
     private AudioClip startMusic(boolean startMusic)
     {
-        AudioClip au = new AudioClip(Game.class.getResource("sound.mp3").toString());
+        //System.out.println(Game.class.getResource("sound.mp3").toString());
+        AudioClip au = new AudioClip("file:src/resources/sounds/sound.mp3");
         if (startMusic)
             au.play();
         return au;
     }
 
-    private void createMap()
-    {
+    private void createMap() throws IOException, ClassNotFoundException {
+        background = new Background();
+        group.getChildren().add(background.getBackground());
+        group.getChildren().get(0).toBack();
+
         MapGenerator mGen = new MapGenerator();
         blocks = mGen.generateBlocks(this.width,this.height);
         for(Block r : blocks)
