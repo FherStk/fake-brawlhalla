@@ -7,7 +7,6 @@ import Fakehalla.Settings.SettingsLoader;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 

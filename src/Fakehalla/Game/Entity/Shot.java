@@ -3,7 +3,6 @@ package Fakehalla.Game.Entity;
 import Fakehalla.Game.Entity.Animations.ShotAnimation;
 import Fakehalla.Game.Utils.Vector2D;
 import javafx.geometry.Point2D;
-import javafx.scene.media.AudioClip;
 
 import java.util.ArrayList;
 

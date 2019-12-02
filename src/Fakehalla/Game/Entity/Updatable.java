@@ -1,7 +1,6 @@
 package Fakehalla.Game.Entity;
 
 import Fakehalla.Game.Utils.Vector2D;
-import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
 

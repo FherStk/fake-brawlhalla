@@ -4,7 +4,7 @@ import Fakehalla.Game.Entity.Animations.PlayerAnimation;
 import Fakehalla.Game.Utils.Vector2D;
 import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsLoader;
-import  javafx.geometry.Point2D;
+import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.media.AudioClip;
 import javafx.scene.shape.Rectangle;
