@@ -6,11 +6,42 @@ import javafx.stage.Screen;
 
 import java.io.Serializable;
 
-public class Settings implements Serializable { //TODO use this for dynamic resolution change
+public class Settings implements Serializable {
     private int width, height;
     private boolean fullscreen, sound;
-    private KeyCode player1Jump, player1Shoot, player1Left, player1Right;
-    private KeyCode player2Jump, player2Shoot, player2Left, player2Right;
+    private PlayerSettings player1;
+    private PlayerSettings player2;
+    private String player1Resources;
+    private String player2Resources;
+
+    public void setPlayer1Resources(String player1Resources) {
+        this.player1Resources = player1Resources;
+    }
+
+    public void setPlayer2Resources(String player2Resources) {
+        this.player2Resources = player2Resources;
+    }
+
+    public String getPlayer1Resources() {
+        return player1Resources;
+    }
+
+    public String getPlayer2Resources() {
+        return player2Resources;
+    }
+
+    public PlayerSettings getPlayer1() {
+        return player1;
+    }
+
+    public PlayerSettings getPlayer2() {
+        return player2;
+    }
+
+    public Settings() {
+        this.player1 = new PlayerSettings();
+        this.player2 = new PlayerSettings();
+    }
 
     public void setSound(boolean sound) {
         this.sound = sound;
@@ -34,35 +65,35 @@ public class Settings implements Serializable { //TODO use this for dynamic reso
     }
 
     public void setPlayer1Jump(KeyCode player1Jump) {
-        this.player1Jump = player1Jump;
+        this.player1.setJump(player1Jump);
     }
 
     public void setPlayer1Shoot(KeyCode player1Shoot) {
-        this.player1Shoot = player1Shoot;
+        this.player1.setShoot(player1Shoot);
     }
 
     public void setPlayer1Left(KeyCode player1Left) {
-        this.player1Left = player1Left;
+        this.player1.setLeft(player1Left);
     }
 
     public void setPlayer1Right(KeyCode player1Right) {
-        this.player1Right = player1Right;
+        this.player1.setRight(player1Right);
     }
 
     public void setPlayer2Jump(KeyCode player2Jump) {
-        this.player2Jump = player2Jump;
+        this.player2.setJump(player2Jump);
     }
 
     public void setPlayer2Shoot(KeyCode player2Shoot) {
-        this.player2Shoot = player2Shoot;
+        this.player2.setShoot(player2Shoot);
     }
 
     public void setPlayer2Left(KeyCode player2Left) {
-        this.player2Left = player2Left;
+        this.player2.setLeft(player2Left);
     }
 
     public void setPlayer2Right(KeyCode player2Right) {
-        this.player2Right = player2Right;
+        this.player2.setRight(player2Right);
     }
 
     public int getWidth() {
@@ -78,48 +109,40 @@ public class Settings implements Serializable { //TODO use this for dynamic reso
     }
 
     public KeyCode getPlayer1Jump() {
-        return player1Jump;
+        return player1.getJump();
     }
 
     public KeyCode getPlayer1Shoot() {
-        return player1Shoot;
+        return player1.getShoot();
     }
 
     public KeyCode getPlayer1Left() {
-        return player1Left;
+        return player1.getLeft();
     }
 
     public KeyCode getPlayer1Right() {
-        return player1Right;
+        return player1.getRight();
     }
 
     public KeyCode getPlayer2Jump() {
-        return player2Jump;
+        return player2.getJump();
     }
 
     public KeyCode getPlayer2Shoot() {
-        return player2Shoot;
+        return player2.getShoot();
     }
 
-    public KeyCode getPlayer2Left() {
-        return player2Left;
-    }
+    public KeyCode getPlayer2Left() {  return player2.getLeft();  }
 
     public KeyCode getPlayer2Right() {
-        return player2Right;
+        return player2.getRight();
     }
 
     public void setPlayer1Controls(KeyCode jump, KeyCode left, KeyCode right, KeyCode shoot) {
-        this.player1Jump = jump;
-        this.player1Shoot = left;
-        this.player1Right = right;
-        this.player1Left = shoot;
+        this.player1.set(jump, shoot, left, right);
     }
 
     public void setPlayer2Controls(KeyCode jump, KeyCode left, KeyCode right, KeyCode shoot) {
-        this.player2Jump = jump;
-        this.player2Shoot = left;
-        this.player2Right = right;
-        this.player2Left = shoot;
+        this.player2.set(jump, shoot, left, right);
     }
 }

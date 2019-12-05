@@ -3,7 +3,7 @@ package Fakehalla.Game.Entity.Animations;
 import Fakehalla.Game.Entity.Direction;
 import Fakehalla.Game.Entity.Texture;
 
-public class PlayerAnimation {
+public class PlayerSkin {
     private Texture[] walk = new Texture[11];
     private Texture stand; //front.png
     private Texture fall; //hurt.png
@@ -12,7 +12,7 @@ public class PlayerAnimation {
     private int index = 0;
 
 
-    public PlayerAnimation(String animationResources){
+    public PlayerSkin(String animationResources){
         for (int i = 0; i < 11; i++) {
             this.walk[i] = new Texture(animationResources+"walk/walk"+Integer.toString(i+1)+".png");
         }
