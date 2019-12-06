@@ -177,9 +177,9 @@ public class Game  {
         scoreBoard.setTranslateX(width/2 - scoreBoard.getMinWidth()/2);
 
         player1 = new Player(new Texture("src/resources/donald.png"),this.width,this.height,this.width / 2 - this.width/8,this.height / 4, Direction.RIGHT,
-                settings.getPlayer1(), settings.getPlayer1Resources());
+                settings.getPlayer1(), settings.getPlayer1().getSkin());
         player2 = new Player(new Texture("src/resources/donald.png"),this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Direction.LEFT,
-                settings.getPlayer2(), settings.getPlayer2Resources());
+                settings.getPlayer2(), settings.getPlayer2().getSkin());
 
         this.objects.add(background);
         this.objects.add(player1);

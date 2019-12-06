@@ -7,6 +7,15 @@ import java.io.Serializable;
 public class PlayerSettings implements Serializable {
     private KeyCode jump, shoot, left, right;
     private String name;
+    private String skin;
+
+    public void setSkin(String skin) {
+        this.skin = skin;
+    }
+
+    public String getSkin() {
+        return skin;
+    }
 
     public void setName(String name) {
         this.name = name;

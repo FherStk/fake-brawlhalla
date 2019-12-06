@@ -11,24 +11,6 @@ public class Settings implements Serializable {
     private boolean fullscreen, sound;
     private PlayerSettings player1;
     private PlayerSettings player2;
-    private String player1Resources;
-    private String player2Resources;
-
-    public void setPlayer1Resources(String player1Resources) {
-        this.player1Resources = player1Resources;
-    }
-
-    public void setPlayer2Resources(String player2Resources) {
-        this.player2Resources = player2Resources;
-    }
-
-    public String getPlayer1Resources() {
-        return player1Resources;
-    }
-
-    public String getPlayer2Resources() {
-        return player2Resources;
-    }
 
     public PlayerSettings getPlayer1() {
         return player1;

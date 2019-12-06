@@ -25,15 +25,12 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
     private Stage stage;
     private Scene defaultScene;
     private Scene settingsScene;
-    private Scene scoreboardScene;
     private Scene creditsScene;
     private Scene playerSelect;
     private Settings settings;
 
     public Launcher(Stage primaryStage) throws IOException, ClassNotFoundException {
         settings = new SettingsLoader().loadSettings("settings.txt");
-        settings.setPlayer1Resources("Player1");
-        settings.setPlayer2Resources("Player3");
         stage = primaryStage;
         stage.setTitle("Fakehalla Launcher");
         defaultScene = generateLauncherScene();
@@ -59,30 +56,20 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
     }
 
     private void runCredits() {
-        stage.setScene(playerSelect);
-    }
-
-    private void runPlayerSelectionScene(){
         //stage.setScene(playerSelect);
     }
 
-    private void runScoreboard() {
-        //stage.setScene(scoreboard);
+    private void runPlayerSelectionScene(){
+        stage.setScene(playerSelect);
     }
 
     private Scene generateLauncherScene() throws FileNotFoundException {
-        Button[] buttons = new Button[5];
+        Button[] buttons = new Button[4];
 
 
         buttons[0] = new Button("Play");
         buttons[0].setOnAction(event -> {
-            try {
-                runGame();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            runPlayerSelectionScene();
         });
 
         buttons[1] = new Button("Options");
@@ -90,18 +77,13 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
             runSettings();
         });
 
-        buttons[2] = new Button("Scoreboard");
+        buttons[2] = new Button("Credits");
         buttons[2].setOnAction(event -> {
-            runScoreboard();
-        });
-
-        buttons[3] = new Button("Credits");
-        buttons[3].setOnAction(event -> {
             runCredits();
         });
 
-        buttons[4] = new Button("Exit");
-        buttons[4].setOnAction(event -> {
+        buttons[3] = new Button("Exit");
+        buttons[3].setOnAction(event -> {
             Platform.exit();
         });
 
@@ -128,7 +110,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         imageView.setPreserveRatio(true);
 
         VBox vbox = new VBox(buttons);
-        vbox.setSpacing(30);
+        vbox.setSpacing(40);
         vbox.setAlignment(Pos.CENTER);
 
         BorderPane borderpane = new BorderPane();
@@ -142,7 +124,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         return (new Scene(borderpane, 800, 600));
     }
 
-    private Scene generateSettingsScene() throws IOException, ClassNotFoundException {
+    private Scene generateSettingsScene() {
 
         Text[] player1Texts = new Text[4];
         player1Texts[0] = new Text("Player 1 JUMP:");
@@ -217,8 +199,6 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
 
             settings.setResolution(width, height ,checkboxFullscreen.isSelected());
             settings.setSound(checkboxsound.isSelected());
-            settings.setPlayer1Resources("Player1");
-            settings.setPlayer2Resources("Player3");
             SettingsSaver settingsSaver = new SettingsSaver();
             try {
                 settingsSaver.saveSettings("settings.txt", settings);
@@ -296,17 +276,48 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         comboBoxes[1] = new ComboBox();
 
         for (int i = 0; i < 3; i++) {
-            comboBoxes[0].getItems().add(new ImageView(new Image("resources/PlayerAnimation/Player"+Integer.toString(i+1)+"/front.png")));
-            comboBoxes[1].getItems().add(new ImageView(new Image("resources/PlayerAnimation/Player"+Integer.toString(i+1)+"/front.png")));
+            ImageView img1 = new ImageView(new Image("resources/PlayerAnimation/Player"+ (i + 1) +"/front.png"));
+            ImageView img2 = new ImageView(new Image("resources/PlayerAnimation/Player"+ (i + 1) +"/front.png"));
+            img1.setId(String.valueOf(i+1));
+            img2.setId(String.valueOf(i+1));
+            comboBoxes[0].getItems().add(img1);
+            comboBoxes[1].getItems().add(img2);
         }
 
-        comboBoxes[0].setValue(new ImageView(new Image("resources/PlayerAnimation/"+settings.getPlayer1Resources()+"/front.png")));
-        comboBoxes[1].setValue(new ImageView(new Image("resources/PlayerAnimation/"+settings.getPlayer2Resources()+"/front.png")));
+        ImageView img1 = new ImageView(new Image("resources/PlayerAnimation/Player1/front.png"));
+        ImageView img2 = new ImageView(new Image("resources/PlayerAnimation/Player2/front.png"));
+        img1.setId(String.valueOf(1));
+        img2.setId(String.valueOf(2));
+        comboBoxes[0].setValue(img1);
+        comboBoxes[1].setValue(img2);
 
-        comboBoxes[0].setOnAction(e-> settingsScene.setOnKeyPressed(ek -> {settings.setPlayer2Jump(ek.getCode()); comboBoxes[0].setValue(settings.getPlayer1Resources()());}));
+        comboBoxes[0].setOnAction(event -> {
+            comboBoxes[0].setDisable(true);
+        });
 
+        comboBoxes[1].setOnAction(event -> {
+            comboBoxes[1].setDisable(true);
+        });
 
-        Button button = new Button("Play");
+        Button play = new Button("Play");
+        play.setOnAction(e-> {
+            settings.getPlayer1().setSkin("Player"+((ImageView) comboBoxes[0].getValue()).getId());
+            settings.getPlayer2().setSkin("Player"+((ImageView) comboBoxes[1].getValue()).getId());
+            settings.getPlayer1().setName(textFields[0].getText());
+            settings.getPlayer2().setName(textFields[1].getText());
+            try {
+                new SettingsSaver().saveSettings("settings.txt", settings);
+                runGame();
+            } catch (IOException | ClassNotFoundException ex) {
+                ex.printStackTrace();
+            }
+
+        });
+
+        Button back = new Button("Back");
+        back.setOnAction(e-> {
+            this.playerSelect = generatePlayerSelectionScene();
+            stage.setScene(defaultScene);});
 
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(10, 10, 10, 10));
@@ -315,17 +326,27 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         gridPane.setAlignment(Pos.CENTER);
 
         for (int i = 0; i < 2; i++) {
+            texts[i].setStyle("-fx-font-size: 1.5em;");
+            texts[i+2].setStyle("-fx-font-size: 1.5em;");
+            textFields[i].setStyle("-fx-font-size: 1.5em;");
+            textFields[i].setMaxWidth(120);
+            comboBoxes[i].setStyle("-fx-font-size: 1.5em;");
+            comboBoxes[i].setMinWidth(120);
             gridPane.add(texts[i], 0,i);
             gridPane.add(textFields[i],1,i);
             gridPane.add(texts[i+2], i,2);
             gridPane.add(comboBoxes[i], i, 3);
         }
 
-        gridPane.add(button, 2,3);
+        play.setStyle("-fx-font-size: 1.5em;");
+        play.setMinWidth(120);
+        back.setStyle("-fx-font-size: 1.5em;");
+        back.setMinWidth(120);
+        gridPane.add(play, 0,4);
+        gridPane.add(back, 1,4);
 
         return new Scene(gridPane, 800, 600);
     }
     //private Scene generateCreditsScene(){} TODO
 
-    //private Scene generateScoreboardScene(){} TODO
 }
