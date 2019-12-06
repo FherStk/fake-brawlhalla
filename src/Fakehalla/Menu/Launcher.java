@@ -275,15 +275,6 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         comboBoxes[0] = new ComboBox();
         comboBoxes[1] = new ComboBox();
 
-        for (int i = 0; i < 3; i++) {
-            ImageView img1 = new ImageView(new Image("resources/PlayerAnimation/Player"+ (i + 1) +"/front.png"));
-            ImageView img2 = new ImageView(new Image("resources/PlayerAnimation/Player"+ (i + 1) +"/front.png"));
-            img1.setId(String.valueOf(i+1));
-            img2.setId(String.valueOf(i+1));
-            comboBoxes[0].getItems().add(img1);
-            comboBoxes[1].getItems().add(img2);
-        }
-
         ImageView img1 = new ImageView(new Image("resources/PlayerAnimation/Player1/front.png"));
         ImageView img2 = new ImageView(new Image("resources/PlayerAnimation/Player2/front.png"));
         img1.setId(String.valueOf(1));
@@ -291,12 +282,26 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         comboBoxes[0].setValue(img1);
         comboBoxes[1].setValue(img2);
 
-        comboBoxes[0].setOnAction(event -> {
-            comboBoxes[0].setDisable(true);
+        comboBoxes[0].setOnMouseClicked(event -> {
+            ImageView temp = (ImageView) comboBoxes[0].getValue();
+            comboBoxes[0].getItems().clear();
+            for (int i = 0; i < 3; i++) {
+                ImageView img = new ImageView(new Image("resources/PlayerAnimation/Player"+ (i + 1) +"/front.png"));
+                img.setId(String.valueOf(i+1));
+                comboBoxes[0].getItems().add(img);
+            }
+            comboBoxes[0].setValue(temp);
         });
 
-        comboBoxes[1].setOnAction(event -> {
-            comboBoxes[1].setDisable(true);
+        comboBoxes[1].setOnMouseClicked(event -> {
+            ImageView temp = (ImageView) comboBoxes[1].getValue();
+            comboBoxes[1].getItems().clear();
+            for (int i = 0; i < 3; i++) {
+                ImageView img = new ImageView(new Image("resources/PlayerAnimation/Player"+ (i + 1) +"/front.png"));
+                img.setId(String.valueOf(i+1));
+                comboBoxes[1].getItems().add(img);
+            }
+            comboBoxes[1].setValue(temp);
         });
 
         Button play = new Button("Play");
