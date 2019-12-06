@@ -33,12 +33,6 @@ public class PlayerSettings implements Serializable {
     }
 
     public PlayerSettings() {
-        jump = KeyCode.K;
-        shoot = KeyCode.K;
-        left = KeyCode.K;
-        right = KeyCode.K;
-
-
     }
 
     public void set(KeyCode jump, KeyCode shoot, KeyCode left, KeyCode right) {
