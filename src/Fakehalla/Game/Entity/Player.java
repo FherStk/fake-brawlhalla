@@ -38,14 +38,9 @@ public class Player extends Entity implements Updatable {
     private  final double jumpStrength;
 
 
-    public Player(Texture texture, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Direction direction, PlayerSettings playerSettings, String animationResources) throws IOException, ClassNotFoundException {
-        super(texture,new Point2D(defaultPosX,defaultPosY),direction,gameWidth/30,(gameWidth/30)*1.3);
-        this.shotDirection = direction;
+    public Player(double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, PlayerSettings playerSettings) throws IOException, ClassNotFoundException {
+        super(new Texture(),new Point2D(defaultPosX,defaultPosY),Direction.DOWN,gameWidth/30,(gameWidth/30)*1.3);
 
-        if(direction == Direction.DOWN || direction == Direction.UP || direction == Direction.NONE)
-        {
-            this.shotDirection = Direction.RIGHT;
-        }
         maxVelocity = new Vector2D(new Point2D(gameWidth / 150,gameHeight / 40));
         jumpStrength = gameHeight/ 100;
         moveRightKey = playerSettings.getRight();
@@ -57,7 +52,7 @@ public class Player extends Entity implements Updatable {
         moveL = moveR = moveS =  justFell = false;
         spawnPosition = this.getPosition();
         this.playerName = playerSettings.getName();
-        this.animationResources = "src/resources/PlayerAnimation/"+animationResources+"/";
+        this.animationResources = "src/resources/PlayerAnimation/"+playerSettings.getSkin()+"/";
 
         this.setVelocity(new Vector2D(new Point2D(0,1))); // direction of the gravity.. straight down (0,1) vector
 

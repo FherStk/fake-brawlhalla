@@ -176,10 +176,8 @@ public class Game  {
         scoreBoard.setMinSize(width / 10,height/20);
         scoreBoard.setTranslateX(width/2 - scoreBoard.getMinWidth()/2);
 
-        player1 = new Player(new Texture("src/resources/donald.png"),this.width,this.height,this.width / 2 - this.width/8,this.height / 4, Direction.RIGHT,
-                settings.getPlayer1(), settings.getPlayer1().getSkin());
-        player2 = new Player(new Texture("src/resources/donald.png"),this.width,this.height,this.width / 2 + this.width/8,this.height / 4,Direction.LEFT,
-                settings.getPlayer2(), settings.getPlayer2().getSkin());
+        player1 = new Player(this.width,this.height,this.width / 2 - this.width/8,this.height / 4, settings.getPlayer1());
+        player2 = new Player(this.width,this.height,this.width / 2 + this.width/8,this.height / 4, settings.getPlayer2());
 
         this.objects.add(background);
         this.objects.add(player1);
