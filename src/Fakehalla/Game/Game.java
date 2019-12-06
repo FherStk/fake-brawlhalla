@@ -45,7 +45,7 @@ public class Game  {
 
     private boolean gameOver = false;
 
-    public Game(String title,double w, double h,boolean fullscreen) throws IOException, ClassNotFoundException // dev constructor
+    public Game(String title,boolean fullscreen) throws IOException, ClassNotFoundException // dev constructor
     {
         settings = new SettingsLoader().loadSettings("settings.txt");
         width = settings.getWidth();

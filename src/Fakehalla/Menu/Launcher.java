@@ -47,7 +47,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
 
 
     private void runGame() throws IOException, ClassNotFoundException {
-        Game game = new Game("Fakehalla", settings.getWidth(), settings.getHeight(), settings.isFullscreen());
+        Game game = new Game("Fakehalla", settings.isFullscreen());
         game.start();
         stage.close();
     }

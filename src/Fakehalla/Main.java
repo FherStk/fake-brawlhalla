@@ -4,7 +4,6 @@ import Fakehalla.Menu.Launcher;
 import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsSaver;
 import javafx.application.Application;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
 import java.io.IOException;
