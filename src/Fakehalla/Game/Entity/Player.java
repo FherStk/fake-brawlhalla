@@ -1,7 +1,8 @@
 package Fakehalla.Game.Entity;
 
-import Fakehalla.Game.Entity.Animations.PlayerAnimation;
+import Fakehalla.Game.Entity.Animations.PlayerSkin;
 import Fakehalla.Game.Utils.Vector2D;
+import Fakehalla.Settings.PlayerSettings;
 import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsLoader;
 import javafx.geometry.Point2D;
@@ -26,7 +27,7 @@ public class Player extends Entity implements Updatable {
     private int numberOfFells = 0;
     private String playerName;
     private String animationResources;
-    private PlayerAnimation playerAnimation;
+    private PlayerSkin playerSkin;
 
     private KeyCode moveRightKey;
     private KeyCode moveLeftKey;
@@ -37,30 +38,25 @@ public class Player extends Entity implements Updatable {
     private  final double jumpStrength;
 
 
-    public Player(Texture texture, double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, Direction direction,String playerName, KeyCode jump, KeyCode shoot, KeyCode left, KeyCode right, String animationResources) throws IOException, ClassNotFoundException {
-        super(texture,new Point2D(defaultPosX,defaultPosY),direction,gameWidth/30,(gameWidth/30)*1.3);
-        this.shotDirection = direction;
+    public Player(double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, PlayerSettings playerSettings) throws IOException, ClassNotFoundException {
+        super(new Texture(),new Point2D(defaultPosX,defaultPosY),Direction.DOWN,gameWidth/30,(gameWidth/30)*1.3);
 
-        if(direction == Direction.DOWN || direction == Direction.UP || direction == Direction.NONE)
-        {
-            this.shotDirection = Direction.RIGHT;
-        }
         maxVelocity = new Vector2D(new Point2D(gameWidth / 150,gameHeight / 40));
         jumpStrength = gameHeight/ 100;
-        moveRightKey = right;
-        moveLeftKey = left;
-        moveJumpKey = jump;
-        moveShotKey = shoot;
+        moveRightKey = playerSettings.getRight();
+        moveLeftKey = playerSettings.getLeft();
+        moveJumpKey = playerSettings.getJump();
+        moveShotKey = playerSettings.getShoot();
         numberOfJumps = 2;
         currentJump = numberOfJumps;
         moveL = moveR = moveS =  justFell = false;
         spawnPosition = this.getPosition();
-        this.playerName = playerName;
-        this.animationResources = "src/resources/PlayerAnimation/"+animationResources+"/";
+        this.playerName = playerSettings.getName();
+        this.animationResources = "src/resources/PlayerAnimation/"+playerSettings.getSkin()+"/";
 
         this.setVelocity(new Vector2D(new Point2D(0,1))); // direction of the gravity.. straight down (0,1) vector
 
-        this.playerAnimation = new PlayerAnimation(this.animationResources);
+        this.playerSkin = new PlayerSkin(this.animationResources);
 
         settings = new SettingsLoader().loadSettings("settings.txt");
     }
@@ -105,7 +101,7 @@ public class Player extends Entity implements Updatable {
 
         Texture oldDirection = this.getDefaultTexture();
         checkVelocity(this.maxVelocity);
-        Texture newTexture = playerAnimation.getTexture(this.getDirection(), (int) this.getPosition().getX());
+        Texture newTexture = playerSkin.getTexture(this.getDirection(), (int) this.getPosition().getX());
         if(oldDirection != newTexture)
             this.setDefaultTexture(newTexture); //setting texture according to direcion and position
     }

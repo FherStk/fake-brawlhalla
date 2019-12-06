@@ -8,10 +8,7 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -28,18 +25,17 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
     private Stage stage;
     private Scene defaultScene;
     private Scene settingsScene;
-    private Scene scoreboardScene;
     private Scene creditsScene;
-    //private Settings set;
-    private int gameHeight = 1080;
-    private int gameWidth = 1920;
-    private boolean gameFullscreen = true;
+    private Scene playerSelect;
+    private Settings settings;
 
     public Launcher(Stage primaryStage) throws IOException, ClassNotFoundException {
+        settings = new SettingsLoader().loadSettings("settings.txt");
         stage = primaryStage;
         stage.setTitle("Fakehalla Launcher");
         defaultScene = generateLauncherScene();
         settingsScene = generateSettingsScene();
+        playerSelect = generatePlayerSelectionScene();
         //defaultScene.setOnMouseExited(event -> System.out.println("pa"));
         stage.setScene(defaultScene);
     }
@@ -51,7 +47,6 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
 
 
     private void runGame() throws IOException, ClassNotFoundException {
-        Settings settings = new SettingsLoader().loadSettings("settings.txt");
         Game game = new Game("Fakehalla", settings.getWidth(), settings.getHeight(), settings.isFullscreen());
         game.start();
         stage.close();
@@ -61,26 +56,20 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
     }
 
     private void runCredits() {
-        //stage.setScene(credits);
+        //stage.setScene(playerSelect);
     }
 
-    private void runScoreboard() {
-        //stage.setScene(scoreboard);
+    private void runPlayerSelectionScene(){
+        stage.setScene(playerSelect);
     }
 
     private Scene generateLauncherScene() throws FileNotFoundException {
-        Button[] buttons = new Button[5];
+        Button[] buttons = new Button[4];
 
 
-        buttons[0] = new Button("Multiplayer");
+        buttons[0] = new Button("Play");
         buttons[0].setOnAction(event -> {
-            try {
-                runGame();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            runPlayerSelectionScene();
         });
 
         buttons[1] = new Button("Options");
@@ -88,18 +77,13 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
             runSettings();
         });
 
-        buttons[2] = new Button("Scoreboard");
+        buttons[2] = new Button("Credits");
         buttons[2].setOnAction(event -> {
-            runScoreboard();
-        });
-
-        buttons[3] = new Button("Credits");
-        buttons[3].setOnAction(event -> {
             runCredits();
         });
 
-        buttons[4] = new Button("Exit");
-        buttons[4].setOnAction(event -> {
+        buttons[3] = new Button("Exit");
+        buttons[3].setOnAction(event -> {
             Platform.exit();
         });
 
@@ -126,7 +110,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         imageView.setPreserveRatio(true);
 
         VBox vbox = new VBox(buttons);
-        vbox.setSpacing(30);
+        vbox.setSpacing(40);
         vbox.setAlignment(Pos.CENTER);
 
         BorderPane borderpane = new BorderPane();
@@ -140,11 +124,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         return (new Scene(borderpane, 800, 600));
     }
 
-    private Scene generateSettingsScene() throws IOException, ClassNotFoundException {
-        SettingsLoader settingsLoader = new SettingsLoader();
-
-
-        Settings settings = settingsLoader.loadSettings("settings.txt");
+    private Scene generateSettingsScene() {
 
         Text[] player1Texts = new Text[4];
         player1Texts[0] = new Text("Player 1 JUMP:");
@@ -279,7 +259,99 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
 
     }
 
+    private Scene generatePlayerSelectionScene(){ //TODO name and player select
+        Text[] texts = new Text[4];
+
+        texts[0] = new Text("Player 1 name: ");
+        texts[1] = new Text("Player 2 name: ");
+        texts[2] = new Text("Player 1 skin: ");
+        texts[3] = new Text("Player 2 skin: ");
+
+        TextField[] textFields = new TextField[2];
+        textFields[0] = new TextField(settings.getPlayer1().getName());
+        textFields[1] = new TextField(settings.getPlayer2().getName());
+
+        ComboBox[] comboBoxes = new ComboBox[2];
+        comboBoxes[0] = new ComboBox();
+        comboBoxes[1] = new ComboBox();
+
+        ImageView img1 = new ImageView(new Image("resources/PlayerAnimation/Player1/front.png"));
+        ImageView img2 = new ImageView(new Image("resources/PlayerAnimation/Player2/front.png"));
+        img1.setId(String.valueOf(1));
+        img2.setId(String.valueOf(2));
+        comboBoxes[0].setValue(img1);
+        comboBoxes[1].setValue(img2);
+
+        comboBoxes[0].setOnMouseClicked(event -> {
+            ImageView temp = (ImageView) comboBoxes[0].getValue();
+            comboBoxes[0].getItems().clear();
+            for (int i = 0; i < 3; i++) {
+                ImageView img = new ImageView(new Image("resources/PlayerAnimation/Player"+ (i + 1) +"/front.png"));
+                img.setId(String.valueOf(i+1));
+                comboBoxes[0].getItems().add(img);
+            }
+            comboBoxes[0].setValue(temp);
+        });
+
+        comboBoxes[1].setOnMouseClicked(event -> {
+            ImageView temp = (ImageView) comboBoxes[1].getValue();
+            comboBoxes[1].getItems().clear();
+            for (int i = 0; i < 3; i++) {
+                ImageView img = new ImageView(new Image("resources/PlayerAnimation/Player"+ (i + 1) +"/front.png"));
+                img.setId(String.valueOf(i+1));
+                comboBoxes[1].getItems().add(img);
+            }
+            comboBoxes[1].setValue(temp);
+        });
+
+        Button play = new Button("Play");
+        play.setOnAction(e-> {
+            settings.getPlayer1().setSkin("Player"+((ImageView) comboBoxes[0].getValue()).getId());
+            settings.getPlayer2().setSkin("Player"+((ImageView) comboBoxes[1].getValue()).getId());
+            settings.getPlayer1().setName(textFields[0].getText());
+            settings.getPlayer2().setName(textFields[1].getText());
+            try {
+                new SettingsSaver().saveSettings("settings.txt", settings);
+                runGame();
+            } catch (IOException | ClassNotFoundException ex) {
+                ex.printStackTrace();
+            }
+
+        });
+
+        Button back = new Button("Back");
+        back.setOnAction(e-> {
+            this.playerSelect = generatePlayerSelectionScene();
+            stage.setScene(defaultScene);});
+
+        GridPane gridPane = new GridPane();
+        gridPane.setPadding(new Insets(10, 10, 10, 10));
+        gridPane.setVgap(10);
+        gridPane.setHgap(10);
+        gridPane.setAlignment(Pos.CENTER);
+
+        for (int i = 0; i < 2; i++) {
+            texts[i].setStyle("-fx-font-size: 1.5em;");
+            texts[i+2].setStyle("-fx-font-size: 1.5em;");
+            textFields[i].setStyle("-fx-font-size: 1.5em;");
+            textFields[i].setMaxWidth(120);
+            comboBoxes[i].setStyle("-fx-font-size: 1.5em;");
+            comboBoxes[i].setMinWidth(120);
+            gridPane.add(texts[i], 0,i);
+            gridPane.add(textFields[i],1,i);
+            gridPane.add(texts[i+2], i,2);
+            gridPane.add(comboBoxes[i], i, 3);
+        }
+
+        play.setStyle("-fx-font-size: 1.5em;");
+        play.setMinWidth(120);
+        back.setStyle("-fx-font-size: 1.5em;");
+        back.setMinWidth(120);
+        gridPane.add(play, 0,4);
+        gridPane.add(back, 1,4);
+
+        return new Scene(gridPane, 800, 600);
+    }
     //private Scene generateCreditsScene(){} TODO
 
-    //private Scene generateScoreboardScene(){} TODO
 }
