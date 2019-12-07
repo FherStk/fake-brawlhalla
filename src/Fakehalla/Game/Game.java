@@ -188,7 +188,7 @@ public class Game  {
             if(key.getCode() == player1.getMoveLeftKey()) { player1.setMoveL(true);}
             if(key.getCode() == player1.getMoveShotKey())
             {
-                if(player1.moveShot(this.width) != null && player1.moveShot(this.width) != null)
+                if(player1.getCanShoot())
                 {
                     Shot temp = player1.moveShot(this.width);
                     this.objects.add(temp);
@@ -209,12 +209,13 @@ public class Game  {
             if(key.getCode() == player2.getMoveLeftKey()) { player2.setMoveL(true);}
             if(key.getCode() == player2.getMoveShotKey())
             {
-                if(player2.moveShot(this.width) != null)
+                if(player2.getCanShoot())
                 {
                     Shot temp = player2.moveShot(this.width);
                     this.objects.add(temp);
                     group.getChildren().add(temp.getBody());
                 }
+
             }
             if(key.getCode() == player2.getMoveJumpKey()) {  player2.moveJump(scene.getHeight()); }
         });

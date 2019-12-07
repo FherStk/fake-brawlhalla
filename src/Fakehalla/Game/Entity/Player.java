@@ -20,7 +20,6 @@ public class Player extends Entity implements Updatable {
     private Settings settings;
     private boolean moveR;
     private boolean moveL;
-    private boolean moveS;
     private boolean justFell;
     private int numberOfJumps;
     private int currentJump;
@@ -28,19 +27,24 @@ public class Player extends Entity implements Updatable {
     private String playerName;
     private String animationResources;
     private PlayerSkin playerSkin;
+    private double shootDelay;
+
+    private long timeStamp;
+    private long shootTime;
 
     private KeyCode moveRightKey;
     private KeyCode moveLeftKey;
     private KeyCode moveJumpKey;
     private KeyCode moveShotKey;
 
-    private double yCorOffset;
     private  final double jumpStrength;
 
 
     public Player(double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, PlayerSettings playerSettings) throws IOException, ClassNotFoundException {
         super(new Texture(),new Point2D(defaultPosX,defaultPosY),Direction.DOWN,gameWidth/30,(gameWidth/30)*1.3);
 
+        this.shootDelay = 500;
+        this.shootTime = 0;
         maxVelocity = new Vector2D(new Point2D(gameWidth / 150,gameHeight / 40));
         jumpStrength = gameHeight/ 100;
         moveRightKey = playerSettings.getRight();
@@ -49,7 +53,7 @@ public class Player extends Entity implements Updatable {
         moveShotKey = playerSettings.getShoot();
         numberOfJumps = 2;
         currentJump = numberOfJumps;
-        moveL = moveR = moveS =  justFell = false;
+        moveL = moveR = justFell =  false;
         spawnPosition = this.getPosition();
         this.playerName = playerSettings.getName();
         this.animationResources = "src/resources/PlayerAnimation/"+playerSettings.getSkin()+"/";
@@ -65,6 +69,8 @@ public class Player extends Entity implements Updatable {
     public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
     {
         checkForCollision(objToInteract);
+
+        this.timeStamp = currentTime;
 
         double dumping = dt /2; //dumping on the X axis
         if(dumping >= 1) {dumping = 0.9;} //checking ig dumping isn't too high
@@ -97,7 +103,6 @@ public class Player extends Entity implements Updatable {
 
         if(moveL) { moveLeft(dt,gameWidth,gameObj);}
         else if(moveR) {moveRight(dt,gameWidth,gameObj);}
-        if(moveS) {moveShot(gameWidth);}
 
         Texture oldDirection = this.getDefaultTexture();
         checkVelocity(this.maxVelocity);
@@ -112,6 +117,10 @@ public class Player extends Entity implements Updatable {
         return ((this.getPosition().getY() + this.getBody().getHeight() + stepY) <= heightLimit); // checking one step ahead (stepx and stepy)
     }
 
+    public boolean getCanShoot()
+    {
+        return this.timeStamp - this.shootTime >= shootDelay;
+    }
 
     public KeyCode getMoveRightKey() { return this.moveRightKey; }
     public KeyCode getMoveJumpKey() { return this.moveJumpKey; }
@@ -125,6 +134,7 @@ public class Player extends Entity implements Updatable {
         return playerName;
     }
 
+
     public void setMoveRightKey(KeyCode key) { this.moveRightKey = key; }
     public void setMoveLeftKey(KeyCode key) { this.moveLeftKey = key; }
     public void setMoveJumpKey(KeyCode key) { this.moveJumpKey = key; }
@@ -132,7 +142,6 @@ public class Player extends Entity implements Updatable {
 
     public void setMoveR(boolean b) { this.moveR = b; }
     public void setMoveL(boolean b) { this.moveL = b; }
-    public void setMoveS(boolean b) { this.moveS = b; }
 
 
     private boolean isOnBlock(double stepX,double stepY,double gravityY,ArrayList<Block> gameObj)
@@ -142,7 +151,6 @@ public class Player extends Entity implements Updatable {
             if(this.getPosition().getY() + this.getBody().getHeight() + stepY >= e.getBody().getY() && this.getPosition().getX() + this.getBody().getWidth()  > e.getBody().getX() && this.getPosition().getX() + this.getWidth()*0.5  < e.getBody().getX() + e.getWidth()
                 && this.getPosition().getY() + this.getBody().getHeight() <= e.getBody().getY() + gravityY && this.getVelocity().getEnd().getY() >= 0)
             {
-                yCorOffset = e.getBody().getY() - (this.getPosition().getY() + this.getBody().getHeight());
                 return true;
             }
         }
@@ -171,6 +179,7 @@ public class Player extends Entity implements Updatable {
         {
             playSound("laser.wav", 0.1);
         }
+        this.shootTime = this.timeStamp;
         return new Shot(this.getPosition(),this.shotDirection,this.getWidth(),this.getHeight() / 2,(this.getHeight() / 2)*1.61,this.getHeight(), this.animationResources);
     }
 
