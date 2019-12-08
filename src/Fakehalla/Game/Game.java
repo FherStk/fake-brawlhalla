@@ -1,6 +1,7 @@
 package Fakehalla.Game;
 
 import Fakehalla.Game.Entity.*;
+import Fakehalla.Game.Entity.Event;
 import Fakehalla.Game.Utils.Vector2D;
 import Fakehalla.Menu.Launcher;
 import Fakehalla.Settings.Settings;
@@ -8,6 +9,7 @@ import Fakehalla.Settings.SettingsLoader;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
@@ -17,8 +19,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class Game  {
 
@@ -39,6 +43,8 @@ public class Game  {
     private Player player1;
     private Player player2;
     private Vector2D gravity;
+    private ActivationBlock activationBlock;
+    private Event event;
 
     private long prevTime;
     private long currentTime;
@@ -96,7 +102,6 @@ public class Game  {
             assert launcher != null;
             launcher.run();} );
 
-
     }
 
     public Game(Stage stage) throws IOException, ClassNotFoundException // ready constructor (i hope)
@@ -119,10 +124,17 @@ public class Game  {
 
     public void start() // starting the game loop
     {
+        this.event = new Event(player1.getWidth());
+        this.objects.add(event);
         loop = new AnimationTimer() { // the game loop is implemented by AnimationTimer (built in javafx)
             @Override
             public void handle(long l) {
 
+                if(activationBlock.isActivated())
+                {
+                    event.start();
+                    activationBlock.setActivated(false);
+                }
                 gravity = new Vector2D(new Point2D(0,scene.getHeight()*0.0008));
                 prevTime = currentTime;
                 currentTime = System.currentTimeMillis();
@@ -140,6 +152,12 @@ public class Game  {
                     }
                 }
                 objects.removeAll(objectsToRemove); //removing all shots out of bounds
+
+                if(event.getObjToAdd() != null)
+                {
+                    objects.add(event.getObjToAdd());
+                    group.getChildren().add(((Shot) event.getObjToAdd()).getBody());
+                }
                 group.getChildren().removeAll(objectsToRemove);
                 updateScoreBoard(player2.getScore(),player1.getScore());
 
@@ -154,6 +172,7 @@ public class Game  {
                     group.getChildren().add(winLabel(player1.getPlayerName()));
                     stopLoop();
                 }
+
             }
         };
         startLoop(); // starting the loop
@@ -252,6 +271,9 @@ public class Game  {
         {
             group.getChildren().add(r.getBody());
         }
+        this.activationBlock = mGen.generateActivationBlock(this.width,new Point2D(this.width/2, this.height/3));
+        this.group.getChildren().add(this.activationBlock.getBody());
+        this.objects.add(this.activationBlock);
     }
 
     private void updateScoreBoard(int score1, int score2)

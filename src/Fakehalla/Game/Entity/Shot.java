@@ -3,6 +3,7 @@ package Fakehalla.Game.Entity;
 import Fakehalla.Game.Entity.Animations.ShotAnimation;
 import Fakehalla.Game.Utils.Vector2D;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
@@ -20,10 +21,19 @@ public class Shot extends Entity implements Updatable{
         this.hit = true;
         this.shotAnimation = new ShotAnimation(bulletFileName+"bullet.png");
         setVelocity(new Vector2D(new Point2D(shotSpeed,0)));
-        chooseFace();
+        chooseDirection();
         chooseStartPosition(playerWidth,playerHeight);
         setDefaultTexture(new Texture(bulletFileName+"bullet.png"));
         this.setDefaultTexture(shotAnimation.getTexture(this.getDirection()));
+    }
+
+    public Shot(Point2D startPosition, Direction direction, double shotWidth, double shotHeight, double speed, String bulletFileName,double sizeLimit)
+    {
+        super(startPosition,direction,shotWidth,shotHeight);
+        this.shotSpeed = -1*speed*(shotWidth / sizeLimit);
+        this.setDefaultTexture(new Texture(bulletFileName));
+        this.hit = true;
+        setVelocity(new Vector2D(new Point2D(shotSpeed,0)));
     }
 
     @Override
@@ -44,7 +54,7 @@ public class Shot extends Entity implements Updatable{
 
     public void setHit(boolean hit) { this.hit = hit; }
 
-    private void chooseFace()
+    private void chooseDirection()
     {
         if(this.getDirection() == Direction.LEFT)
         {

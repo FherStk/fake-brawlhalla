@@ -31,4 +31,9 @@ public class MapGenerator {
 
         return blocks;
     }
+
+    public ActivationBlock generateActivationBlock(double gameWidth,Point2D pos)
+    {
+        return new ActivationBlock(new Texture(filename),pos,gameWidth/50,gameWidth/50);
+    }
 }

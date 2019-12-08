@@ -2,6 +2,7 @@ package Fakehalla.Game.Entity;
 
 import Fakehalla.Game.Utils.Vector2D;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
@@ -89,6 +90,11 @@ public class Entity implements Updatable{ //abstract class
             this.getBody().setScaleX(-1);
         else
             this.getBody().setScaleX(1);
+    }
+
+    public void setPaint(Paint t)
+    {
+        this.getBody().setFill(t);
     }
 
     public void setVelocity(Vector2D velocity) { this.velocity = velocity; }
