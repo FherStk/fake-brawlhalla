@@ -25,7 +25,7 @@ public class Event implements Updatable{
     {
         this.start = 0;
         this.duration = 0;
-        this.frequency = 5;
+        this.frequency = 5; // higher the number, lesser the asteroids
         this.speed = (playerWidth - 1);
         this.on = false;
     }
@@ -37,12 +37,12 @@ public class Event implements Updatable{
 
     public void start()
     {
-        if(!on)
-        {
-            this.start = System.currentTimeMillis();
-            this.duration = ThreadLocalRandom.current().nextInt(10000, 15001);
-            this.on = true;
-        }
+
+        this.start = System.currentTimeMillis();
+        this.duration = ThreadLocalRandom.current().nextInt(10000, 15000);
+        this.on = true;
+        System.out.println(" event started for: " + this.duration+ " [ms] ");
+
     }
 
     @Override
@@ -55,11 +55,12 @@ public class Event implements Updatable{
             if(this.current % frequency == 0)
             {
                 int x = (int)gameWidth;
-                int y = ThreadLocalRandom.current().nextInt((int)gameHeight/7, (int)(gameHeight - gameHeight/7));
+                int y = ThreadLocalRandom.current().nextInt((int)gameHeight/10, (int)(gameHeight - gameHeight/7));
                 Point2D randomTempPoint = new javafx.geometry.Point2D(x,y);
                 int randomTempSize = ThreadLocalRandom.current().nextInt((int)gameWidth/45,(int)gameWidth/15);
+                int randomTilt = ThreadLocalRandom.current().nextInt(10,50);
 
-                Shot temp = new Shot(randomTempPoint,direction,randomTempSize,randomTempSize,this.speed,resource,(int)gameWidth/15);
+                Shot temp = new Shot(randomTempPoint,direction,randomTempSize,randomTempSize,this.speed,randomTilt/10,resource,(int)gameWidth/15);
                 this.objToAdd = temp;
             }
             else
@@ -81,6 +82,8 @@ public class Event implements Updatable{
     public Updatable getObjToAdd() { return this.objToAdd; }
 
     public boolean isOn() {
-        return on;
+        return this.on;
     }
+
+    public int getDuration() { return this.duration; }
 }

@@ -130,15 +130,18 @@ public class Game  {
             @Override
             public void handle(long l) {
 
-                if(activationBlock.isActivated())
-                {
-                    event.start();
-                    activationBlock.setActivated(false);
-                }
                 gravity = new Vector2D(new Point2D(0,scene.getHeight()*0.0008));
                 prevTime = currentTime;
                 currentTime = System.currentTimeMillis();
                 double dt = (currentTime - prevTime ) * 0.1;
+
+                if(activationBlock.isActivated() && !event.isOn())
+                {
+                    event.start();
+                    activationBlock.reset(event.getDuration(),currentTime,scene.getWidth(),scene.getHeight());
+                }
+
+
                 ArrayList<Entity> objectsToRemove = new ArrayList<>();
                 for (Updatable u : objects)
                 {

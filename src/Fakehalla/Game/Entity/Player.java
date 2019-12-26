@@ -202,8 +202,10 @@ public class Player extends Entity implements Updatable {
 
     private boolean isHit(Shot shot)
     {
-        if(this.getBody().contains(new Point2D(shot.getPosition().getX() + shot.getBody().getWidth() / 2, shot.getPosition().getY())) ||
-            this.getBody().contains(new Point2D(shot.getPosition().getX() + shot.getBody().getWidth() / 2, shot.getPosition().getY() + shot.getHeight())))
+        if( this.getPosition().getX() < shot.getPosition().getX() + shot.getWidth()
+            && this.getPosition().getX() + this.getWidth() > shot.getPosition().getX()
+            && this.getPosition().getY() < shot.getPosition().getY() + shot.getHeight()
+            && this.getPosition().getY() + this.getHeight() > shot.getPosition().getY())
         {
             return true;
         }

@@ -4,21 +4,26 @@ import Fakehalla.Game.Utils.Vector2D;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class ActivationBlock extends Block implements Updatable {
     private boolean isActivated = false;
+    private long currentTimeFlag;
+    private int duration;
+    private final int spawnDelay = 10000;
     public ActivationBlock(Texture texture, Point2D position, double width, double height) {
         super(texture, position, width, height);
     }
 
     public boolean collisionPlayer(Player player)
     {
-        /*if(player.getPosition().getX() >= this.getPosition().getX() && player.getPosition().getX() + player.getWidth() <= this.getPosition().getX() + this.getWidth()
-        && player.getPosition().getY() >= this.getBody().getY() && player.getPosition().getY() + player.getHeight() <= this.getPosition().getY() + this.getHeight()) */
-        if(this.getBody().contains(player.getPosition()))
-        {
-            return true;
-        }
+        if(player.getPosition().getX() < this.getPosition().getX() + this.getWidth()
+            && player.getPosition().getX() + player.getWidth() > this.getPosition().getX()
+            && player.getPosition().getY() < this.getBody().getY() + this.getHeight()
+            && player.getPosition().getY() + player.getHeight() > this.getPosition().getY())
+            {
+                return true;
+            }
         return false;
     }
 
@@ -28,17 +33,41 @@ public class ActivationBlock extends Block implements Updatable {
         {
             if(u instanceof Player)
             {
-                if(collisionPlayer((Player) u) && !isActivated)
+                if(collisionPlayer((Player) u) && !this.isActivated && this.getBody().isVisible())
                 {
                     this.isActivated = true;
                 }
             }
         }
+        if(currentTime <= this.currentTimeFlag + this.duration + spawnDelay)
+        {
+            this.getBody().setVisible(false);
+        }
+        else
+        {
+            this.getBody().setVisible(true);
+        }
     }
 
     public boolean isActivated() { return this.isActivated; }
 
-    public void setActivated(boolean activated) {
-        isActivated = activated;
+    public void reset(int duration,long currentTime,double gameWidth,double gameHeight)
+    {
+        this.isActivated = false;
+        this.duration = duration;
+        this.currentTimeFlag = currentTime;
+        this.setPosition(newPosition(gameWidth,gameHeight));
+    }
+
+    private void switchVisibility()
+    {
+        this.getBody().setVisible(!this.getBody().isVisible());
+    }
+
+    private Point2D newPosition(double gameWidth,double gameHeight)
+    {
+        int tempX = ThreadLocalRandom.current().nextInt((int)(gameWidth/10),(int)(gameWidth-gameWidth/10));
+        int tempY = ThreadLocalRandom.current().nextInt((int)(gameHeight/3),(int)(gameHeight/2));
+        return new Point2D(tempX,tempY);
     }
 }

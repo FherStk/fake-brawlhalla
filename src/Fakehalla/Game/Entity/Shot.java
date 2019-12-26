@@ -27,13 +27,13 @@ public class Shot extends Entity implements Updatable{
         this.setDefaultTexture(shotAnimation.getTexture(this.getDirection()));
     }
 
-    public Shot(Point2D startPosition, Direction direction, double shotWidth, double shotHeight, double speed, String bulletFileName,double sizeLimit)
+    public Shot(Point2D startPosition, Direction direction, double shotWidth, double shotHeight, double speed,double xVelocity ,String bulletFileName,double sizeLimit)
     {
         super(startPosition,direction,shotWidth,shotHeight);
         this.shotSpeed = -1*speed*(shotWidth / sizeLimit);
         this.setDefaultTexture(new Texture(bulletFileName));
         this.hit = true;
-        setVelocity(new Vector2D(new Point2D(shotSpeed,0)));
+        setVelocity(new Vector2D(new Point2D(shotSpeed,xVelocity)));
     }
 
     @Override
@@ -72,7 +72,7 @@ public class Shot extends Entity implements Updatable{
     {
         if(this.getDirection() == Direction.LEFT)
         {
-            this.setPosition(new Point2D(this.getPosition().getX() - this.getBody().getWidth()/2 - 1, this.getPosition().getY() + playerHeight*shotToPlayer));
+            this.setPosition(new Point2D(this.getPosition().getX() - playerWidth - 1, this.getPosition().getY() + playerHeight*shotToPlayer));
         }
         else
         {
