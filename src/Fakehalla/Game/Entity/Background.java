@@ -16,9 +16,10 @@ public class Background implements Updatable {
     private BackgroundImageView mountain_far;
     private BackgroundImageView mountains;
     private BackgroundImageView trees;
+    private BackgroundImageView eventImageView;
     private StackPane out;
     private Settings settings;
-    private int width, height;
+    private int width, height, eventMultiplier = 1;
 
 
     public Background() throws IOException, ClassNotFoundException {
@@ -30,19 +31,31 @@ public class Background implements Updatable {
         mountain_far = new BackgroundImageView(new Image("resources/layers/parallax-mountain-montain-far.png",width,height,false,false));
         mountains = new BackgroundImageView(new Image("resources/layers/parallax-mountain-mountains.png",width*2,height,false,false));
         trees = new BackgroundImageView(new Image("resources/layers/parallax-mountain-trees.png",width*2,height,false,false));
-
-        out = new StackPane(background, mountain_far, mountains, trees, foreground);
+        eventImageView = new BackgroundImageView(new Image("resources/layers/eventBackground.png",width ,height,false,false));
+        eventImageView.setVisible(false);
+        out = new StackPane(background, mountain_far, mountains, trees, foreground,eventImageView);
     }
 
     public StackPane getBackground() {
         return out;
     }
 
+    public void activatedEvent(boolean activation){
+        if(activation && !eventImageView.isVisible()) {
+            eventMultiplier = 4;
+            eventImageView.setVisible(true);
+        }
+        if(!activation && eventImageView.isVisible()){
+            eventMultiplier = 1;
+            eventImageView.setVisible(false);
+        }
+    }
+
     @Override
     public void update(long currentTime, double dt, double gameWidth, double gameHeight, Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj) {
-        mountains.update((gameWidth*0.0005)*(currentTime*0.0625),0);
-        trees.update((gameWidth*0.0005)*(currentTime*0.08),0);
-        foreground.update((gameWidth*0.0005)*(currentTime*0.125),(int) gameWidth/32); //bulgarian constant, because of bugged model
+        mountains.update(currentTime*dt*0.0625*eventMultiplier,0);
+        trees.update(currentTime*dt*0.08*eventMultiplier,0);
+        foreground.update(currentTime*dt*0.125*eventMultiplier,(int) gameWidth/32); //bulgarian constant, because of bugged model
     }
 
     @Override

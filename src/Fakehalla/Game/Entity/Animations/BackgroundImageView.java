@@ -10,7 +10,8 @@ import java.io.IOException;
 
 public class BackgroundImageView extends ImageView {
     private Settings settings;
-    int width, height;
+    private int width, height;
+    private double currentOffset = 0;
     public BackgroundImageView(Image image) throws IOException, ClassNotFoundException {
         super(image);
         this.settings = new SettingsLoader().loadSettings("settings.txt");
@@ -22,7 +23,9 @@ public class BackgroundImageView extends ImageView {
         this.setViewport(new Rectangle2D(0, 0, width, height));
     }
 
-    public void update(double speed, int offset){
-        this.setViewport(new Rectangle2D(speed%(width-offset), 0, width, height));
+    public void update(double movement, int offset){
+        currentOffset+=movement*width*0.000000000000005;
+        currentOffset%=(width-offset);
+        this.setViewport(new Rectangle2D(currentOffset, 0, width, height));
     }
 }

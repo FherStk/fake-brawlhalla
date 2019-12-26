@@ -1,6 +1,7 @@
 package Fakehalla.Game;
 
 import Fakehalla.Game.Entity.*;
+import Fakehalla.Game.Entity.Animations.Sound;
 import Fakehalla.Game.Entity.Event;
 import Fakehalla.Game.Utils.Vector2D;
 import Fakehalla.Menu.Launcher;
@@ -35,6 +36,7 @@ public class Game  {
     private String fontName = "Verdana";
     private Settings settings;
     private Background background;
+    private Sound sound;
 
     private double width;
     private double height;
@@ -60,7 +62,7 @@ public class Game  {
         group = new Group();
         currentTime = 0;
 
-        objects = new ArrayList<Updatable>();
+        objects = new ArrayList<>();
         createMap();
         createScene();
         stage.setScene(scene);
@@ -69,7 +71,8 @@ public class Game  {
 
         stage.setResizable(false);
 
-        AudioClip au = startMusic(settings.isSound()); //Playing music accordint to settings
+        sound = new Sound(settings.isSound());
+         //Playing music accordint to settings
 
         if(!fullscreen)
         {
@@ -92,7 +95,7 @@ public class Game  {
         });
 
         stage.setOnHiding( event -> {
-            au.stop();
+            sound.stop();
             Launcher launcher = null;
             try {
                 launcher = new Launcher(new Stage());
@@ -109,7 +112,7 @@ public class Game  {
         this.stage = stage;
         group = new Group();
         currentTime = 0;
-        objects = new ArrayList<Updatable>();
+        objects = new ArrayList<>();
         createMap();
         createScene();
         stage.setScene(scene);
@@ -141,6 +144,8 @@ public class Game  {
                     activationBlock.reset(event.getDuration(),currentTime,scene.getWidth(),scene.getHeight());
                 }
 
+                background.activatedEvent(event.isOn());
+                sound.activatedEvent(event.isOn());
 
                 ArrayList<Entity> objectsToRemove = new ArrayList<>();
                 for (Updatable u : objects)
@@ -161,6 +166,7 @@ public class Game  {
                     objects.add(event.getObjToAdd());
                     group.getChildren().add(((Shot) event.getObjToAdd()).getBody());
                 }
+                
                 group.getChildren().removeAll(objectsToRemove);
                 updateScoreBoard(player2.getScore(),player1.getScore());
 
@@ -252,15 +258,6 @@ public class Game  {
         group.getChildren().add(player1.getBody());
         group.getChildren().add(scoreBoard);
 
-    }
-
-    private AudioClip startMusic(boolean startMusic)
-    {
-        //System.out.println(Game.class.getResource("sound.mp3").toString());
-        AudioClip au = new AudioClip("file:src/resources/sounds/sound.mp3");
-        if (startMusic)
-            au.play();
-        return au;
     }
 
     private void createMap() throws IOException, ClassNotFoundException {
