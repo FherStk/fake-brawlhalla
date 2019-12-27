@@ -97,7 +97,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
             i.setShape(but);
             i.setStyle("-fx-font-size: 3em; -fx-border-color: black; -fx-border-width: 2;");
             i.setMinWidth(400);
-            i.onMouseEnteredProperty().set(event -> i.setBackground(new Background(new BackgroundFill(Color.RED, CornerRadii.EMPTY, Insets.EMPTY))));
+            i.onMouseEnteredProperty().set(event -> i.setBackground(new Background(new BackgroundFill(Color.MEDIUMPURPLE, CornerRadii.EMPTY, Insets.EMPTY))));
             i.onMouseExitedProperty().set(event -> i.setBackground(new Background(new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY))));
         }
 
@@ -106,7 +106,8 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
 
         Image image = new Image(new FileInputStream("src/resources/Logo.png"));
         ImageView imageView = new ImageView(image);
-        imageView.setFitHeight(100);
+        imageView.setFitHeight(300);
+        imageView.setFitWidth(300);
         imageView.setPreserveRatio(true);
 
         VBox vbox = new VBox(buttons);
@@ -120,7 +121,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         borderpane.setAlignment(imageView, Pos.CENTER);
         borderpane.setAlignment(authors, Pos.BOTTOM_RIGHT);
 
-        borderpane.setStyle("-fx-background-color: #444444;");
+        borderpane.setStyle("-fx-background-color: #cacaca;");
         return (new Scene(borderpane, 800, 600));
     }
 

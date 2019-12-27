@@ -8,7 +8,6 @@ import Fakehalla.Settings.SettingsLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.input.KeyCode;
 import javafx.scene.media.AudioClip;
-import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class Player extends Entity implements Updatable {
     public Player(double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, PlayerSettings playerSettings) throws IOException, ClassNotFoundException {
         super(new Texture(),new Point2D(defaultPosX,defaultPosY),Direction.DOWN,gameWidth/30,(gameWidth/30)*1.3);
 
-        this.shootDelay = 500;
+        this.shootDelay = 200;
         this.shootTime = 0;
         maxVelocity = new Vector2D(new Point2D(gameWidth / 150,gameHeight / 40));
         jumpStrength = gameHeight/ 100;
@@ -77,7 +76,7 @@ public class Player extends Entity implements Updatable {
         this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX() * dumping,this.getVelocity().getDirection().getY())); //adding gravity to velocity
         setPosition(this.getPosition().add(this.getVelocity().getDirection())); //setting player to his new location
 
-        if(!isOnBlock(this.getVelocity().getDirection().getX(),this.getVelocity().getDirection().getY(),gravity.getDirection().getY(),gameObj)) //falling
+        if(!isOnBlock(this.getVelocity().getDirection().getY(),gravity.getDirection().getY(),gameObj)) //falling
         {
             justFell = true;
             this.getVelocity().add(gravity); // adding gravity vector to player's velocity vector
@@ -101,8 +100,8 @@ public class Player extends Entity implements Updatable {
             setPosition(new Point2D(spawnPosition.getX(),0));  //re-spawning
         }
 
-        if(moveL) { moveLeft(dt,gameWidth,gameObj);}
-        else if(moveR) {moveRight(dt,gameWidth,gameObj);}
+        if(moveL) { moveLeft(dt);}
+        else if(moveR) {moveRight(dt);}
 
         Texture oldDirection = this.getDefaultTexture();
         checkVelocity(this.maxVelocity);
@@ -134,17 +133,11 @@ public class Player extends Entity implements Updatable {
         return playerName;
     }
 
-
-    public void setMoveRightKey(KeyCode key) { this.moveRightKey = key; }
-    public void setMoveLeftKey(KeyCode key) { this.moveLeftKey = key; }
-    public void setMoveJumpKey(KeyCode key) { this.moveJumpKey = key; }
-    public void setMoveShotKey(KeyCode moveShotKey) { this.moveShotKey = moveShotKey; }
-
     public void setMoveR(boolean b) { this.moveR = b; }
     public void setMoveL(boolean b) { this.moveL = b; }
 
 
-    private boolean isOnBlock(double stepX,double stepY,double gravityY,ArrayList<Block> gameObj)
+    private boolean isOnBlock(double stepY,double gravityY,ArrayList<Block> gameObj)
     {
         for(Block e : gameObj)
         {
@@ -157,23 +150,20 @@ public class Player extends Entity implements Updatable {
         return false;
     }
 
-    private void moveRight(double speedX,double gameWidth,ArrayList<Block> gameObj) {
-        if(this.getPosition().getX() + this.getBody().getWidth() + this.getVelocity().getDirection().getX() <= gameWidth )
-        {
-            this.getVelocity().add(new Vector2D(new Point2D(speedX,0)));
-            this.shotDirection = Direction.RIGHT;
-        }
+    private void moveRight(double speedX)
+    {
+        this.getVelocity().add(new Vector2D(new Point2D(speedX,0)));
+        this.shotDirection = Direction.RIGHT;
+
     }
 
-    private void moveLeft(double speedX, double gameWidth,ArrayList<Block> gameObj) {
-        if(this.getPosition().getX() - this.getVelocity().getDirection().getX() >= 0 )
-        {
-            this.getVelocity().add(new Vector2D(new Point2D(-1*speedX,0)));
-            this.shotDirection = Direction.LEFT;
-        }
+    private void moveLeft(double speedX)
+    {
+        this.getVelocity().add(new Vector2D(new Point2D(-1*speedX,0)));
+        this.shotDirection = Direction.LEFT;
     }
 
-    public Shot moveShot(double gameWidth)
+    public Shot moveShot()
     {
         if(settings.isSound())
         {
@@ -183,16 +173,12 @@ public class Player extends Entity implements Updatable {
         return new Shot(this.getPosition(),this.shotDirection,this.getWidth(),this.getHeight() / 2,(this.getHeight() / 2)*1.61,this.getHeight(), this.animationResources);
     }
 
-    public void moveJump(double gameHeight)
+    public void moveJump()
     {
-        if(this.getPosition().getY() >= 0 && currentJump < numberOfJumps)
+        if(currentJump < numberOfJumps)
         {
             this.getVelocity().setEnd(new Point2D(this.getVelocity().getDirection().getX(),-1*jumpStrength));
             currentJump ++;
-            if(currentJump == numberOfJumps)
-            {
-                currentJump = numberOfJumps;
-            }
             if(settings.isSound())
             {
                 playSound("jump.wav", 1);
@@ -202,14 +188,10 @@ public class Player extends Entity implements Updatable {
 
     private boolean isHit(Shot shot)
     {
-        if( this.getPosition().getX() < shot.getPosition().getX() + shot.getWidth()
-            && this.getPosition().getX() + this.getWidth() > shot.getPosition().getX()
-            && this.getPosition().getY() < shot.getPosition().getY() + shot.getHeight()
-            && this.getPosition().getY() + this.getHeight() > shot.getPosition().getY())
-        {
-            return true;
-        }
-        return false;
+        return this.getPosition().getX() < shot.getPosition().getX() + shot.getWidth()
+                && this.getPosition().getX() + this.getWidth() > shot.getPosition().getX()
+                && this.getPosition().getY() < shot.getPosition().getY() + shot.getHeight()
+                && this.getPosition().getY() + this.getHeight() > shot.getPosition().getY();
     }
 
     private void checkVelocity(Vector2D maxVelocity)

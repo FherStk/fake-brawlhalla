@@ -10,20 +10,16 @@ import Fakehalla.Settings.SettingsLoader;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class Game  {
 
@@ -121,9 +117,7 @@ public class Game  {
 
     }
 
-    public Stage getStage() { return stage; }
     public Scene getScene() {return scene;}
-    public ArrayList<Updatable> getAllObjects() { return objects;}
 
     public void start() // starting the game loop
     {
@@ -218,12 +212,12 @@ public class Game  {
             {
                 if(player1.getCanShoot())
                 {
-                    Shot temp = player1.moveShot(this.width);
+                    Shot temp = player1.moveShot();
                     this.objects.add(temp);
                     group.getChildren().add(temp.getBody());
                 }
             }
-            if(key.getCode() == player1.getMoveJumpKey()) { player1.moveJump(scene.getHeight()); }
+            if(key.getCode() == player1.getMoveJumpKey()) { player1.moveJump(); }
         });
         scene.addEventHandler(KeyEvent.KEY_RELEASED, (key)->
         {
@@ -239,13 +233,13 @@ public class Game  {
             {
                 if(player2.getCanShoot())
                 {
-                    Shot temp = player2.moveShot(this.width);
+                    Shot temp = player2.moveShot();
                     this.objects.add(temp);
                     group.getChildren().add(temp.getBody());
                 }
 
             }
-            if(key.getCode() == player2.getMoveJumpKey()) {  player2.moveJump(scene.getHeight()); }
+            if(key.getCode() == player2.getMoveJumpKey()) {  player2.moveJump(); }
         });
         scene.addEventHandler(KeyEvent.KEY_RELEASED, (key)->
         {

@@ -10,21 +10,17 @@ public class ActivationBlock extends Block implements Updatable {
     private boolean isActivated = false;
     private long currentTimeFlag;
     private int duration;
-    private final int spawnDelay = 10000;
+
     public ActivationBlock(Texture texture, Point2D position, double width, double height) {
         super(texture, position, width, height);
     }
 
     public boolean collisionPlayer(Player player)
     {
-        if(player.getPosition().getX() < this.getPosition().getX() + this.getWidth()
+        return player.getPosition().getX() < this.getPosition().getX() + this.getWidth()
             && player.getPosition().getX() + player.getWidth() > this.getPosition().getX()
             && player.getPosition().getY() < this.getBody().getY() + this.getHeight()
-            && player.getPosition().getY() + player.getHeight() > this.getPosition().getY())
-            {
-                return true;
-            }
-        return false;
+            && player.getPosition().getY() + player.getHeight() > this.getPosition().getY();
     }
 
     public void update(long currentTime, double dt, double gameWidth, double gameHeight, Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
@@ -39,6 +35,7 @@ public class ActivationBlock extends Block implements Updatable {
                 }
             }
         }
+        int spawnDelay = 10000;
         if(currentTime <= this.currentTimeFlag + this.duration + spawnDelay)
         {
             this.getBody().setVisible(false);
@@ -57,11 +54,6 @@ public class ActivationBlock extends Block implements Updatable {
         this.duration = duration;
         this.currentTimeFlag = currentTime;
         this.setPosition(newPosition(gameWidth,gameHeight));
-    }
-
-    private void switchVisibility()
-    {
-        this.getBody().setVisible(!this.getBody().isVisible());
     }
 
     private Point2D newPosition(double gameWidth,double gameHeight)

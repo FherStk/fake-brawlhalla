@@ -3,7 +3,6 @@ package Fakehalla.Game.Entity;
 import Fakehalla.Game.Entity.Animations.ShotAnimation;
 import Fakehalla.Game.Utils.Vector2D;
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 
@@ -11,7 +10,6 @@ public class Shot extends Entity implements Updatable{
     private double shotSpeed;
     private boolean hit;
     private ShotAnimation shotAnimation;
-    private final double shotToPlayer = 0.25;
     //private final static String bulletFileName = "src/resources/bullet.png";
 
     public Shot(Point2D startPosition,Direction playerDirection, double shotWidth,double shotHeight,double playerWidth, double playerHeight, String bulletFileName)
@@ -70,13 +68,14 @@ public class Shot extends Entity implements Updatable{
 
     private void chooseStartPosition(double playerWidth, double playerHeight)
     {
+        double shotToPlayer = 0.25;
         if(this.getDirection() == Direction.LEFT)
         {
-            this.setPosition(new Point2D(this.getPosition().getX() - playerWidth - 1, this.getPosition().getY() + playerHeight*shotToPlayer));
+            this.setPosition(new Point2D(this.getPosition().getX() - playerWidth - 1, this.getPosition().getY() + playerHeight* shotToPlayer));
         }
         else
         {
-            this.setPosition(new Point2D(this.getPosition().getX() + playerWidth + 1, this.getPosition().getY()+ playerHeight*shotToPlayer ));
+            this.setPosition(new Point2D(this.getPosition().getX() + playerWidth + 1, this.getPosition().getY()+ playerHeight* shotToPlayer));
         }
     }
 
