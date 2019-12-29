@@ -3,6 +3,7 @@ package Fakehalla.Game.Entity;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class MapGenerator {
 
@@ -12,11 +13,11 @@ public class MapGenerator {
 
     public MapGenerator() {}
 
-    public ArrayList<Block> generateBlocks(double gameWidth,double gameHeight)
+    public LinkedList<Block> generateBlocks(double gameWidth, double gameHeight)
     {
         blocksWidth = gameWidth / 3;
         blocksHeight = blocksWidth * 0.1;
-        ArrayList<Block> blocks = new ArrayList<>();
+        LinkedList<Block> blocks = new LinkedList<>();
 
         double xcor = gameWidth / 2 - blocksWidth/2;
         double ycor = gameHeight / 2 + blocksHeight;

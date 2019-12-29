@@ -6,6 +6,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Entity implements Updatable{ //abstract class
     public Texture getDefaultTexture() {
@@ -44,7 +45,7 @@ public class Entity implements Updatable{ //abstract class
         setPosition(this.position);
     }
 
-    public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
+    public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract, LinkedList<Block> gameObj)
     {
         setPosition(position.add(velocity.getDirection()));
     }

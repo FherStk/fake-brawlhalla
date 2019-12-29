@@ -6,11 +6,16 @@ import Fakehalla.Settings.PlayerSettings;
 import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsLoader;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.media.AudioClip;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Player extends Entity implements Updatable {
     private Point2D spawnPosition;
@@ -36,10 +41,14 @@ public class Player extends Entity implements Updatable {
     private KeyCode moveJumpKey;
     private KeyCode moveShotKey;
 
-    private  final double jumpStrength;
+    private Label playerLabel;
+
+    private final double jumpStrength;
+    private final int playerNameLimit = 8;
 
 
-    public Player(double gameWidth, double gameHeight, double defaultPosX, double defaultPosY, PlayerSettings playerSettings) throws IOException, ClassNotFoundException {
+    public Player(double gameWidth, double gameHeight, double defaultPosX, double defaultPosY,
+                  PlayerSettings playerSettings, Group group) throws IOException, ClassNotFoundException {
         super(new Texture(),new Point2D(defaultPosX,defaultPosY),Direction.DOWN,gameWidth/30,(gameWidth/30)*1.3);
 
         this.shootDelay = 200;
@@ -62,10 +71,15 @@ public class Player extends Entity implements Updatable {
         this.playerSkin = new PlayerSkin(this.animationResources);
 
         settings = new SettingsLoader().loadSettings("settings.txt");
+        checkName();
+        initLabel();
+        this.playerLabel.setFont(Font.font("Verdana",gameWidth*0.007));
+        group.getChildren().add(this.playerLabel);
+
     }
 
     @Override
-    public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
+    public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract, LinkedList<Block> gameObj)
     {
         checkForCollision(objToInteract);
 
@@ -108,6 +122,9 @@ public class Player extends Entity implements Updatable {
         Texture newTexture = playerSkin.getTexture(this.getDirection(), (int) this.getPosition().getX());
         if(oldDirection != newTexture)
             this.setDefaultTexture(newTexture); //setting texture according to direcion and position
+
+        this.playerLabel.setTranslateX(this.getPosition().getX());
+        this.playerLabel.setTranslateY(this.getPosition().getY() - this.playerLabel.getHeight());
     }
 
     @Override
@@ -137,7 +154,7 @@ public class Player extends Entity implements Updatable {
     public void setMoveL(boolean b) { this.moveL = b; }
 
 
-    private boolean isOnBlock(double stepY,double gravityY,ArrayList<Block> gameObj)
+    private boolean isOnBlock(double stepY, double gravityY, LinkedList<Block> gameObj)
     {
         for(Block e : gameObj)
         {
@@ -265,4 +282,32 @@ public class Player extends Entity implements Updatable {
         au.setVolume(volume);
         au.play();
     }
+
+    private void initLabel()
+    {
+        this.playerLabel = new Label(this.playerName);
+        this.playerLabel.setTextFill(new Color(1,1,1,0.5));
+        this.playerLabel.setTranslateX(this.getPosition().getX());
+        this.playerLabel.setTranslateY(this.getPosition().getY() - this.playerLabel.getHeight());
+        this.playerLabel.setTextFill(Color.BLACK);
+    }
+    private void checkName()
+    {
+        this.playerName = this.playerName.replaceAll("\n","");
+        if(this.playerName.length() > playerNameLimit)
+        {
+            this.playerName = this.playerName.substring(0,playerNameLimit-1);
+        }
+        else{
+            int offset = playerNameLimit - this.playerName.length();
+            StringBuilder sb = new StringBuilder();
+            sb.append(this.playerName);
+            for(int i = 0; i <= offset/2 + 1; i++)
+            {
+                sb.insert(i," ");
+            }
+            this.playerName = sb.toString();
+        }
+    }
+
 }

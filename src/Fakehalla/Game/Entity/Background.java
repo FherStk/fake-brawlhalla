@@ -9,6 +9,7 @@ import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Background implements Updatable {
     private BackgroundImageView background;
@@ -52,7 +53,7 @@ public class Background implements Updatable {
     }
 
     @Override
-    public void update(long currentTime, double dt, double gameWidth, double gameHeight, Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj) {
+    public void update(long currentTime, double dt, double gameWidth, double gameHeight, Vector2D gravity, ArrayList<Updatable> objToInteract, LinkedList<Block> gameObj) {
         mountains.update(currentTime*dt*0.0625*eventMultiplier,0);
         trees.update(currentTime*dt*0.08*eventMultiplier,0);
         foreground.update(currentTime*dt*0.125*eventMultiplier,(int) gameWidth/32); //bulgarian constant, because of bugged model

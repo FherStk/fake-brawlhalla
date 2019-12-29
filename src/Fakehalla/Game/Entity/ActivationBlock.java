@@ -4,6 +4,7 @@ import Fakehalla.Game.Utils.Vector2D;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class ActivationBlock extends Block implements Updatable {
@@ -23,7 +24,7 @@ public class ActivationBlock extends Block implements Updatable {
             && player.getPosition().getY() + player.getHeight() > this.getPosition().getY();
     }
 
-    public void update(long currentTime, double dt, double gameWidth, double gameHeight, Vector2D gravity, ArrayList<Updatable> objToInteract, ArrayList<Block> gameObj)
+    public void update(long currentTime, double dt, double gameWidth, double gameHeight, Vector2D gravity, ArrayList<Updatable> objToInteract, LinkedList<Block> gameObj)
     {
         for(Updatable u : objToInteract)
         {

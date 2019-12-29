@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Game  {
 
@@ -37,12 +38,15 @@ public class Game  {
     private double width;
     private double height;
     private ArrayList<Updatable> objects;
-    private ArrayList<Block> blocks;
+    private LinkedList<Block> blocks;
     private Player player1;
     private Player player2;
     private Vector2D gravity;
     private ActivationBlock activationBlock;
     private Event event;
+    private PlayerScore ps;
+
+    private final String scoreFile = "src\\resources\\score.txt";
 
     private long prevTime;
     private long currentTime;
@@ -52,6 +56,7 @@ public class Game  {
     public Game(String title,boolean fullscreen) throws IOException, ClassNotFoundException // dev constructor
     {
         settings = new SettingsLoader().loadSettings("settings.txt");
+        ps = new PlayerScore(scoreFile);
         width = settings.getWidth();
         height = settings.getHeight();
         stage = new Stage();
@@ -105,6 +110,7 @@ public class Game  {
 
     public Game(Stage stage) throws IOException, ClassNotFoundException // ready constructor (i hope)
     {
+        ps = new PlayerScore(scoreFile);
         this.stage = stage;
         group = new Group();
         currentTime = 0;
@@ -118,6 +124,7 @@ public class Game  {
     }
 
     public Scene getScene() {return scene;}
+    public PlayerScore getPlayerScore() { return this.ps; }
 
     public void start() // starting the game loop
     {
@@ -168,11 +175,21 @@ public class Game  {
                 if(player1.getScore() >= numberToWin)
                 {
                     group.getChildren().add(winLabel(player2.getPlayerName()));
+                    try {
+                        ps.refreshScore(player2.getPlayerName().replaceAll(" ",""));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     stopLoop();
                 }
                 if(player2.getScore() >= numberToWin)
                 {
                     group.getChildren().add(winLabel(player1.getPlayerName()));
+                    try {
+                        ps.refreshScore(player1.getPlayerName().replaceAll(" ",""));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     stopLoop();
                 }
 
@@ -183,8 +200,9 @@ public class Game  {
     }
 
     private void startLoop() {loop.start();}
-    private void stopLoop() {
-        System.out.println("game over");
+
+    private void stopLoop()
+    {
         gameOver = true;
         loop.stop();
     }
@@ -198,8 +216,8 @@ public class Game  {
         scoreBoard.setMinSize(width / 10,height/20);
         scoreBoard.setTranslateX(width/2 - scoreBoard.getMinWidth()/2);
 
-        player1 = new Player(this.width,this.height,this.width / 2 - this.width/8,this.height / 4, settings.getPlayer1());
-        player2 = new Player(this.width,this.height,this.width / 2 + this.width/8,this.height / 4, settings.getPlayer2());
+        player1 = new Player(this.width,this.height,this.width / 2 - this.width/8,this.height / 4, settings.getPlayer1(),this.group);
+        player2 = new Player(this.width,this.height,this.width / 2 + this.width/8,this.height / 4, settings.getPlayer2(),this.group);
 
         this.objects.add(background);
         this.objects.add(player1);
@@ -277,10 +295,10 @@ public class Game  {
 
     private Label winLabel(String playerName)
     {
-        Label win = new Label(playerName + " won !");
+        Label win = new Label(playerName + " won !\n press ESC");
         win.setMinSize(width/4,height/4);
         win.setTranslateX(width/2 - win.getMinWidth()*1.5);
-        win.setTranslateY(height/2);
+        win.setTranslateY(height/2 - win.getMinHeight());
         win.setFont(new Font(fontName,win.getMinWidth()/2));
         return win;
     }

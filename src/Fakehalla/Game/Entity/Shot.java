@@ -5,6 +5,7 @@ import Fakehalla.Game.Utils.Vector2D;
 import javafx.geometry.Point2D;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Shot extends Entity implements Updatable{
     private double shotSpeed;
@@ -35,7 +36,7 @@ public class Shot extends Entity implements Updatable{
     }
 
     @Override
-    public void update(long currentTime,double dt, double gameWidth, double gameHeight,Vector2D gravity, ArrayList<Updatable> objToInteract,ArrayList<Block> gameObj)
+    public void update(long currentTime, double dt, double gameWidth, double gameHeight, Vector2D gravity, ArrayList<Updatable> objToInteract, LinkedList<Block> gameObj)
     {
         //this.getVelocity().add(gravity);
         this.getVelocity().multiply(dt);
