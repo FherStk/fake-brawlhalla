@@ -1,6 +1,8 @@
 package Fakehalla.Menu;
 
 import Fakehalla.Game.Game;
+import Fakehalla.Game.HashElement;
+import Fakehalla.Game.PlayerScore;
 import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsLoader;
 import Fakehalla.Settings.SettingsSaver;
@@ -20,12 +22,12 @@ import javafx.stage.Stage;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.LinkedList;
 
 public class Launcher { //TODO Change launcher tu menu, use only one stage
     private Stage stage;
     private Scene defaultScene;
     private Scene settingsScene;
-    private Scene creditsScene;
     private Scene playerSelect;
     private Settings settings;
 
@@ -55,12 +57,36 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         stage.setScene(settingsScene);
     }
 
-    private void runCredits() {
-        //stage.setScene(playerSelect);
+    private void runScoreboard() throws FileNotFoundException {
+        stage.setScene(generateScoreboardScene());
     }
 
     private void runPlayerSelectionScene(){
         stage.setScene(playerSelect);
+    }
+
+    private Scene generateScoreboardScene() throws FileNotFoundException {
+        PlayerScore ps = new PlayerScore("src\\resources\\score.txt");
+        LinkedList<HashElement> scoreMap = ps.getScoreMap();
+        GridPane gridPane = new GridPane();
+        int count = 1;
+        Label first = new Label("Top scores");
+        first.setStyle("-fx-font-size: 1.5em;");
+        gridPane.add(first, 0, 0);
+        for(HashElement hashElement : scoreMap) {
+            Label label = new Label(hashElement.toString());
+            label.setStyle("-fx-font-size: 3em; -fx-border-width: 2;");
+            label.setMinWidth(400);
+            gridPane.add(label, 0, count);
+            if(++count==6)
+                break;
+        }
+        Button button = new Button("Close");
+        button.setStyle("-fx-font-size: 1.5em;");
+        button.setOnAction(e-> stage.setScene(defaultScene));
+        gridPane.add(button, 0, count);
+        gridPane.setAlignment(Pos.CENTER);
+        return new Scene(gridPane,800,600);
     }
 
     private Scene generateLauncherScene() throws FileNotFoundException {
@@ -77,9 +103,13 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
             runSettings();
         });
 
-        buttons[2] = new Button("Credits");
+        buttons[2] = new Button("Scoreboard");
         buttons[2].setOnAction(event -> {
-            runCredits();
+            try {
+                runScoreboard();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         });
 
         buttons[3] = new Button("Exit");

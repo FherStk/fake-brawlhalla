@@ -9,7 +9,7 @@ public class PlayerScore {
     private Scanner scanner;
     private LinkedList<HashElement> scoreMap;
 
-    PlayerScore(String filename) throws FileNotFoundException {
+    public PlayerScore(String filename) throws FileNotFoundException {
         this.filename = filename;
         this.scanner = new Scanner(new File(this.filename));
         this.scoreMap = new LinkedList<>();
