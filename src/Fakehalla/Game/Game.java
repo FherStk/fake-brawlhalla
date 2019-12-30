@@ -124,7 +124,7 @@ public class Game  {
     }
 
     public Scene getScene() {return scene;}
-    public PlayerScore getPlayerScore() { return this.ps; }
+    public PlayerScore getPlayerScore() { return this.ps    ; }
 
     public void start() // starting the game loop
     {

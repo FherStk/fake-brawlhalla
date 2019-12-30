@@ -17,23 +17,23 @@ public class PlayerScore {
         this.scanner.close();
     }
 
-    public LinkedList<HashElement> getScoreMap() {return this.scoreMap; }
+    public LinkedList<HashElement> getScoreMap() {return this.scoreMap; }//returns LinkedList of every player and its score
 
     void refreshScore(String playerName) throws IOException {
-        if(this.contains(playerName))
+        if(this.contains(playerName))//if the name is already created in the file, it increments the score
         {
             this.scoreMap.stream().filter(e->e.getName().contains(playerName)).forEach(HashElement::increment);
         }
         else{
-            this.scoreMap.add(new HashElement(playerName));
+            this.scoreMap.add(new HashElement(playerName));//if the name is not in the file yet, we add a new name
         }
 
-        this.scoreMap.sort(HashElement::compareTo);
+        this.scoreMap.sort(HashElement::compareTo);// sort
 
         BufferedWriter out = new BufferedWriter(new FileWriter(new File(this.filename)));;
-        this.scoreMap.forEach(e->{
+        this.scoreMap.forEach(e->{ // writing to file every player that is "registered" (has occurred once)
             try {
-                out.write(e.toString());
+                out.write(e.toString());// toString is overridden for HashElement, so i can just write the object to file like this
                 out.newLine();
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -42,17 +42,17 @@ public class PlayerScore {
         out.close();
     }
 
-    private void initHashMap()
+    private void initHashMap() // init, every time a game is launched, it loads every player with its score to the linkedlist
     {
         while(scanner.hasNextLine())
         {
             String s = scanner.nextLine();
-            String[] score = s.split(" ");
-            this.scoreMap.add(new HashElement(score[0],Integer.parseInt(score[1])));
+            String[] score = s.split(" ");// {playername playerscore} , separated by " "
+            this.scoreMap.add(new HashElement(score[0],Integer.parseInt(score[1])));//0th element is name 1th element is score
         }
     }
 
-    private boolean contains(String s)
+    private boolean contains(String s)// checks if the name is already in the linkedlist
     {
         for(HashElement he : this.scoreMap)
         {
