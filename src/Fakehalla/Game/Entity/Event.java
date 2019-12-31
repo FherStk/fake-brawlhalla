@@ -2,13 +2,9 @@ package Fakehalla.Game.Entity;
 
 import Fakehalla.Game.Utils.Vector2D;
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 
-import javax.swing.table.AbstractTableModel;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Event implements Updatable{

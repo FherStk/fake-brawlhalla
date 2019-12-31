@@ -8,7 +8,7 @@ import javafx.scene.image.ImageView;
 
 import java.io.IOException;
 
-public class BackgroundImageView extends ImageView {
+public class BackgroundImageView extends ImageView { //images on background
     private Settings settings;
     private int width, height;
     private double currentOffset = 0;
@@ -23,7 +23,7 @@ public class BackgroundImageView extends ImageView {
         this.setViewport(new Rectangle2D(0, 0, width, height));
     }
 
-    public void update(double movement, int offset){
+    public void update(double movement, int offset){ //Updating position of background according to time passed
         currentOffset+=movement*width*0.000000000000005;
         currentOffset%=(width-offset);
         this.setViewport(new Rectangle2D(currentOffset, 0, width, height));

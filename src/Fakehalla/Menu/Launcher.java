@@ -7,6 +7,7 @@ import Fakehalla.Settings.Settings;
 import Fakehalla.Settings.SettingsLoader;
 import Fakehalla.Settings.SettingsSaver;
 import javafx.application.Platform;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -69,25 +70,53 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         PlayerScore ps = new PlayerScore("src\\resources\\score.txt");
         LinkedList<HashElement> scoreMap = ps.getScoreMap();
         GridPane gridPane = new GridPane();
-        int count = 1;
-        Label first = new Label("Top scores");
-        first.setStyle("-fx-font-size: 1.5em;");
-        gridPane.add(first, 0, 0);
+        int count = 0;
+        Label first = new Label("Name");
+        first.setStyle("-fx-font-size: 3em;");
+        gridPane.add(first, 1, 0);
+        Label sec = new Label("Score");
+        sec.setStyle("-fx-font-size: 3em;");
+        gridPane.add(sec, 2, 0);
+        Label zirst = new Label("#");
+        zirst.setStyle("-fx-font-size: 3em;");
+        gridPane.setHalignment(zirst, HPos.RIGHT);
+        gridPane.add(zirst, 0, 0);
+        gridPane.setVgap(2);
+        gridPane.setHgap(14);
         for(HashElement hashElement : scoreMap) {
-            Label label = new Label(hashElement.toString());
-            label.setStyle("-fx-font-size: 3em; -fx-border-width: 2;");
-            label.setMinWidth(400);
-            gridPane.add(label, 0, count);
-            if(++count==6)
+            Label name = new Label(hashElement.getName());
+            name.setStyle("-fx-font-size: 2em; -fx-border-width: 2;");
+            gridPane.setHalignment(name, HPos.CENTER);
+            gridPane.add(name, 1, count+1);
+            Label score = new Label(Integer.toString(hashElement.getScore()));
+            score.setStyle("-fx-font-size: 2em; -fx-border-width: 2;");
+            gridPane.add(score, 2, count+1);
+            if(count<3) {
+                ImageView medal = new ImageView(new Image(new FileInputStream("src/resources/medal" + count + ".png")));
+                medal.setFitWidth(32);
+                gridPane.setMinWidth(32);
+                Label num = new Label(count+1 + ".");
+                num.setStyle("-fx-font-size: 2em; -fx-border-width: 2;");
+                gridPane.setHalignment(num, HPos.RIGHT);
+                gridPane.add(new HBox(medal, num), 0, count + 1);
+            }
+            else {
+                Label num = new Label(count+1 + ".");
+                num.setStyle("-fx-font-size: 2em; -fx-border-width: 2;");
+                gridPane.setHalignment(num, HPos.RIGHT);
+                gridPane.add(num, 0, count + 1);
+            }
+            if(++count==9)
                 break;
         }
         Button button = new Button("Close");
-        button.setStyle("-fx-font-size: 1.5em;");
+        button.setStyle("-fx-font-size: 2em;");
+        button.setMinWidth(200);
         button.setOnAction(e-> stage.setScene(defaultScene));
-        gridPane.add(button, 0, count);
+        gridPane.add(button, 0, count+1,3,1);
         gridPane.setAlignment(Pos.CENTER);
         return new Scene(gridPane,800,600);
-    }
+    } //just long code generating javafx scene
 
     private Scene generateLauncherScene() throws FileNotFoundException {
         Button[] buttons = new Button[4];
@@ -141,7 +170,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         imageView.setPreserveRatio(true);
 
         VBox vbox = new VBox(buttons);
-        vbox.setSpacing(40);
+        vbox.setSpacing(20);
         vbox.setAlignment(Pos.CENTER);
 
         BorderPane borderpane = new BorderPane();
@@ -153,7 +182,7 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
 
         borderpane.setStyle("-fx-background-color: #cacaca;");
         return (new Scene(borderpane, 800, 600));
-    }
+    } //just long code generating javafx scene
 
     private Scene generateSettingsScene() {
 
@@ -288,9 +317,9 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         gridPane.add(checkboxsound, 1, 2);
         return(new Scene(gridPane, 800,600));
 
-    }
+    } //just long code generating javafx scene
 
-    private Scene generatePlayerSelectionScene(){ //TODO name and player select
+    private Scene generatePlayerSelectionScene(){ //just long code generating javafx scene
         Text[] texts = new Text[4];
 
         texts[0] = new Text("Player 1 name: ");
@@ -382,7 +411,6 @@ public class Launcher { //TODO Change launcher tu menu, use only one stage
         gridPane.add(back, 1,4);
 
         return new Scene(gridPane, 800, 600);
-    }
-    //private Scene generateCreditsScene(){} TODO
+    } //just long code generating javafx scene
 
 }

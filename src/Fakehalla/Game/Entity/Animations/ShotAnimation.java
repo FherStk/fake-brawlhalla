@@ -3,7 +3,7 @@ package Fakehalla.Game.Entity.Animations;
 import Fakehalla.Game.Entity.Direction;
 import Fakehalla.Game.Entity.Texture;
 
-public class ShotAnimation {
+public class ShotAnimation { //Same as PlayersSkin but with shot
     private Texture texture;
 
     public ShotAnimation(String filename){

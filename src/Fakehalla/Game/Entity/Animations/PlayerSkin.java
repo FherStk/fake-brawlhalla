@@ -3,7 +3,7 @@ package Fakehalla.Game.Entity.Animations;
 import Fakehalla.Game.Entity.Direction;
 import Fakehalla.Game.Entity.Texture;
 
-public class PlayerSkin {
+public class PlayerSkin { //Class to get texture of player according to direction
     private Texture[] walk = new Texture[11];
     private Texture stand; //front.png
     private Texture fall; //hurt.png

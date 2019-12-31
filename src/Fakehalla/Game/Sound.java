@@ -1,9 +1,9 @@
-package Fakehalla.Game.Entity.Animations;
+package Fakehalla.Game;
 
 
 import javafx.scene.media.AudioClip;
 
-public class Sound {
+public class Sound { //Class to handle sound
     private AudioClip background;
     private AudioClip dnb;
     private boolean soundIsOn, eventIsOn = false;

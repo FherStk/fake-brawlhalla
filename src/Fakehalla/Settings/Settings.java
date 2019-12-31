@@ -6,7 +6,7 @@ import javafx.stage.Screen;
 
 import java.io.Serializable;
 
-public class Settings implements Serializable {
+public class Settings implements Serializable { //class which handles game settings
     private int width, height;
     private boolean fullscreen, sound;
     private PlayerSettings player1;

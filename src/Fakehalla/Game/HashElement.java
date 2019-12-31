@@ -15,11 +15,11 @@ public class HashElement implements Comparable<HashElement> {
         this.score = score;
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
-    int getScore() {
+    public int getScore() {
         return score;
     }
 

@@ -2,7 +2,6 @@ package Fakehalla.Game.Entity;
 
 import javafx.geometry.Point2D;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class MapGenerator {
@@ -35,6 +34,6 @@ public class MapGenerator {
 
     public ActivationBlock generateActivationBlock(double gameWidth,Point2D pos)
     {
-        return new ActivationBlock(new Texture(filename),pos,gameWidth/50,gameWidth/50);
+        return new ActivationBlock(new Texture("src/resources/fight.png"),pos,gameWidth/50,gameWidth/50);
     }
 }

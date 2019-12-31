@@ -4,7 +4,7 @@ import javafx.scene.input.KeyCode;
 
 import java.io.Serializable;
 
-public class PlayerSettings implements Serializable {
+public class PlayerSettings implements Serializable { //class which handles each player settings
     private KeyCode jump, shoot, left, right;
     private String name;
     private String skin;
