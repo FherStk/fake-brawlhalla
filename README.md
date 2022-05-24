@@ -1,6 +1,7 @@
 # Fakehalla
 
-Copy of the Brawlhalla game made in JavaFX as school project
+Copy of the Brawlhalla game made in JavaFX as school project.
+Really shitty code, nothing we are proud of.
 
 ## Authors
 
